@@ -1,0 +1,997 @@
+% Code
+
+# Cooperative Trials 
+
+## Network model
+
+## Data
+
+```{r, warning=FALSE}
+library(readr)
+library(tidyverse)
+fhb_yld1 <- read_csv("data/dat-yld.csv")
+
+target <- c("check-0", "Azoxistrobina + Tebuconazole-2", "Piraclostrobina + Metconazole-2", "Tebuconazole-2", "Trifloxistrobina + Protioconazole-2", "Trifloxistrobina + Tebuconazole-2", "Piraclostrobina + Metconazole-1") 
+fhb_yld <- fhb_yld1 %>%
+  group_by(trial) %>% 
+  filter(AI2 %in% target) %>% 
+  mutate(n2 = n()) %>% 
+  filter(n2 != 1)
+
+# Renaming the treatments 
+library(plyr)
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("check-0" = "AACHECK"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Azoxistrobina + Tebuconazole-2" = "AZOX + TEBU 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Piraclostrobina + Metconazole-2" = "PIRA + METC 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Tebuconazole-2" = "TEBU 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Trifloxistrobina + Protioconazole-2" = "TFLX + PROT 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Trifloxistrobina + Tebuconazole-2" = "TFLX + TEBU 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Piraclostrobina + Metconazole-1" = "PIRA + METC 1X"))
+detach("package:plyr", unload = TRUE)
+
+
+fhb_yld_coop = fhb_yld %>% 
+  filter(publication == "Boletim")
+
+```
+
+
+## Sampling Variance
+
+```{r}
+# Sampling variance for log of the mean (Paul et al., 2008) to use in multivariate model
+fhb_yld_coop <- fhb_yld_coop%>%
+  mutate(log_yld = log(yld))
+
+fhb_yld_coop$log_var_yld <- with(fhb_yld_coop, V_yld / (n * yld^2))
+
+# Calculate the variation of absolute yield
+
+fhb_yld_coop$var_yld <- fhb_yld_coop$V_yld/fhb_yld_coop$n # multivariate approach
+
+
+```
+
+## M-A AI (yld Absolute)
+
+```{r}
+
+library(metafor)
+
+mv_yld <- rma.mv(yld, var_yld,
+  mods = ~AI2,
+  random = list(~AI2 | trial),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_coop
+)
+
+summary(mv_yld)
+```
+
+
+### Contrasts
+
+We can set linear contrasts between treatments of interest and get the P-valued using the `anova` function.
+
+```{r}
+anova(mv_yld, L = rbind(
+  c(0, 1, -1, 0, 0, 0),
+  c(0, 1, 0, -1, 0, 0),
+  c(0, 1, 0, 0, -1, 0),
+  c(0, 1, 0, 0, 0, -1),
+  c(0, 0, 1, -1, 0, 0),
+  c(0, 0, 1, 0, -1, 0),
+  c(0, 0, 1, 0, 0, -1),
+  c(0, 0, 0, 1, -1, 0),
+  c(0, 0, 0, 1, 0, -1),
+  c(0, 0, 0, 0, 1, -1)
+))
+```
+
+## M-A AI (Relative yld)
+
+```{r}
+mv_yld_relative <- rma.mv(log_yld, log_var_yld,
+  mods = ~AI2,
+  random = list(~AI2 | trial),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_coop
+)
+
+summary(mv_yld_relative)
+```
+
+### Contrasts
+
+```{r}
+anova(mv_yld_relative, L = rbind(
+  c(0, 1, -1, 0, 0, 0),
+  c(0, 1, 0, -1, 0, 0),
+  c(0, 1, 0, 0, -1, 0),
+  c(0, 1, 0, 0, 0, -1),
+  c(0, 0, 1, -1, 0, 0),
+  c(0, 0, 1, 0, -1, 0),
+  c(0, 0, 1, 0, 0, -1),
+  c(0, 0, 0, 1, -1, 0),
+  c(0, 0, 0, 1, 0, -1),
+  c(0, 0, 0, 0, 1, -1)
+))
+```
+
+
+
+```{r}
+results_relative_yld<- data.frame(cbind((exp(mv_yld_relative$b)-1)*100, 
+                             (exp(mv_yld_relative$ci.lb)-1)*100,
+                             (exp(mv_yld_relative$ci.ub)-1)*100))
+results_relative_yld
+```
+
+
+## Moderator analysis
+
+### Cultivar 
+
+```{r}
+# creating two groups of cultivars (MR, S)
+table(fhb_yld_coop$cultivar, fhb_yld_coop$reaction)
+nrow(table(fhb_yld_coop$cultivar, fhb_yld_coop$reaction))
+
+# Renaming the reactions 
+library(plyr)
+fhb_yld_coop$reaction <- revalue(fhb_yld_coop$reaction, c("MS" = "S"))
+fhb_yld_coop$reaction <- revalue(fhb_yld_coop$reaction, c("MS/MR" = "MR"))
+fhb_yld_coop$reaction <- revalue(fhb_yld_coop$reaction, c("MR/R" = "MR"))
+fhb_yld_coop$reaction <- revalue(fhb_yld_coop$reaction, c("MS/S" = "S"))
+detach("package:plyr", unload = TRUE)
+
+table(fhb_yld_coop$cultivar, fhb_yld_coop$reaction)
+table(fhb_yld_coop$reaction)
+table(fhb_yld_coop$AI2, fhb_yld_coop$reaction)
+
+
+```
+
+```{r}
+
+mv_yld_reaction <- rma.mv(yld, var_yld,
+  mods = ~AI2*reaction,
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_coop
+)
+
+mv_yld_reaction
+
+
+#anova(mv_yld_reaction, btt=9:14)
+```
+
+### Disease Pressure
+
+
+```{r}
+
+
+library(tidyverse)
+fhb_yld_coop <- fhb_yld_coop %>%
+  mutate(sev_check_class = case_when(
+      sev_check < 7 ~ "low",
+      sev_check >= 7 ~ "high"))
+
+mv_dis_press <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(sev_check_class),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_coop
+)
+
+mv_dis_press
+
+
+anova(mv_dis_press, btt=8:12)
+```
+
+### Sev_check as continuous
+
+```{r}
+
+mv_sev_check_cont <- rma.mv(yld, var_yld,
+  mods = ~AI2*as.numeric(sev_check),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_coop
+)
+
+mv_sev_check_cont
+
+
+anova(mv_sev_check_cont, btt=8:12)
+
+
+```
+
+### yield_class
+
+```{r}
+#Moderator yield_class
+
+summary(fhb_yld_coop$yld_check) # Median = 3002.03; Mean = 2896.47  
+
+fhb_yld_coop <- fhb_yld_coop %>%
+  mutate(yld_check_class = case_when(
+      yld_check < 3000 ~ "low",
+      yld_check >= 3000 ~ "high"))
+table(fhb_yld_coop$AI2, fhb_yld_coop$yld_check_class)
+
+
+mv_yld_check <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(yld_check_class),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_coop
+)
+
+mv_yld_check
+
+
+anova(mv_yld_check, btt=8:12)
+
+
+```
+
+### State
+
+```{r}
+
+
+# Number of entries by fungicide and state
+table(fhb_yld_coop$AI2, fhb_yld_coop$state)
+
+
+mv_yld_state <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(state),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_coop
+)
+
+mv_yld_state
+
+# anova(fhb_mv_AI_state,btt=8:15)
+# 
+# anova(fhb_mv_AI_state,btt=8:11)
+# 
+# anova(fhb_mv_AI_state,btt=11:15)
+
+```
+
+
+### Year as continuous
+
+```{r}
+
+# Number of entries by fungicide and year
+table(fhb_yld_coop$AI2, fhb_yld_coop$year)
+
+mv_yld_year <- rma.mv(yld, var_yld,
+  mods = ~AI2*as.numeric(year),
+  random = list(~AI2 | factor(trial)),
+  struct = "HCS",
+  method = "ML",
+  data = fhb_yld_coop
+)
+
+mv_yld_year
+
+anova(mv_yld_year, btt=8:12)
+```
+
+# Publication
+
+```{r, warning=FALSE}
+
+fhb_yld_publ = fhb_yld %>% 
+  filter(publication != "Boletim")
+
+```
+
+
+## Sampling Variance
+
+```{r}
+# Sampling variance for log of the mean (Paul et al., 2008) to use in multivariate model
+fhb_yld_publ <- fhb_yld_publ%>%
+  mutate(log_yld = log(yld))
+
+fhb_yld_publ$log_var_yld <- with(fhb_yld_publ, V_yld / (n * yld^2))
+
+# Calculate the variation of absolute yield
+
+fhb_yld_publ$var_yld <- fhb_yld_publ$V_yld/fhb_yld_publ$n # multivariate approach
+
+
+```
+
+## M-A AI (yld Absolute)
+
+```{r}
+
+library(metafor)
+
+mv_yld_publ <- rma.mv(yld, var_yld,
+  mods = ~AI2,
+  random = list(~AI2 | trial),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_publ
+)
+
+summary(mv_yld_publ)
+```
+
+
+### Contrasts
+
+We can set linear contrasts between treatments of interest and get the P-valued using the `anova` function.
+
+```{r}
+anova(mv_yld_publ, L = rbind(
+ c(0, 1, -1, 0, 0, 0, 0),
+  c(0, 1, 0, -1, 0, 0, 0),
+  c(0, 1, 0, 0, -1, 0, 0),
+  c(0, 1, 0, 0, 0, -1, 0),
+  c(0, 1, 0, 0, 0, 0, -1),
+  c(0, 0, 1, -1, 0, 0, 0),
+  c(0, 0, 1, 0, -1, 0, 0),
+  c(0, 0, 1, 0, 0, -1, 0),
+  c(0, 0, 1, 0, 0, 0, -1),
+  c(0, 0, 0, 1, -1, 0, 0),
+  c(0, 0, 0, 1, 0, -1, 0),
+  c(0, 0, 0, 1, 0, 0, -1),
+  c(0, 0, 0, 0, 1, -1, 0),
+  c(0, 0, 0, 0, 1, 0, -1),
+  c(0, 0, 0, 0, 0, 1, -1)
+))
+```
+
+## Moderator analysis
+
+### Cultivar 
+
+```{r}
+# creating two groups of cultivars (MR, S)
+table(fhb_yld_publ$cultivar, fhb_yld_publ$reaction)
+nrow(table(fhb_yld_publ$cultivar, fhb_yld_publ$reaction))
+
+# Renaming the reactions 
+library(plyr)
+fhb_yld_publ$reaction <- revalue(fhb_yld_publ$reaction, c("MS" = "S"))
+fhb_yld_publ$reaction <- revalue(fhb_yld_publ$reaction, c("MS/MR" = "MR"))
+fhb_yld_publ$reaction <- revalue(fhb_yld_publ$reaction, c("MR/R" = "MR"))
+fhb_yld_publ$reaction <- revalue(fhb_yld_publ$reaction, c("MS/S" = "S"))
+detach("package:plyr", unload = TRUE)
+
+table(fhb_yld_publ$cultivar, fhb_yld_publ$reaction)
+table(fhb_yld_publ$reaction)
+table(fhb_yld_publ$AI2, fhb_yld_publ$reaction)
+
+
+```
+
+```{r}
+
+mv_yld_reaction <- rma.mv(yld, var_yld,
+  mods = ~AI2*reaction,
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_publ
+)
+
+mv_yld_reaction
+
+
+#anova(mv_yld_reaction, btt=9:14)
+```
+
+### Disease Pressure
+
+
+```{r}
+
+
+library(tidyverse)
+fhb_yld_publ <- fhb_yld_publ %>%
+  mutate(sev_check_class = case_when(
+      sev_check < 7 ~ "low",
+      sev_check >= 7 ~ "high"))
+
+mv_dis_press <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(sev_check_class),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_publ
+)
+
+mv_dis_press
+
+
+anova(mv_dis_press, btt=9:14)
+```
+
+### Sev_check as continuous
+
+```{r}
+
+mv_sev_check_cont <- rma.mv(yld, var_yld,
+  mods = ~AI2*as.numeric(sev_check),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_publ
+)
+
+mv_sev_check_cont
+
+
+anova(mv_sev_check_cont, btt=9:14)
+
+
+```
+
+### yield_class
+
+```{r}
+#Moderator yield_class
+
+summary(fhb_yld_publ$yld_check) # Median = 3002.03; Mean = 2896.47  
+
+fhb_yld_publ <- fhb_yld_publ %>%
+  mutate(yld_check_class = case_when(
+      yld_check < 3000 ~ "low",
+      yld_check >= 3000 ~ "high"))
+table(fhb_yld_publ$AI2, fhb_yld_publ$yld_check_class)
+
+
+mv_yld_check <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(yld_check_class),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_publ
+)
+
+mv_yld_check
+
+
+anova(mv_yld_check, btt=9:14)
+
+
+```
+
+### State
+
+```{r}
+
+
+# Number of entries by fungicide and state
+table(fhb_yld_publ$AI2, fhb_yld_publ$state)
+
+
+mv_yld_state <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(state),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_publ
+)
+
+mv_yld_state
+
+# anova(fhb_mv_AI_state,btt=8:15)
+# 
+# anova(fhb_mv_AI_state,btt=8:11)
+# 
+# anova(fhb_mv_AI_state,btt=11:15)
+
+```
+
+
+### Year as continuous
+
+```{r}
+
+# Number of entries by fungicide and year
+table(fhb_yld_publ$AI2, fhb_yld_publ$year)
+
+mv_yld_year <- rma.mv(yld, var_yld,
+  mods = ~AI2*as.numeric(year),
+  random = list(~AI2 | factor(trial)),
+  struct = "HCS",
+  method = "ML",
+  data = fhb_yld_publ
+)
+
+mv_yld_year
+
+
+```
+
+### Publication
+
+```{r}
+
+mv_yld_publication <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(publication),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld_publ
+)
+
+mv_yld_publication
+
+anova(mv_yld_publication, btt=10:16)
+```
+
+
+
+
+# Overall 
+
+## Network model
+
+## Data
+
+```{r, warning=FALSE}
+library(readr)
+library(tidyverse)
+library(janitor)
+fhb_yld1 <- read_csv("data/dat-yld.csv")
+
+target <- c("check-0", "Azoxistrobina + Tebuconazole-2", "Piraclostrobina + Metconazole-2", "Tebuconazole-2", "Trifloxistrobina + Protioconazole-2", "Trifloxistrobina + Tebuconazole-2", "Piraclostrobina + Metconazole-1") 
+fhb_yld <- fhb_yld1 %>%
+  group_by(trial) %>% 
+  filter(AI2 %in% target) %>% 
+  mutate(n2 = n()) %>% 
+  filter(n2 != 1)
+
+# Renaming the treatments 
+library(plyr)
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("check-0" = "AACHECK"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Azoxistrobina + Tebuconazole-2" = "AZOX + TEBU 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Piraclostrobina + Metconazole-2" = "PIRA + METC 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Tebuconazole-2" = "TEBU 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Trifloxistrobina + Protioconazole-2" = "TFLX + PROT 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Trifloxistrobina + Tebuconazole-2" = "TFLX + TEBU 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Piraclostrobina + Metconazole-1" = "PIRA + METC 1X"))
+detach("package:plyr", unload = TRUE)
+
+
+fhb_yld %>%
+  tabyl(AI2, publication)
+```
+
+
+## Sampling Variance
+
+```{r}
+# Sampling variance for log of the mean (Paul et al., 2008) to use in multivariate model
+fhb_yld <- fhb_yld%>%
+  mutate(log_yld = log(yld))
+
+fhb_yld$log_var_yld <- with(fhb_yld, V_yld / (n * yld^2))
+
+# Calculate the variation of absolute yield
+
+fhb_yld$var_yld <- fhb_yld$V_yld/fhb_yld$n # multivariate approach
+
+
+```
+
+## M-A AI (yld Absolute)
+
+```{r}
+
+library(metafor)
+
+mv_yld <- rma.mv(yld, var_yld,
+  mods = ~AI2,
+  random = list(~AI2 | trial),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld
+)
+
+summary(mv_yld)
+```
+
+
+### Contrasts
+
+We can set linear contrasts between treatments of interest and get the P-valued using the `anova` function.
+
+```{r}
+anova(mv_yld, L = rbind(
+ c(0, 1, -1, 0, 0, 0, 0),
+  c(0, 1, 0, -1, 0, 0, 0),
+  c(0, 1, 0, 0, -1, 0, 0),
+  c(0, 1, 0, 0, 0, -1, 0),
+  c(0, 1, 0, 0, 0, 0, -1),
+  c(0, 0, 1, -1, 0, 0, 0),
+  c(0, 0, 1, 0, -1, 0, 0),
+  c(0, 0, 1, 0, 0, -1, 0),
+  c(0, 0, 1, 0, 0, 0, -1),
+  c(0, 0, 0, 1, -1, 0, 0),
+  c(0, 0, 0, 1, 0, -1, 0),
+  c(0, 0, 0, 1, 0, 0, -1),
+  c(0, 0, 0, 0, 1, -1, 0),
+  c(0, 0, 0, 0, 1, 0, -1),
+  c(0, 0, 0, 0, 0, 1, -1)
+))
+```
+
+
+```{r}
+yield = data.frame(mv_yld$b, mv_yld$ci.lb, mv_yld$ci.ub) %>%
+  rownames_to_column("trat") %>%
+  separate(trat, into = c("lixo","lado1"),sep = "AI2" ) %>%
+  filter(lixo!= "intrcpt") %>% 
+  select(-lixo) %>%
+  set_names("fungicide", "yld", "yld_inf", "yld_sup")
+
+yield
+
+library(readr)
+write_csv(yield, "data/yld-response.csv")
+```
+
+
+## M-A AI (Relative yld)
+
+```{r}
+mv_yld_relative <- rma.mv(log_yld, log_var_yld,
+  mods = ~AI2,
+  random = list(~AI2 | trial),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld
+)
+
+summary(mv_yld_relative)
+```
+
+
+
+```{r}
+results_relative_yld<- data.frame(cbind((exp(mv_yld_relative$b)-1)*100, 
+                             (exp(mv_yld_relative$ci.lb)-1)*100,
+                             (exp(mv_yld_relative$ci.ub)-1)*100))
+results_relative_yld
+```
+
+
+## Moderator analysis
+
+### Cultivar 
+
+```{r}
+# creating two groups of cultivars (MR, S)
+table(fhb_yld$cultivar, fhb_yld$reaction)
+nrow(table(fhb_yld$cultivar, fhb_yld$reaction))
+
+# Renaming the reactions 
+library(plyr)
+fhb_yld$reaction <- revalue(fhb_yld$reaction, c("MS" = "S"))
+fhb_yld$reaction <- revalue(fhb_yld$reaction, c("MS/MR" = "MR"))
+fhb_yld$reaction <- revalue(fhb_yld$reaction, c("MR/R" = "MR"))
+fhb_yld$reaction <- revalue(fhb_yld$reaction, c("MS/S" = "S"))
+detach("package:plyr", unload = TRUE)
+
+table(fhb_yld$cultivar, fhb_yld$reaction)
+table(fhb_yld$reaction)
+table(fhb_yld$AI2, fhb_yld$reaction)
+
+
+```
+
+```{r}
+
+mv_yld_reaction <- rma.mv(yld, var_yld,
+  mods = ~AI2*reaction,
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld
+)
+
+mv_yld_reaction
+
+
+#anova(mv_yld_reaction, btt=9:14)
+```
+
+### Disease Pressure
+
+
+```{r}
+
+
+library(tidyverse)
+fhb_yld <- fhb_yld %>%
+  mutate(sev_check_class = case_when(
+      sev_check < 7 ~ "low",
+      sev_check >= 7 ~ "high"))
+
+mv_dis_press <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(sev_check_class),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld
+)
+
+mv_dis_press
+
+
+anova(mv_dis_press, btt=9:14)
+```
+
+
+### Sev_check as continuous
+
+```{r}
+
+mv_sev_check_cont <- rma.mv(yld, var_yld,
+  mods = ~AI2*as.numeric(sev_check),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld
+)
+
+mv_sev_check_cont
+
+
+anova(mv_sev_check_cont, btt=9:14)
+
+
+```
+
+### yield_class
+
+```{r}
+#Moderator yield_class
+
+summary(fhb_yld$yld_check) # Median = 3002.03; Mean = 2896.47  
+
+fhb_yld <- fhb_yld %>%
+  mutate(yld_check_class = case_when(
+      yld_check < 3000 ~ "low",
+      yld_check >= 3000 ~ "high"))
+table(fhb_yld$AI2, fhb_yld$yld_check_class)
+
+
+mv_yld_check <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(yld_check_class),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld
+)
+
+mv_yld_check
+
+
+anova(mv_yld_check, btt=9:14)
+
+
+```
+
+### State
+
+```{r}
+
+
+# Number of entries by fungicide and state
+table(fhb_yld$AI2, fhb_yld$state)
+
+
+mv_yld_state <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(state),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld
+)
+
+mv_yld_state
+
+
+```
+
+
+### Year as continuous
+
+```{r}
+
+# Number of entries by fungicide and year
+table(fhb_yld$AI2, fhb_yld$year)
+
+mv_yld_year <- rma.mv(yld, var_yld,
+  mods = ~AI2*as.numeric(year),
+  random = list(~AI2 | factor(trial)),
+  struct = "HCS",
+  method = "ML",
+  data = fhb_yld
+)
+
+mv_yld_year
+
+anova(mv_yld_year, btt=9:14)
+```
+
+### Publication
+
+```{r}
+
+# Renaming the treatments 
+library(plyr)
+fhb_yld$publication <- revalue(fhb_yld$publication, c("Boletim" = "AABoletim"))
+detach("package:plyr", unload = TRUE)
+
+mv_yld_publication <- rma.mv(yld, var_yld,
+  mods = ~AI2*factor(publication),
+  random = list(~AI2 | factor(trial)),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_yld
+)
+
+mv_yld_publication
+
+anova(mv_yld_publication, btt=11:22)
+```
+
+## Network Graph
+
+
+First we  will rename the treatments with the number of trials (within parenthesis) that each treatment was present.
+
+```{r, warning=FALSE}
+library(readr)
+library(tidyverse)
+library(janitor)
+fhb_yld <- read_csv("data/dat-yld.csv")
+
+fhb_yld = fhb_yld %>% 
+  filter(AI2 != "Tebuconazole-1")
+
+# Renaming the treatments
+library(plyr)
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("check-0" = "AACHECK"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Azoxistrobina + Tebuconazole-2" = "AZOX + TEBU 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Piraclostrobina + Metconazole-2" = "PIRA + METC 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Tebuconazole-2" = "TEBU 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Trifloxistrobina + Protioconazole-2" = "TFLX + PROT 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Trifloxistrobina + Tebuconazole-2" = "TFLX + TEBU 2X"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("Piraclostrobina + Metconazole-1" = "PIRA + METC 1X"))
+detach("package:plyr", unload = TRUE)
+
+
+fhb_yld %>%
+tabyl(AI2)
+
+# Renaming the treatments for the network graph
+library(plyr)
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("AACHECK" = "CHECK (69)"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("AZOX + TEBU 2X" = "AZOX + TEBU 2 (25)"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("PIRA + METC 2X" = "PIRA + METC 2X (66)"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("TEBU 2X" = "TEBU 2X (25)"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("TFLX + PROT 2X" = "TFLX + PROT 2X (41)"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("TFLX + TEBU 2X" = "TFLX + TEBU 2X (36)"))
+fhb_yld$AI2 <- revalue(fhb_yld$AI2, c("PIRA + METC 1X" = "PIRA + METC 1X (23)"))
+detach("package:plyr", unload = TRUE)
+
+
+```
+
+
+
+We need to prepare the data to get the network graph. Thus, we used the package `netmeta` with the function `pairwise` to calculate the contrasts.
+
+
+```{r}
+library(netmeta)
+
+
+
+pair_yld <- pairwise(
+  treat = factor(AI2),
+  n = 4,
+  mean = yld,
+  sd = V_yld,
+  studlab = trial,
+  data = fhb_yld,
+  sm = "ROM"
+)
+```
+
+
+
+```{r}
+
+net_yld <- netmeta(TE, seTE, treat1, treat2, studlab, data = pair_yld, sm = "MD")
+summary(net_yld)
+```
+
+
+
+A network graph is composed of nodes (fungicide treatments) and edges or links between two treatments directly compared in a same trial. This graph allows to visualize how the treatments relate to each other and the number of direct comparisons can be depicted by the thickness of the edges, but also with numbers presented at the top of the links. 
+
+```{r}
+#pdf("Figures/net_yld.pdf", width=10, height=6)
+netgraph(net_yld,
+  plastic = FALSE,
+  col = "gray",
+  thickness = "number.of.studies",
+  points = TRUE,
+  col.points = "black",
+  cex.points = c("AZOX + TEBU 2 (25)" = 2.2, "CHECK (69)" = 6, "PIRA + METC 1X (23)" = 2, "PIRA + METC 2X (66)" = 5.7, "TEBU 2X (25)" = 2.2,  "TFLX + PROT 2X (41)" = 3.6,  "TFLX + TEBU 2X (36)" = 3.1),
+  number.of.studies = TRUE,
+  cex.number.of.studies = 1.25,
+  col.number.of.studies = "black",
+  bg.number.of.studies = "white",
+  multiarm = FALSE,
+  col.multiarm = "gray",
+  pos.number.of.studies = 0.50)
+#dev.off()
+```
+
+## Designs 
+
+```{r}
+yld_design <- decomp.design(net_yld)
+yld_design$Q.inc.detach
+```
+
+
+
+
+
+
+
+
+
+

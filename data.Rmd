@@ -1,0 +1,210 @@
+# Data 
+
+
+## Data import 
+
+
+```{r }
+
+library(tidyverse)
+library(metafor)
+library(ggthemes)
+library(cowplot)
+library(scales)
+library(knitr)
+library(broom)
+library(dplyr)
+library(readxl)
+library(gsheet)
+
+fhb_base<- gsheet2tbl(
+  "https://docs.google.com/spreadsheets/d/1Kh0474vS9xCxwud6RSZgr7VeWEF7FAnYDSi3EMb_bYs/edit#gid=0", sheetid = "data-prod")
+
+fhb_base <- fhb_base %>% 
+  filter(state!="Uruguai") %>% 
+  filter(trial != 11) %>% 
+  filter(trial != 57)
+
+fhb_base %>% 
+  group_by(trial)
+length(unique(fhb_base$trial))
+fhb_base
+```
+
+## Exploratory analysis
+
+By year
+
+```{r}
+library(janitor) # for data cleaning and summary
+fhb_base %>%
+  tabyl(year)
+```
+
+By location
+
+```{r}
+fhb_base %>%
+  tabyl(location)
+```
+
+
+By state
+
+```{r}
+fhb_base %>%
+  tabyl(state)
+```
+
+By Source
+
+```{r}
+fhb_base %>%
+  tabyl(publication)
+```
+
+
+By active ingredient
+
+```{r}
+AI <- fhb_base %>%
+  tabyl(AI) %>% 
+  filter(n>50)
+AI
+```
+
+
+By number of applications 
+
+```{r}
+fhb_base %>%
+  tabyl(n_spray) 
+```
+
+
+## Selecting fungicides
+
+We selected four mixtures (QoI+DMI) and a single DMI with ate least 50 entries
+
+```{r}
+# At least 50 entries
+target <- c("check-0", "Azoxistrobina + Tebuconazole-2", "Piraclostrobina + Metconazole-2", "Tebuconazole-2", "Trifloxistrobina + Protioconazole-2", "Trifloxistrobina + Tebuconazole-2", "Piraclostrobina + Metconazole-1") 
+fhb2 <- fhb_base %>%
+  group_by(trial, AI) %>% 
+  mutate(AI2 = paste(AI, n_spray, sep = "-")) %>% 
+  filter(AI2 %in% target)
+
+fhb2 %>%
+  tabyl(AI2, n_spray)
+
+
+fhb2 %>%
+  tabyl(AI2, year)
+
+fhb2 %>%
+  tabyl(AI2)
+
+fhb2 %>%
+  tabyl(location)
+
+fhb2 %>%
+  tabyl(state)
+
+fhb2 %>%
+  tabyl(publication)
+
+```
+
+
+
+## Create datasets
+
+
+### Severity Index 
+
+```{r}
+dat_sev <- fhb2 %>%
+  select(1:12, 21, 25:32, 35:38) %>%
+  group_by(trial, year, location, state, cultivar, reaction, n, AI, n_spray, yld_check, sev_check, mean_sev, publication, author, cons_group, AI2) %>%
+  summarise(
+    sev = mean(sev),
+    V_sev = mean(V_sev)) %>% 
+  filter(sev != "NA") %>% 
+  filter(sev > 0) %>% 
+  group_by(trial) %>% 
+  mutate(n2 = n()) %>% 
+  filter(n2 != 1)
+
+dat_sev %>%
+  tabyl(AI2, n_spray)
+
+library(readr)
+write_csv(dat_sev, "data/dat-sev.csv")
+
+
+library(knitr)
+library(tidyverse)
+fhb_sev <- read_csv("data/dat-sev.csv")
+
+fhb_sev %>% 
+  group_by(trial)
+length(unique(fhb_sev$trial))
+
+```
+
+
+```{r}
+dat_sev %>%
+  tabyl(AI2, year)
+
+dat_sev %>%
+  tabyl(AI2)
+```
+
+
+### Yield
+
+```{r}
+dat_yld <- fhb2 %>%
+  select(1:12, 21, 25:32, 35:38) %>%
+  group_by(trial, year, location, state, cultivar, reaction, n, AI, n_spray, yld_check, sev_check, mean_sev, publication, author, cons_group, AI2) %>%
+  summarise(
+    yld = mean(yld),
+    V_yld = mean(V_yld)) %>% 
+  filter(yld != "NA") %>% 
+  group_by(trial) %>% 
+  mutate(n2 = n()) %>% 
+  filter(n2 != 1)
+
+dat_yld %>%
+  tabyl(AI2, n_spray)
+
+library(readr)
+write_csv(dat_yld, "data/dat-yld.csv")
+
+
+library(readr)
+library(tidyverse)
+fhb_yld <- read_csv("data/dat-yld.csv")
+fhb_yld %>% 
+  group_by(trial)
+length(unique(fhb_yld$trial))
+
+```
+
+
+```{r}
+dat_yld %>%
+  tabyl(AI2, year)
+
+dat_yld %>%
+  tabyl(AI2)
+```
+
+
+
+
+
+
+
+

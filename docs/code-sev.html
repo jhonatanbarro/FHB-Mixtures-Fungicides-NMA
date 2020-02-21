@@ -1,0 +1,3828 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>code-sev.utf8.md</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DMI+QoI premix effects on FHB</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa fa fa-home"></span>
+     
+    About
+  </a>
+</li>
+<li>
+  <a href="data.html">
+    <span class="fa fa fa fa-table"></span>
+     
+    Data
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa fa fa-file-code-o"></span>
+     
+    Documented analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="code-sev.html">FHB index</a>
+    </li>
+    <li>
+      <a href="code-yld.html">Wheat yield</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="plots.html">
+    <span class="fa fa-bar-chart"></span>
+     
+    Publication-ready plots
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Code</h1>
+
+</div>
+
+
+<pre class="r"><code>knitr::opts_chunk$set(echo = TRUE, warning = FALSE)</code></pre>
+<div id="import-data" class="section level1">
+<h1>Import Data</h1>
+<pre class="r"><code>library(knitr)
+library(tidyverse)
+library(janitor)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;janitor&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     chisq.test, fisher.test</code></pre>
+<pre class="r"><code>fhb_sev &lt;- read_csv(&quot;data/dat-sev.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   trial = col_double(),
+##   year = col_double(),
+##   location = col_character(),
+##   state = col_character(),
+##   cultivar = col_character(),
+##   reaction = col_character(),
+##   n = col_double(),
+##   AI = col_character(),
+##   n_spray = col_double(),
+##   yld_check = col_double(),
+##   sev_check = col_double(),
+##   mean_sev = col_double(),
+##   publication = col_character(),
+##   author = col_character(),
+##   cons_group = col_double(),
+##   AI2 = col_character(),
+##   sev = col_double(),
+##   V_sev = col_double(),
+##   n2 = col_double()
+## )</code></pre>
+<pre class="r"><code>fhb_sev %&gt;%
+  tabyl(AI2, n_spray)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["AI2"],"name":[1],"type":["chr"],"align":["left"]},{"label":["0"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["1"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["2"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"Azoxistrobina + Tebuconazole-2","2":"0","3":"0","4":"25"},{"1":"check-0","2":"61","3":"0","4":"0"},{"1":"Piraclostrobina + Metconazole-1","2":"0","3":"16","4":"0"},{"1":"Piraclostrobina + Metconazole-2","2":"0","3":"0","4":"57"},{"1":"Tebuconazole-2","2":"0","3":"0","4":"14"},{"1":"Trifloxistrobina + Protioconazole-2","2":"0","3":"0","4":"39"},{"1":"Trifloxistrobina + Tebuconazole-2","2":"0","3":"0","4":"36"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># Renaming the treatments 
+library(plyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     compact</code></pre>
+<pre class="r"><code>fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;check-0&quot; = &quot;AACHECK&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Azoxistrobina + Tebuconazole-2&quot; = &quot;AZOX + TEBU 2X&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Piraclostrobina + Metconazole-2&quot; = &quot;PIRA + METC 2X&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Tebuconazole-2&quot; = &quot;TEBU 2X&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Trifloxistrobina + Protioconazole-2&quot; = &quot;TFLX + PROT 2X&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Trifloxistrobina + Tebuconazole-2&quot; = &quot;TFLX + TEBU 2X&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Piraclostrobina + Metconazole-1&quot; = &quot;PIRA + METC 1X&quot;))
+detach(&quot;package:plyr&quot;, unload = TRUE)
+
+
+# create the log of the FHB index variable
+fhb_sev &lt;- fhb_sev %&gt;%
+  mutate(log_sev = log(sev))
+
+# create the sampling variance for the log of FHB index
+fhb_sev$vi &lt;- with(fhb_sev, V_sev / (n * sev^2))</code></pre>
+</div>
+<div id="cooperative-trials" class="section level1">
+<h1>Cooperative Trials</h1>
+<pre class="r"><code>fhb_sev_coop = fhb_sev %&gt;% 
+  filter(publication == &quot;Boletim&quot;)</code></pre>
+<div id="covariance-structure" class="section level2">
+<h2>covariance structure</h2>
+<p>Now we will fit models with CS, HCS and UN matrix-covariance structure. We will then compare them with <code>anova</code> function to choose among the best model.</p>
+<pre class="r"><code>library(metafor)
+
+
+mv_sev_HCS &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;HCS&quot;,
+  method = &quot;ML&quot;,
+  data = fhb_sev_coop
+)
+
+mv_sev &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_coop
+)
+
+mv_sev</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 170; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 35)
+## inner factor: AI2           (nlvls = 6)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.6466  1.2832     35     no         AACHECK
+## tau^2.2    1.8726  1.3684     23     no  AZOX + TEBU 2X
+## tau^2.3    2.0004  1.4144     33     no  PIRA + METC 2X
+## tau^2.4    1.7842  1.3357     11     no         TEBU 2X
+## tau^2.5    1.8987  1.3779     34     no  TFLX + PROT 2X
+## tau^2.6    1.8113  1.3458     34     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M2  rho.TEB2  rho.T+P2  rho.T+T2
+## AACHECK                1    0.9223    0.9492    0.9122    0.9166    0.9177
+## AZOX + TEBU 2X    0.9223         1    0.9857    0.9983    0.9958    0.9989
+## PIRA + METC 2X    0.9492    0.9857         1    0.9813    0.9826    0.9783
+## TEBU 2X           0.9122    0.9983    0.9813         1    0.9991    0.9986
+## TFLX + PROT 2X    0.9166    0.9958    0.9826    0.9991         1    0.9961
+## TFLX + TEBU 2X    0.9177    0.9989    0.9783    0.9986    0.9961         1
+##                   AACH  A+T2  P+M2  TEB2  T+P2  T+T2
+## AACHECK              -    no    no    no    no    no
+## AZOX + TEBU 2X      23     -    no    no    no    no
+## PIRA + METC 2X      33    22     -    no    no    no
+## TEBU 2X             11    11    10     -    no    no
+## TFLX + PROT 2X      34    22    33    10     -    no
+## TFLX + TEBU 2X      34    23    32    11    33     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 164) = 75105.2677, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:6): 
+## QM(df = 5) = 89.1795, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                    estimate      se     zval    pval    ci.lb    ci.ub
+## intrcpt              2.0800  0.2178   9.5497  &lt;.0001   1.6531   2.5069
+## AI2AZOX + TEBU 2X   -0.7766  0.0974  -7.9743  &lt;.0001  -0.9675  -0.5857
+## AI2PIRA + METC 2X   -0.7962  0.0860  -9.2587  &lt;.0001  -0.9647  -0.6276
+## AI2TEBU 2X          -0.8114  0.1023  -7.9349  &lt;.0001  -1.0118  -0.6109
+## AI2TFLX + PROT 2X   -0.8379  0.1007  -8.3170  &lt;.0001  -1.0353  -0.6404
+## AI2TFLX + TEBU 2X   -0.7217  0.0974  -7.4058  &lt;.0001  -0.9127  -0.5307
+##                       
+## intrcpt            ***
+## AI2AZOX + TEBU 2X  ***
+## AI2PIRA + METC 2X  ***
+## AI2TEBU 2X         ***
+## AI2TFLX + PROT 2X  ***
+## AI2TFLX + TEBU 2X  ***
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>We can see below that the UN structure is a better model.</p>
+<pre class="r"><code>anova(mv_sev_HCS, mv_sev)</code></pre>
+<pre><code>##         df      AIC      BIC     AICc    logLik     LRT   pval         QE
+## Full    27 255.0363 339.7028 265.6842 -100.5181                75105.2677
+## Reduced 13 293.7171 334.4825 296.0504 -133.8585 66.6808 &lt;.0001 75105.2677</code></pre>
+<pre class="r"><code>AIC(mv_sev_HCS)</code></pre>
+<pre><code>## [1] 293.7171</code></pre>
+</div>
+<div id="percent-control" class="section level2">
+<h2>Percent control</h2>
+<p>Let’s obtain the percent control from the estimated ratios.</p>
+<pre class="r"><code>efficacy_sev &lt;- data.frame(cbind(
+  (1 - exp(mv_sev$b)) * 100,
+  (1 - exp(mv_sev$ci.lb)) * 100,
+  (1 - exp(mv_sev$ci.ub)) * 100
+))
+
+
+
+efficacy_sev</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["X1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["X2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["X3"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"-700.47826","2":"-422.33323","3":"-1126.73688","_rn_":"intrcpt"},{"1":"54.00472","2":"61.99744","3":"44.33096","_rn_":"AI2AZOX + TEBU 2X"},{"1":"54.89528","2":"61.89128","3":"46.61494","_rn_":"AI2PIRA + METC 2X"},{"1":"55.57426","2":"63.64212","3":"45.71614","_rn_":"AI2TEBU 2X"},{"1":"56.73784","2":"64.48972","3":"47.29373","_rn_":"AI2TFLX + PROT 2X"},{"1":"51.40660","2":"59.85525","3":"41.17991","_rn_":"AI2TFLX + TEBU 2X"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="contrasts" class="section level2">
+<h2>Contrasts</h2>
+<p>We can set linear contrasts between treatments of interest and get the P-value using the <code>anova</code> function.</p>
+<pre class="r"><code>anova(mv_sev, L = rbind(
+  c(0, 1, -1, 0, 0, 0),
+  c(0, 1, 0, -1, 0, 0),
+  c(0, 1, 0, 0, -1, 0),
+  c(0, 1, 0, 0, 0, -1),
+  c(0, 0, 1, -1, 0, 0),
+  c(0, 0, 1, 0, -1, 0),
+  c(0, 0, 1, 0, 0, -1),
+  c(0, 0, 0, 1, -1, 0),
+  c(0, 0, 0, 1, 0, -1),
+  c(0, 0, 0, 0, 1, -1)
+))</code></pre>
+<pre><code>## 
+## Hypotheses:                                             
+## 1:  AI2AZOX + TEBU 2X - AI2PIRA + METC 2X = 0
+## 2:         AI2AZOX + TEBU 2X - AI2TEBU 2X = 0
+## 3:  AI2AZOX + TEBU 2X - AI2TFLX + PROT 2X = 0
+## 4:  AI2AZOX + TEBU 2X - AI2TFLX + TEBU 2X = 0
+## 5:         AI2PIRA + METC 2X - AI2TEBU 2X = 0
+## 6:  AI2PIRA + METC 2X - AI2TFLX + PROT 2X = 0
+## 7:  AI2PIRA + METC 2X - AI2TFLX + TEBU 2X = 0
+## 8:         AI2TEBU 2X - AI2TFLX + PROT 2X = 0
+## 9:         AI2TEBU 2X - AI2TFLX + TEBU 2X = 0
+## 10: AI2TFLX + PROT 2X - AI2TFLX + TEBU 2X = 0
+## 
+## Results:
+##     estimate     se    zval   pval
+## 1:    0.0196 0.0577  0.3386 0.7349
+## 2:    0.0347 0.0399  0.8711 0.3837
+## 3:    0.0613 0.0441  1.3886 0.1650
+## 4:   -0.0549 0.0295 -1.8596 0.0629
+## 5:    0.0152 0.0659  0.2301 0.8180
+## 6:    0.0417 0.0613  0.6801 0.4964
+## 7:   -0.0745 0.0668 -1.1155 0.2646
+## 8:    0.0265 0.0351  0.7552 0.4501
+## 9:   -0.0897 0.0354 -2.5361 0.0112
+## 10:  -0.1162 0.0388 -2.9935 0.0028</code></pre>
+</div>
+<div id="moderators" class="section level2">
+<h2>Moderators</h2>
+<div id="cultivar" class="section level3">
+<h3>Cultivar</h3>
+<pre class="r"><code># creating two groups of cultivars (MR, S)
+table(fhb_sev_coop$cultivar, fhb_sev_coop$reaction)</code></pre>
+<pre><code>##                      
+##                       MS MS/MR MS/S
+##   BRS Grauna           0     0    5
+##   BRS208              82     0    0
+##   BRSGuabijú           5     0    0
+##   Campeiro            14     0    0
+##   Celebra              0     4    0
+##   Fundacep Bravo       5     0    0
+##   Fundacep46 Nova Era  6     0    0
+##   Marfim               0     0    8
+##   TBIO Itaipu          6     0    0
+##   Tbio Sinuelo         6     0    0
+##   TBIO Toruk          11     0    0
+##   TEC 10               6     0    0</code></pre>
+<pre class="r"><code>nrow(table(fhb_sev_coop$cultivar, fhb_sev_coop$reaction))</code></pre>
+<pre><code>## [1] 12</code></pre>
+<pre class="r"><code># Renaming the reactions 
+library(plyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     compact</code></pre>
+<pre class="r"><code>fhb_sev_coop$reaction &lt;- revalue(fhb_sev_coop$reaction, c(&quot;MS&quot; = &quot;S&quot;))
+fhb_sev_coop$reaction &lt;- revalue(fhb_sev_coop$reaction, c(&quot;MS/MR&quot; = &quot;MR&quot;))
+fhb_sev_coop$reaction &lt;- revalue(fhb_sev_coop$reaction, c(&quot;MR/R&quot; = &quot;MR&quot;))</code></pre>
+<pre><code>## The following `from` values were not present in `x`: MR/R</code></pre>
+<pre class="r"><code>fhb_sev_coop$reaction &lt;- revalue(fhb_sev_coop$reaction, c(&quot;MS/S&quot; = &quot;S&quot;))
+detach(&quot;package:plyr&quot;, unload = TRUE)
+
+table(fhb_sev_coop$cultivar, fhb_sev_coop$reaction)</code></pre>
+<pre><code>##                      
+##                       MR  S
+##   BRS Grauna           0  5
+##   BRS208               0 82
+##   BRSGuabijú           0  5
+##   Campeiro             0 14
+##   Celebra              4  0
+##   Fundacep Bravo       0  5
+##   Fundacep46 Nova Era  0  6
+##   Marfim               0  8
+##   TBIO Itaipu          0  6
+##   Tbio Sinuelo         0  6
+##   TBIO Toruk           0 11
+##   TEC 10               0  6</code></pre>
+<pre class="r"><code>table(fhb_sev_coop$reaction)</code></pre>
+<pre><code>## 
+##  MR   S 
+##   4 154</code></pre>
+<pre class="r"><code>table(fhb_sev_coop$AI2, fhb_sev_coop$reaction)</code></pre>
+<pre><code>##                 
+##                  MR  S
+##   AACHECK         1 31
+##   AZOX + TEBU 2X  0 23
+##   PIRA + METC 2X  1 29
+##   TEBU 2X         0 11
+##   TFLX + PROT 2X  1 30
+##   TFLX + TEBU 2X  1 30</code></pre>
+<pre class="r"><code>library(metafor)
+
+
+mv_reaction &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*reaction,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_coop
+)
+
+mv_reaction</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 158; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 32)
+## inner factor: AI2           (nlvls = 6)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.6198  1.2727     32     no         AACHECK
+## tau^2.2    1.8259  1.3513     23     no  AZOX + TEBU 2X
+## tau^2.3    1.9355  1.3912     30     no  PIRA + METC 2X
+## tau^2.4    1.7438  1.3205     11     no         TEBU 2X
+## tau^2.5    1.8485  1.3596     31     no  TFLX + PROT 2X
+## tau^2.6    1.7728  1.3315     31     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M2  rho.TEB2  rho.T+P2  rho.T+T2
+## AACHECK                1    0.9281    0.9561    0.9162    0.9189    0.9212
+## AZOX + TEBU 2X    0.9281         1    0.9832    0.9982    0.9955    0.9985
+## PIRA + METC 2X    0.9561    0.9832         1    0.9780    0.9796    0.9729
+## TEBU 2X           0.9162    0.9982    0.9780         1    0.9989    0.9981
+## TFLX + PROT 2X    0.9189    0.9955    0.9796    0.9989         1    0.9948
+## TFLX + TEBU 2X    0.9212    0.9985    0.9729    0.9981    0.9948         1
+##                   AACH  A+T2  P+M2  TEB2  T+P2  T+T2
+## AACHECK              -    no    no    no    no    no
+## AZOX + TEBU 2X      23     -    no    no    no    no
+## PIRA + METC 2X      30    22     -    no    no    no
+## TEBU 2X             11    11    10     -    no    no
+## TFLX + PROT 2X      31    22    30    10     -    no
+## TFLX + TEBU 2X      31    23    29    11    30     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 148) = 66283.8124, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:10): 
+## QM(df = 9) = 87.2848, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                              estimate      se     zval    pval    ci.lb
+## intrcpt                        1.2238  1.2735   0.9610  0.3366  -1.2722
+## AI2AZOX + TEBU 2X             -0.7354  0.0993  -7.4038  &lt;.0001  -0.9300
+## AI2PIRA + METC 2X             -1.3291  0.4465  -2.9770  0.0029  -2.2042
+## AI2TEBU 2X                    -0.7706  0.1058  -7.2848  &lt;.0001  -0.9779
+## AI2TFLX + PROT 2X             -1.3291  0.5638  -2.3573  0.0184  -2.4342
+## AI2TFLX + TEBU 2X             -1.1285  0.5394  -2.0922  0.0364  -2.1856
+## reactionS                      0.7884  1.2940   0.6093  0.5424  -1.7478
+## AI2PIRA + METC 2X:reactionS    0.5727  0.4548   1.2592  0.2080  -0.3187
+## AI2TFLX + PROT 2X:reactionS    0.5279  0.5737   0.9203  0.3574  -0.5964
+## AI2TFLX + TEBU 2X:reactionS    0.4470  0.5489   0.8143  0.4155  -0.6288
+##                                ci.ub     
+## intrcpt                       3.7197     
+## AI2AZOX + TEBU 2X            -0.5407  ***
+## AI2PIRA + METC 2X            -0.4541   **
+## AI2TEBU 2X                   -0.5633  ***
+## AI2TFLX + PROT 2X            -0.2240    *
+## AI2TFLX + TEBU 2X            -0.0713    *
+## reactionS                     3.3246     
+## AI2PIRA + METC 2X:reactionS   1.4641     
+## AI2TFLX + PROT 2X:reactionS   1.6523     
+## AI2TFLX + TEBU 2X:reactionS   1.5227     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_reaction, btt=8:10)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 8:10): 
+## QM(df = 3) = 1.5970, p-val = 0.6601</code></pre>
+</div>
+<div id="disease-pressure" class="section level3">
+<h3>Disease Pressure</h3>
+<pre class="r"><code>median(fhb_sev$sev_check)</code></pre>
+<pre><code>## [1] 6.8</code></pre>
+<pre class="r"><code>library(tidyverse)
+fhb_sev_coop1 &lt;- fhb_sev_coop %&gt;%
+  mutate(sev_check_class = case_when(
+      sev_check &lt; 7 ~ &quot;low&quot;,
+      sev_check &gt;= 7 ~ &quot;high&quot;))
+
+mv_sev_check &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*sev_check_class,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_coop1
+)
+
+mv_sev_check</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 170; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 35)
+## inner factor: AI2           (nlvls = 6)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    0.7732  0.8793     35     no         AACHECK
+## tau^2.2    1.1316  1.0638     23     no  AZOX + TEBU 2X
+## tau^2.3    1.1257  1.0610     33     no  PIRA + METC 2X
+## tau^2.4    1.1912  1.0914     11     no         TEBU 2X
+## tau^2.5    1.1638  1.0788     34     no  TFLX + PROT 2X
+## tau^2.6    1.0934  1.0457     34     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M2  rho.TEB2  rho.T+P2  rho.T+T2
+## AACHECK                1    0.8693    0.9087    0.8460    0.8611    0.8606
+## AZOX + TEBU 2X    0.8693         1    0.9775    0.9973    0.9935    0.9981
+## PIRA + METC 2X    0.9087    0.9775         1    0.9685    0.9725    0.9642
+## TEBU 2X           0.8460    0.9973    0.9685         1    0.9977    0.9978
+## TFLX + PROT 2X    0.8611    0.9935    0.9725    0.9977         1    0.9937
+## TFLX + TEBU 2X    0.8606    0.9981    0.9642    0.9978    0.9937         1
+##                   AACH  A+T2  P+M2  TEB2  T+P2  T+T2
+## AACHECK              -    no    no    no    no    no
+## AZOX + TEBU 2X      23     -    no    no    no    no
+## PIRA + METC 2X      33    22     -    no    no    no
+## TEBU 2X             11    11    10     -    no    no
+## TFLX + PROT 2X      34    22    33    10     -    no
+## TFLX + TEBU 2X      34    23    32    11    33     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 158) = 38900.5367, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:12): 
+## QM(df = 11) = 131.9431, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                       estimate      se     zval    pval
+## intrcpt                                 2.9395  0.2027  14.5001  &lt;.0001
+## AI2AZOX + TEBU 2X                      -0.8496  0.1296  -6.5566  &lt;.0001
+## AI2PIRA + METC 2X                      -0.7975  0.1126  -7.0825  &lt;.0001
+## AI2TEBU 2X                             -0.9458  0.1431  -6.6091  &lt;.0001
+## AI2TFLX + PROT 2X                      -0.9118  0.1342  -6.7971  &lt;.0001
+## AI2TFLX + TEBU 2X                      -0.8024  0.1298  -6.1826  &lt;.0001
+## sev_check_classlow                     -1.8823  0.3012  -6.2486  &lt;.0001
+## AI2AZOX + TEBU 2X:sev_check_classlow    0.1532  0.1985   0.7717  0.4403
+## AI2PIRA + METC 2X:sev_check_classlow    0.0011  0.1774   0.0064  0.9949
+## AI2TEBU 2X:sev_check_classlow           0.3428  0.2510   1.3657  0.1720
+## AI2TFLX + PROT 2X:sev_check_classlow    0.1550  0.2047   0.7569  0.4491
+## AI2TFLX + TEBU 2X:sev_check_classlow    0.1733  0.1962   0.8832  0.3771
+##                                         ci.lb    ci.ub     
+## intrcpt                                2.5422   3.3368  ***
+## AI2AZOX + TEBU 2X                     -1.1035  -0.5956  ***
+## AI2PIRA + METC 2X                     -1.0182  -0.5768  ***
+## AI2TEBU 2X                            -1.2263  -0.6653  ***
+## AI2TFLX + PROT 2X                     -1.1748  -0.6489  ***
+## AI2TFLX + TEBU 2X                     -1.0568  -0.5480  ***
+## sev_check_classlow                    -2.4728  -1.2919  ***
+## AI2AZOX + TEBU 2X:sev_check_classlow  -0.2359   0.5422     
+## AI2PIRA + METC 2X:sev_check_classlow  -0.3465   0.3488     
+## AI2TEBU 2X:sev_check_classlow         -0.1492   0.8349     
+## AI2TFLX + PROT 2X:sev_check_classlow  -0.2463   0.5563     
+## AI2TFLX + TEBU 2X:sev_check_classlow  -0.2112   0.5577     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_check, btt= 8:12)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 8:12): 
+## QM(df = 5) = 3.2804, p-val = 0.6568</code></pre>
+</div>
+<div id="baseline-10" class="section level3">
+<h3>Baseline 10%</h3>
+<pre class="r"><code>library(tidyverse)
+library(metafor)
+
+fhb_sev_coop2 &lt;- fhb_sev_coop %&gt;%
+  mutate(sev_check_class = case_when(
+      sev_check &lt; 10 ~ &quot;low&quot;,
+      sev_check &gt;= 10 ~ &quot;high&quot;))
+
+mv_sev_check &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*sev_check_class,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_coop2
+)
+
+mv_sev_check</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 170; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 35)
+## inner factor: AI2           (nlvls = 6)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    0.6871  0.8289     35     no         AACHECK
+## tau^2.2    0.9918  0.9959     23     no  AZOX + TEBU 2X
+## tau^2.3    0.9898  0.9949     33     no  PIRA + METC 2X
+## tau^2.4    1.0904  1.0442     11     no         TEBU 2X
+## tau^2.5    1.0791  1.0388     34     no  TFLX + PROT 2X
+## tau^2.6    0.9540  0.9768     34     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M2  rho.TEB2  rho.T+P2  rho.T+T2
+## AACHECK                1    0.8505    0.8948    0.8639    0.8492    0.8381
+## AZOX + TEBU 2X    0.8505         1    0.9737    0.9990    0.9933    0.9978
+## PIRA + METC 2X    0.8948    0.9737         1    0.9817    0.9713    0.9585
+## TEBU 2X           0.8639    0.9990    0.9817         1    0.9954    0.9953
+## TFLX + PROT 2X    0.8492    0.9933    0.9713    0.9954         1    0.9934
+## TFLX + TEBU 2X    0.8381    0.9978    0.9585    0.9953    0.9934         1
+##                   AACH  A+T2  P+M2  TEB2  T+P2  T+T2
+## AACHECK              -    no    no    no    no    no
+## AZOX + TEBU 2X      23     -    no    no    no    no
+## PIRA + METC 2X      33    22     -    no    no    no
+## TEBU 2X             11    11    10     -    no    no
+## TFLX + PROT 2X      34    22    33    10     -    no
+## TFLX + TEBU 2X      34    23    32    11    33     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 158) = 34128.8754, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:12): 
+## QM(df = 11) = 170.2171, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                       estimate      se     zval    pval
+## intrcpt                                 3.5211  0.2507  14.0453  &lt;.0001
+## AI2AZOX + TEBU 2X                      -0.8361  0.1643  -5.0894  &lt;.0001
+## AI2PIRA + METC 2X                      -0.7549  0.1409  -5.3565  &lt;.0001
+## AI2TEBU 2X                             -0.9100  0.1662  -5.4748  &lt;.0001
+## AI2TFLX + PROT 2X                      -0.9256  0.1715  -5.3987  &lt;.0001
+## AI2TFLX + TEBU 2X                      -0.8010  0.1660  -4.8246  &lt;.0001
+## sev_check_classlow                     -2.1027  0.3037  -6.9237  &lt;.0001
+## AI2AZOX + TEBU 2X:sev_check_classlow    0.0854  0.2051   0.4161  0.6773
+## AI2PIRA + METC 2X:sev_check_classlow   -0.0636  0.1790  -0.3554  0.7223
+## AI2TEBU 2X:sev_check_classlow           0.3039  0.2264   1.3425  0.1794
+## AI2TFLX + PROT 2X:sev_check_classlow    0.1201  0.2128   0.5646  0.5724
+## AI2TFLX + TEBU 2X:sev_check_classlow    0.1121  0.2052   0.5463  0.5849
+##                                         ci.lb    ci.ub     
+## intrcpt                                3.0298   4.0125  ***
+## AI2AZOX + TEBU 2X                     -1.1581  -0.5141  ***
+## AI2PIRA + METC 2X                     -1.0311  -0.4787  ***
+## AI2TEBU 2X                            -1.2358  -0.5843  ***
+## AI2TFLX + PROT 2X                     -1.2617  -0.5896  ***
+## AI2TFLX + TEBU 2X                     -1.1263  -0.4756  ***
+## sev_check_classlow                    -2.6980  -1.5075  ***
+## AI2AZOX + TEBU 2X:sev_check_classlow  -0.3167   0.4874     
+## AI2PIRA + METC 2X:sev_check_classlow  -0.4145   0.2873     
+## AI2TEBU 2X:sev_check_classlow         -0.1398   0.7476     
+## AI2TFLX + PROT 2X:sev_check_classlow  -0.2969   0.5371     
+## AI2TFLX + TEBU 2X:sev_check_classlow  -0.2901   0.5144     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_check, btt=8:12)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 8:12): 
+## QM(df = 5) = 6.5461, p-val = 0.2566</code></pre>
+</div>
+<div id="sev_check-as-continuous" class="section level3">
+<h3>Sev_check as continuous</h3>
+<pre class="r"><code>mv_sev_check_cont &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*as.numeric(sev_check),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_coop
+)
+
+mv_sev_check_cont</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 170; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 35)
+## inner factor: AI2           (nlvls = 6)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    0.4856  0.6968     35     no         AACHECK
+## tau^2.2    0.8497  0.9218     23     no  AZOX + TEBU 2X
+## tau^2.3    0.8140  0.9022     33     no  PIRA + METC 2X
+## tau^2.4    0.8135  0.9019     11     no         TEBU 2X
+## tau^2.5    0.7774  0.8817     34     no  TFLX + PROT 2X
+## tau^2.6    0.8450  0.9192     34     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M2  rho.TEB2  rho.T+P2  rho.T+T2
+## AACHECK                1    0.8283    0.8716    0.8612    0.7928    0.8200
+## AZOX + TEBU 2X    0.8283         1    0.9701    0.9931    0.9898    0.9977
+## PIRA + METC 2X    0.8716    0.9701         1    0.9698    0.9597    0.9539
+## TEBU 2X           0.8612    0.9931    0.9698         1    0.9918    0.9936
+## TFLX + PROT 2X    0.7928    0.9898    0.9597    0.9918         1    0.9907
+## TFLX + TEBU 2X    0.8200    0.9977    0.9539    0.9936    0.9907         1
+##                   AACH  A+T2  P+M2  TEB2  T+P2  T+T2
+## AACHECK              -    no    no    no    no    no
+## AZOX + TEBU 2X      23     -    no    no    no    no
+## PIRA + METC 2X      33    22     -    no    no    no
+## TEBU 2X             11    11    10     -    no    no
+## TFLX + PROT 2X      34    22    33    10     -    no
+## TFLX + TEBU 2X      34    23    32    11    33     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 158) = 21574.5354, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:12): 
+## QM(df = 11) = 383.3348, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                          estimate      se     zval    pval
+## intrcpt                                    1.3253  0.1469   9.0214  &lt;.0001
+## AI2AZOX + TEBU 2X                         -0.7382  0.1230  -6.0004  &lt;.0001
+## AI2PIRA + METC 2X                         -0.8205  0.1100  -7.4605  &lt;.0001
+## AI2TEBU 2X                                -0.7339  0.1294  -5.6720  &lt;.0001
+## AI2TFLX + PROT 2X                         -0.7852  0.1238  -6.3409  &lt;.0001
+## AI2TFLX + TEBU 2X                         -0.6741  0.1205  -5.5945  &lt;.0001
+## as.numeric(sev_check)                      0.0430  0.0048   8.9974  &lt;.0001
+## AI2AZOX + TEBU 2X:as.numeric(sev_check)   -0.0020  0.0037  -0.5531  0.5802
+## AI2PIRA + METC 2X:as.numeric(sev_check)    0.0012  0.0032   0.3633  0.7164
+## AI2TEBU 2X:as.numeric(sev_check)          -0.0030  0.0034  -0.9038  0.3661
+## AI2TFLX + PROT 2X:as.numeric(sev_check)   -0.0023  0.0038  -0.6040  0.5459
+## AI2TFLX + TEBU 2X:as.numeric(sev_check)   -0.0028  0.0037  -0.7631  0.4454
+##                                            ci.lb    ci.ub     
+## intrcpt                                   1.0374   1.6132  ***
+## AI2AZOX + TEBU 2X                        -0.9794  -0.4971  ***
+## AI2PIRA + METC 2X                        -1.0360  -0.6049  ***
+## AI2TEBU 2X                               -0.9875  -0.4803  ***
+## AI2TFLX + PROT 2X                        -1.0279  -0.5425  ***
+## AI2TFLX + TEBU 2X                        -0.9102  -0.4379  ***
+## as.numeric(sev_check)                     0.0336   0.0523  ***
+## AI2AZOX + TEBU 2X:as.numeric(sev_check)  -0.0092   0.0052     
+## AI2PIRA + METC 2X:as.numeric(sev_check)  -0.0051   0.0075     
+## AI2TEBU 2X:as.numeric(sev_check)         -0.0097   0.0036     
+## AI2TFLX + PROT 2X:as.numeric(sev_check)  -0.0097   0.0051     
+## AI2TFLX + TEBU 2X:as.numeric(sev_check)  -0.0101   0.0044     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_check_cont, btt=8:12)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 8:12): 
+## QM(df = 5) = 4.4939, p-val = 0.4807</code></pre>
+</div>
+<div id="yield_class" class="section level3">
+<h3>yield_class</h3>
+<pre class="r"><code>#Moderator yield_class
+
+summary(fhb_sev_coop$yld_check) # Median = 2993; Mean = 2880.45 </code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   67.33 2108.00 3015.00 2851.69 3591.00 4711.75</code></pre>
+<pre class="r"><code>fhb_sev_coop &lt;- fhb_sev_coop %&gt;%
+  mutate(yld_check_class = case_when(
+      yld_check &lt; 3000 ~ &quot;low&quot;,
+      yld_check &gt;= 3000 ~ &quot;high&quot;))
+table(fhb_sev_coop$AI2, fhb_sev_coop$yld_check_class)</code></pre>
+<pre><code>##                 
+##                  high low
+##   AACHECK          19  16
+##   AZOX + TEBU 2X   12  11
+##   PIRA + METC 2X   17  16
+##   TEBU 2X           6   5
+##   TFLX + PROT 2X   18  16
+##   TFLX + TEBU 2X   18  16</code></pre>
+<pre class="r"><code>mv_yld_check &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*factor(yld_check_class),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_coop
+)
+
+mv_yld_check</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 170; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 35)
+## inner factor: AI2           (nlvls = 6)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.6532  1.2858     35     no         AACHECK
+## tau^2.2    1.8404  1.3566     23     no  AZOX + TEBU 2X
+## tau^2.3    1.9010  1.3788     33     no  PIRA + METC 2X
+## tau^2.4    1.6522  1.2854     11     no         TEBU 2X
+## tau^2.5    1.6783  1.2955     34     no  TFLX + PROT 2X
+## tau^2.6    1.6673  1.2912     34     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M2  rho.TEB2  rho.T+P2  rho.T+T2
+## AACHECK                1    0.9227    0.9572    0.9221    0.9368    0.9340
+## AZOX + TEBU 2X    0.9227         1    0.9825    0.9999    0.9976    0.9981
+## PIRA + METC 2X    0.9572    0.9825         1    0.9818    0.9849    0.9796
+## TEBU 2X           0.9221    0.9999    0.9818         1    0.9980    0.9978
+## TFLX + PROT 2X    0.9368    0.9976    0.9849    0.9980         1    0.9956
+## TFLX + TEBU 2X    0.9340    0.9981    0.9796    0.9978    0.9956         1
+##                   AACH  A+T2  P+M2  TEB2  T+P2  T+T2
+## AACHECK              -    no    no    no    no    no
+## AZOX + TEBU 2X      23     -    no    no    no    no
+## PIRA + METC 2X      33    22     -    no    no    no
+## TEBU 2X             11    11    10     -    no    no
+## TFLX + PROT 2X      34    22    33    10     -    no
+## TFLX + TEBU 2X      34    23    32    11    33     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 158) = 55804.8735, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:12): 
+## QM(df = 11) = 133.9463, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                               estimate      se     zval
+## intrcpt                                         2.0026  0.2957   6.7718
+## AI2AZOX + TEBU 2X                              -0.9841  0.1359  -7.2393
+## AI2PIRA + METC 2X                              -0.9567  0.1070  -8.9444
+## AI2TEBU 2X                                     -1.0599  0.1463  -7.2451
+## AI2TFLX + PROT 2X                              -1.0814  0.1167  -9.2667
+## AI2TFLX + TEBU 2X                              -0.9403  0.1178  -7.9826
+## factor(yld_check_class)low                      0.1606  0.4382   0.3664
+## AI2AZOX + TEBU 2X:factor(yld_check_class)low    0.4112  0.1975   2.0820
+## AI2PIRA + METC 2X:factor(yld_check_class)low    0.3830  0.1578   2.4266
+## AI2TEBU 2X:factor(yld_check_class)low           0.5839  0.2028   2.8786
+## AI2TFLX + PROT 2X:factor(yld_check_class)low    0.5830  0.1726   3.3778
+## AI2TFLX + TEBU 2X:factor(yld_check_class)low    0.5100  0.1744   2.9241
+##                                                 pval    ci.lb    ci.ub
+## intrcpt                                       &lt;.0001   1.4230   2.5822
+## AI2AZOX + TEBU 2X                             &lt;.0001  -1.2506  -0.7177
+## AI2PIRA + METC 2X                             &lt;.0001  -1.1663  -0.7471
+## AI2TEBU 2X                                    &lt;.0001  -1.3466  -0.7732
+## AI2TFLX + PROT 2X                             &lt;.0001  -1.3101  -0.8527
+## AI2TFLX + TEBU 2X                             &lt;.0001  -1.1712  -0.7095
+## factor(yld_check_class)low                    0.7140  -0.6983   1.0195
+## AI2AZOX + TEBU 2X:factor(yld_check_class)low  0.0373   0.0241   0.7984
+## AI2PIRA + METC 2X:factor(yld_check_class)low  0.0152   0.0737   0.6924
+## AI2TEBU 2X:factor(yld_check_class)low         0.0040   0.1863   0.9814
+## AI2TFLX + PROT 2X:factor(yld_check_class)low  0.0007   0.2447   0.9213
+## AI2TFLX + TEBU 2X:factor(yld_check_class)low  0.0035   0.1682   0.8519
+##                                                  
+## intrcpt                                       ***
+## AI2AZOX + TEBU 2X                             ***
+## AI2PIRA + METC 2X                             ***
+## AI2TEBU 2X                                    ***
+## AI2TFLX + PROT 2X                             ***
+## AI2TFLX + TEBU 2X                             ***
+## factor(yld_check_class)low                       
+## AI2AZOX + TEBU 2X:factor(yld_check_class)low    *
+## AI2PIRA + METC 2X:factor(yld_check_class)low    *
+## AI2TEBU 2X:factor(yld_check_class)low          **
+## AI2TFLX + PROT 2X:factor(yld_check_class)low  ***
+## AI2TFLX + TEBU 2X:factor(yld_check_class)low   **
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_yld_check, btt=8:12)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 8:12): 
+## QM(df = 5) = 18.8397, p-val = 0.0021</code></pre>
+</div>
+<div id="state" class="section level3">
+<h3>State</h3>
+<pre class="r"><code># Number of entries by fungicide and state
+table(fhb_sev_coop$AI2, fhb_sev_coop$state)</code></pre>
+<pre><code>##                 
+##                  PR RS SC
+##   AACHECK        12 22  1
+##   AZOX + TEBU 2X  8 14  1
+##   PIRA + METC 2X 12 21  0
+##   TEBU 2X         4  6  1
+##   TFLX + PROT 2X 12 22  0
+##   TFLX + TEBU 2X 12 21  1</code></pre>
+<pre class="r"><code>mv_sev_state &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*factor(state),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_coop
+)
+
+mv_sev_state</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 170; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 35)
+## inner factor: AI2           (nlvls = 6)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.3912  1.1795     35     no         AACHECK
+## tau^2.2    1.4139  1.1891     23     no  AZOX + TEBU 2X
+## tau^2.3    1.5898  1.2609     33     no  PIRA + METC 2X
+## tau^2.4    1.3002  1.1403     11     no         TEBU 2X
+## tau^2.5    1.5187  1.2324     34     no  TFLX + PROT 2X
+## tau^2.6    1.3858  1.1772     34     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M2  rho.TEB2  rho.T+P2  rho.T+T2
+## AACHECK                1    0.9016    0.9404    0.8863    0.9129    0.9053
+## AZOX + TEBU 2X    0.9016         1    0.9794    0.9992    0.9995    0.9982
+## PIRA + METC 2X    0.9404    0.9794         1    0.9775    0.9817    0.9756
+## TEBU 2X           0.8863    0.9992    0.9775         1    0.9976    0.9965
+## TFLX + PROT 2X    0.9129    0.9995    0.9817    0.9976         1    0.9971
+## TFLX + TEBU 2X    0.9053    0.9982    0.9756    0.9965    0.9971         1
+##                   AACH  A+T2  P+M2  TEB2  T+P2  T+T2
+## AACHECK              -    no    no    no    no    no
+## AZOX + TEBU 2X      23     -    no    no    no    no
+## PIRA + METC 2X      33    22     -    no    no    no
+## TEBU 2X             11    11    10     -    no    no
+## TFLX + PROT 2X      34    22    33    10     -    no
+## TFLX + TEBU 2X      34    23    32    11    33     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 154) = 50586.6327, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:16): 
+## QM(df = 15) = 171.7160, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                    estimate      se     zval    pval
+## intrcpt                              2.3961  0.3425   6.9965  &lt;.0001
+## AI2AZOX + TEBU 2X                   -0.7344  0.1630  -4.5060  &lt;.0001
+## AI2PIRA + METC 2X                   -0.7594  0.1369  -5.5452  &lt;.0001
+## AI2TEBU 2X                          -0.9107  0.1907  -4.7744  &lt;.0001
+## AI2TFLX + PROT 2X                   -0.9306  0.1557  -5.9751  &lt;.0001
+## AI2TFLX + TEBU 2X                   -0.6970  0.1574  -4.4299  &lt;.0001
+## factor(state)RS                     -0.3631  0.4256  -0.8533  0.3935
+## factor(state)SC                     -3.0892  1.2287  -2.5141  0.0119
+## AI2AZOX + TEBU 2X:factor(state)RS   -0.0375  0.2038  -0.1840  0.8540
+## AI2PIRA + METC 2X:factor(state)RS   -0.0212  0.1732  -0.1225  0.9025
+## AI2TEBU 2X:factor(state)RS           0.2940  0.2306   1.2747  0.2024
+## AI2TFLX + PROT 2X:factor(state)RS    0.1791  0.1952   0.9177  0.3588
+## AI2TFLX + TEBU 2X:factor(state)RS    0.0095  0.1977   0.0479  0.9618
+## AI2AZOX + TEBU 2X:factor(state)SC   -0.8750  0.5811  -1.5059  0.1321
+## AI2TEBU 2X:factor(state)SC          -0.6988  0.6155  -1.1354  0.2562
+## AI2TFLX + TEBU 2X:factor(state)SC   -0.9124  0.5680  -1.6062  0.1082
+##                                      ci.lb    ci.ub     
+## intrcpt                             1.7248   3.0673  ***
+## AI2AZOX + TEBU 2X                  -1.0538  -0.4150  ***
+## AI2PIRA + METC 2X                  -1.0278  -0.4910  ***
+## AI2TEBU 2X                         -1.2845  -0.5368  ***
+## AI2TFLX + PROT 2X                  -1.2358  -0.6253  ***
+## AI2TFLX + TEBU 2X                  -1.0055  -0.3886  ***
+## factor(state)RS                    -1.1973   0.4710     
+## factor(state)SC                    -5.4975  -0.6809    *
+## AI2AZOX + TEBU 2X:factor(state)RS  -0.4369   0.3619     
+## AI2PIRA + METC 2X:factor(state)RS  -0.3608   0.3183     
+## AI2TEBU 2X:factor(state)RS         -0.1580   0.7460     
+## AI2TFLX + PROT 2X:factor(state)RS  -0.2035   0.5617     
+## AI2TFLX + TEBU 2X:factor(state)RS  -0.3780   0.3970     
+## AI2AZOX + TEBU 2X:factor(state)SC  -2.0139   0.2639     
+## AI2TEBU 2X:factor(state)SC         -1.9050   0.5075     
+## AI2TFLX + TEBU 2X:factor(state)SC  -2.0257   0.2009     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># anova(fhb_mv_AI_state,btt=8:15)
+# 
+# anova(fhb_mv_AI_state,btt=8:11)
+# 
+# anova(fhb_mv_AI_state,btt=11:15)</code></pre>
+</div>
+<div id="year-as-continuous" class="section level3">
+<h3>Year as continuous</h3>
+<pre class="r"><code># Number of entries by fungicide and year
+table(fhb_sev$AI2, fhb_sev$year)</code></pre>
+<pre><code>##                 
+##                  2000 2009 2011 2012 2013 2014 2015 2016 2017 2018
+##   AACHECK           2    4    7    6   12   14    1    3    8    4
+##   AZOX + TEBU 2X    0    0    7    5    8    5    0    0    0    0
+##   PIRA + METC 1X    0    4    0    0    4    8    0    0    0    0
+##   PIRA + METC 2X    0    4    6    6   12   14    1    3    7    4
+##   TEBU 2X           2    0    7    0    0    4    0    1    0    0
+##   TFLX + PROT 2X    0    0    6    6    8    7    1    0    7    4
+##   TFLX + TEBU 2X    0    0    7    5    8    5    1    0    6    4</code></pre>
+<pre class="r"><code>mv_sev_year &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*year,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;HCS&quot;,
+  method = &quot;ML&quot;,
+  data = fhb_sev_coop %&gt;% mutate(year = year-2000))
+
+
+mv_sev_year</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 170; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 35)
+## inner factor: AI2           (nlvls = 6)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.3954  1.1813     35     no         AACHECK
+## tau^2.2    1.5505  1.2452     23     no  AZOX + TEBU 2X
+## tau^2.3    1.6897  1.2999     33     no  PIRA + METC 2X
+## tau^2.4    1.5401  1.2410     11     no         TEBU 2X
+## tau^2.5    1.5162  1.2313     34     no  TFLX + PROT 2X
+## tau^2.6    1.5746  1.2548     34     no  TFLX + TEBU 2X
+## rho        0.9548                    no                
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 158) = 61173.9881, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:12): 
+## QM(df = 11) = 201.1455, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                         estimate      se     zval    pval    ci.lb   ci.ub
+## intrcpt                  -1.0157  1.1514  -0.8822  0.3777  -3.2725  1.2410
+## AI2AZOX + TEBU 2X        -1.2241  0.9696  -1.2625  0.2068  -3.1244  0.6762
+## AI2PIRA + METC 2X        -0.6008  0.4781  -1.2565  0.2089  -1.5379  0.3364
+## AI2TEBU 2X               -2.0059  1.0829  -1.8524  0.0640  -4.1283  0.1165
+## AI2TFLX + PROT 2X        -0.6013  0.4550  -1.3217  0.1863  -1.4931  0.2904
+## AI2TFLX + TEBU 2X        -0.1521  0.4356  -0.3493  0.7269  -1.0059  0.7016
+## year                      0.2236  0.0816   2.7403  0.0061   0.0637  0.3835
+## AI2AZOX + TEBU 2X:year    0.0391  0.0761   0.5129  0.6080  -0.1102  0.1883
+## AI2PIRA + METC 2X:year   -0.0148  0.0331  -0.4473  0.6547  -0.0796  0.0500
+## AI2TEBU 2X:year           0.1001  0.0853   1.1740  0.2404  -0.0670  0.2672
+## AI2TFLX + PROT 2X:year   -0.0163  0.0312  -0.5241  0.6002  -0.0774  0.0447
+## AI2TFLX + TEBU 2X:year   -0.0399  0.0301  -1.3249  0.1852  -0.0990  0.0191
+##                           
+## intrcpt                   
+## AI2AZOX + TEBU 2X         
+## AI2PIRA + METC 2X         
+## AI2TEBU 2X               .
+## AI2TFLX + PROT 2X         
+## AI2TFLX + TEBU 2X         
+## year                    **
+## AI2AZOX + TEBU 2X:year    
+## AI2PIRA + METC 2X:year    
+## AI2TEBU 2X:year           
+## AI2TFLX + PROT 2X:year    
+## AI2TFLX + TEBU 2X:year    
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_year, btt=8:12)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 8:12): 
+## QM(df = 5) = 3.9305, p-val = 0.5595</code></pre>
+</div>
+</div>
+</div>
+<div id="publications" class="section level1">
+<h1>Publications</h1>
+<pre class="r"><code>fhb_sev_publ = fhb_sev %&gt;% 
+  filter(publication != &quot;Boletim&quot;)</code></pre>
+<pre class="r"><code>fhb_sev_publ %&gt;%
+  tabyl(AI2, publication)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["AI2"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Artigo"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Resumo"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Tese"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"AACHECK","2":"6","3":"13","4":"7"},{"1":"AZOX + TEBU 2X","2":"0","3":"2","4":"0"},{"1":"PIRA + METC 1X","2":"4","3":"10","4":"2"},{"1":"PIRA + METC 2X","2":"4","3":"13","4":"7"},{"1":"TEBU 2X","2":"2","3":"0","4":"1"},{"1":"TFLX + PROT 2X","2":"0","3":"2","4":"3"},{"1":"TFLX + TEBU 2X","2":"0","3":"2","4":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>fhb_sev %&gt;%
+  tabyl(AI2, publication)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["AI2"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Artigo"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Boletim"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Resumo"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Tese"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"AACHECK","2":"6","3":"35","4":"13","5":"7"},{"1":"AZOX + TEBU 2X","2":"0","3":"23","4":"2","5":"0"},{"1":"PIRA + METC 1X","2":"4","3":"0","4":"10","5":"2"},{"1":"PIRA + METC 2X","2":"4","3":"33","4":"13","5":"7"},{"1":"TEBU 2X","2":"2","3":"11","4":"0","5":"1"},{"1":"TFLX + PROT 2X","2":"0","3":"34","4":"2","5":"3"},{"1":"TFLX + TEBU 2X","2":"0","3":"34","4":"2","5":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="covariance-structure-1" class="section level2">
+<h2>covariance structure</h2>
+<p>Now we will fit models with CS, HCS and UN matrix-covariance structure. We will then compare them with <code>anova</code> function to choose among the best model.</p>
+<pre class="r"><code>library(metafor)
+
+
+mv_sev_HCS_publ &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;HCS&quot;,
+  method = &quot;ML&quot;,
+  data = fhb_sev_publ
+)
+
+mv_sev_publ &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_publ
+)
+
+mv_sev_publ</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 78; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 26)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.5985  1.2643     26     no         AACHECK
+## tau^2.2    0.3685  0.6070      2     no  AZOX + TEBU 2X
+## tau^2.3    2.1133  1.4537     16     no  PIRA + METC 1X
+## tau^2.4    1.9565  1.3988     24     no  PIRA + METC 2X
+## tau^2.5    1.2901  1.1358      3     no         TEBU 2X
+## tau^2.6    2.0793  1.4420      5     no  TFLX + PROT 2X
+## tau^2.7    0.0024  0.0489      2     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    1.0000    0.9247    0.9396    1.0000    0.9500
+## AZOX + TEBU 2X    1.0000         1    0.0000    0.9396    0.0000    0.9500
+## PIRA + METC 1X    0.9247    0.0000         1    0.9992    0.0000    0.9973
+## PIRA + METC 2X    0.9396    0.9396    0.9992         1    0.9410    0.9995
+## TEBU 2X           1.0000    0.0000    0.0000    0.9410         1    0.0000
+## TFLX + PROT 2X    0.9500    0.9500    0.9973    0.9995    0.0000         1
+## TFLX + TEBU 2X   -0.9998   -0.9998    0.0000   -0.9330    0.0000   -0.9440
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK          -0.9998       -    no    no    no    no    no    no
+## AZOX + TEBU 2X   -0.9998       2     -   yes    no   yes    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X   -0.9330      24     2    16     -    no    no    no
+## TEBU 2X           0.0000       3     0     0     1     -   yes   yes
+## TFLX + PROT 2X   -0.9440       5     2     2     5     0     -    no
+## TFLX + TEBU 2X         1       2     2     0     2     0     2     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 71) = 89179.6127, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:7): 
+## QM(df = 6) = 955.7727, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                    estimate      se      zval    pval    ci.lb    ci.ub
+## intrcpt              2.0905  0.2488    8.4034  &lt;.0001   1.6029   2.5781
+## AI2AZOX + TEBU 2X   -0.6347  0.1312   -4.8358  &lt;.0001  -0.8919  -0.3774
+## AI2PIRA + METC 1X   -0.8950  0.1297   -6.8983  &lt;.0001  -1.1493  -0.6407
+## AI2PIRA + METC 2X   -1.3913  0.1127  -12.3431  &lt;.0001  -1.6123  -1.1704
+## AI2TEBU 2X          -0.7328  0.1086   -6.7466  &lt;.0001  -0.9457  -0.5199
+## AI2TFLX + PROT 2X   -1.3441  0.1133  -11.8590  &lt;.0001  -1.5662  -1.1220
+## AI2TFLX + TEBU 2X    0.1299  0.2601    0.4996  0.6174  -0.3798   0.6396
+##                       
+## intrcpt            ***
+## AI2AZOX + TEBU 2X  ***
+## AI2PIRA + METC 1X  ***
+## AI2PIRA + METC 2X  ***
+## AI2TEBU 2X         ***
+## AI2TFLX + PROT 2X  ***
+## AI2TFLX + TEBU 2X     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>We can see below that the UN structure is a better model.</p>
+<pre class="r"><code>anova(mv_sev_HCS_publ, mv_sev_publ)</code></pre>
+<pre><code>##         df      AIC      BIC     AICc   logLik     LRT   pval         QE
+## Full    29 173.2727 241.6173 209.5227 -57.6364                89179.6127
+## Reduced 15 169.9080 205.2586 177.6499 -69.9540 24.6352 0.0383 89179.6127</code></pre>
+<pre class="r"><code>AIC(mv_sev_HCS_publ)</code></pre>
+<pre><code>## [1] 169.908</code></pre>
+</div>
+<div id="percent-control-1" class="section level2">
+<h2>Percent control</h2>
+<p>Let’s obtain the percent control from the estimated ratios.</p>
+<pre class="r"><code>efficacy_sev_publ &lt;- data.frame(cbind(
+  (1 - exp(mv_sev_publ$b)) * 100,
+  (1 - exp(mv_sev_publ$ci.lb)) * 100,
+  (1 - exp(mv_sev_publ$ci.ub)) * 100
+))
+
+
+
+efficacy_sev_publ</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["X1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["X2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["X3"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"-708.88110","2":"-396.74674","3":"-1217.14733","_rn_":"intrcpt"},{"1":"46.99007","2":"59.01372","3":"31.43918","_rn_":"AI2AZOX + TEBU 2X"},{"1":"59.14023","2":"68.31484","3":"47.30907","_rn_":"AI2PIRA + METC 1X"},{"1":"75.12545","2":"80.05625","3":"68.97558","_rn_":"AI2PIRA + METC 2X"},{"1":"51.94504","2":"61.15997","3":"40.54383","_rn_":"AI2TEBU 2X"},{"1":"73.92244","2":"79.11704","3":"67.43569","_rn_":"AI2TFLX + PROT 2X"},{"1":"-13.87345","2":"31.60058","3":"-89.57999","_rn_":"AI2TFLX + TEBU 2X"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="contrasts-1" class="section level2">
+<h2>Contrasts</h2>
+<p>We can set linear contrasts between treatments of interest and get the P-value using the <code>anova</code> function.</p>
+<pre class="r"><code>anova(mv_sev_publ, L = rbind(
+  c(0, 1, -1, 0, 0, 0, 0),
+  c(0, 1, 0, -1, 0, 0, 0),
+  c(0, 1, 0, 0, -1, 0, 0),
+  c(0, 1, 0, 0, 0, -1, 0),
+  c(0, 1, 0, 0, 0, 0, -1),
+  c(0, 0, 1, -1, 0, 0, 0),
+  c(0, 0, 1, 0, -1, 0, 0),
+  c(0, 0, 1, 0, 0, -1, 0),
+  c(0, 0, 1, 0, 0, 0, -1),
+  c(0, 0, 0, 1, -1, 0, 0),
+  c(0, 0, 0, 1, 0, -1, 0),
+  c(0, 0, 0, 1, 0, 0, -1),
+  c(0, 0, 0, 0, 1, -1, 0),
+  c(0, 0, 0, 0, 1, 0, -1),
+  c(0, 0, 0, 0, 0, 1, -1)
+))</code></pre>
+<pre><code>## 
+## Hypotheses:                                             
+## 1:  AI2AZOX + TEBU 2X - AI2PIRA + METC 1X = 0
+## 2:  AI2AZOX + TEBU 2X - AI2PIRA + METC 2X = 0
+## 3:         AI2AZOX + TEBU 2X - AI2TEBU 2X = 0
+## 4:  AI2AZOX + TEBU 2X - AI2TFLX + PROT 2X = 0
+## 5:  AI2AZOX + TEBU 2X - AI2TFLX + TEBU 2X = 0
+## 6:  AI2PIRA + METC 1X - AI2PIRA + METC 2X = 0
+## 7:         AI2PIRA + METC 1X - AI2TEBU 2X = 0
+## 8:  AI2PIRA + METC 1X - AI2TFLX + PROT 2X = 0
+## 9:  AI2PIRA + METC 1X - AI2TFLX + TEBU 2X = 0
+## 10:        AI2PIRA + METC 2X - AI2TEBU 2X = 0
+## 11: AI2PIRA + METC 2X - AI2TFLX + PROT 2X = 0
+## 12: AI2PIRA + METC 2X - AI2TFLX + TEBU 2X = 0
+## 13:        AI2TEBU 2X - AI2TFLX + PROT 2X = 0
+## 14:        AI2TEBU 2X - AI2TFLX + TEBU 2X = 0
+## 15: AI2TFLX + PROT 2X - AI2TFLX + TEBU 2X = 0
+## 
+## Results:
+##     estimate     se    zval   pval
+## 1:    0.2603 0.1942  1.3407 0.1800
+## 2:    0.7566 0.1791  4.2252 &lt;.0001
+## 3:    0.0981 0.1493  0.6574 0.5109
+## 4:    0.7094 0.1872  3.7887 0.0002
+## 5:   -0.7646 0.1342 -5.6957 &lt;.0001
+## 6:    0.4963 0.0619  8.0132 &lt;.0001
+## 7:   -0.1622 0.1707 -0.9502 0.3420
+## 8:    0.4491 0.0732  6.1320 &lt;.0001
+## 9:   -1.0249 0.3029 -3.3842 0.0007
+## 10:  -0.6585 0.1572 -4.1891 &lt;.0001
+## 11:  -0.0472 0.0432 -1.0925 0.2746
+## 12:  -1.5212 0.2908 -5.2307 &lt;.0001
+## 13:   0.6113 0.1595  3.8323 0.0001
+## 14:  -0.8627 0.2568 -3.3590 0.0008
+## 15:  -1.4740 0.3007 -4.9020 &lt;.0001</code></pre>
+</div>
+<div id="moderators-1" class="section level2">
+<h2>Moderators</h2>
+<div id="cultivar-1" class="section level3">
+<h3>Cultivar</h3>
+<pre class="r"><code># creating two groups of cultivars (MR, S)
+table(fhb_sev_publ$cultivar, fhb_sev_publ$reaction)</code></pre>
+<pre><code>##                 
+##                  MR MS  S
+##   Ametista        0  8  0
+##   BRS208          0  5  0
+##   BRS23           0  4  0
+##   BRSGuamirim     3  0  0
+##   Campo Real      0  0  0
+##   CD105           0  0  5
+##   Fundacep Bravo  0  3  0
+##   linhagem 01/14  0  0  0
+##   Linhagem 01/14  0  0  0
+##   Raízes          0  0  0
+##   Supera          0  0  0
+##   TBIO Pioneiro   0  0  0
+##   TBIO Toruk      0 12  0
+##   TEC 02/13       0  0  0
+##   TEC 10          0  3  0
+##   Vigore          0  0  0</code></pre>
+<pre class="r"><code>nrow(table(fhb_sev_publ$cultivar, fhb_sev_publ$reaction))</code></pre>
+<pre><code>## [1] 16</code></pre>
+<pre class="r"><code># Renaming the reactions 
+library(plyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     compact</code></pre>
+<pre class="r"><code>fhb_sev_publ$reaction &lt;- revalue(fhb_sev_publ$reaction, c(&quot;MS&quot; = &quot;S&quot;))
+fhb_sev_publ$reaction &lt;- revalue(fhb_sev_publ$reaction, c(&quot;MS/MR&quot; = &quot;MR&quot;))</code></pre>
+<pre><code>## The following `from` values were not present in `x`: MS/MR</code></pre>
+<pre class="r"><code>fhb_sev_publ$reaction &lt;- revalue(fhb_sev_publ$reaction, c(&quot;MR/R&quot; = &quot;MR&quot;))</code></pre>
+<pre><code>## The following `from` values were not present in `x`: MR/R</code></pre>
+<pre class="r"><code>fhb_sev_publ$reaction &lt;- revalue(fhb_sev_publ$reaction, c(&quot;MS/S&quot; = &quot;S&quot;))</code></pre>
+<pre><code>## The following `from` values were not present in `x`: MS/S</code></pre>
+<pre class="r"><code>detach(&quot;package:plyr&quot;, unload = TRUE)
+
+table(fhb_sev_publ$cultivar, fhb_sev_publ$reaction)</code></pre>
+<pre><code>##                 
+##                  MR  S
+##   Ametista        0  8
+##   BRS208          0  5
+##   BRS23           0  4
+##   BRSGuamirim     3  0
+##   Campo Real      0  0
+##   CD105           0  5
+##   Fundacep Bravo  0  3
+##   linhagem 01/14  0  0
+##   Linhagem 01/14  0  0
+##   Raízes          0  0
+##   Supera          0  0
+##   TBIO Pioneiro   0  0
+##   TBIO Toruk      0 12
+##   TEC 02/13       0  0
+##   TEC 10          0  3
+##   Vigore          0  0</code></pre>
+<pre class="r"><code>table(fhb_sev_publ$reaction)</code></pre>
+<pre><code>## 
+## MR  S 
+##  3 40</code></pre>
+<pre class="r"><code>table(fhb_sev_publ$AI2, fhb_sev_publ$reaction)</code></pre>
+<pre><code>##                 
+##                  MR  S
+##   AACHECK         1 13
+##   AZOX + TEBU 2X  0  2
+##   PIRA + METC 1X  1  4
+##   PIRA + METC 2X  1 11
+##   TEBU 2X         0  3
+##   TFLX + PROT 2X  0  5
+##   TFLX + TEBU 2X  0  2</code></pre>
+<pre class="r"><code>library(metafor)
+
+
+mv_reaction &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*reaction,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_publ
+)
+
+mv_reaction</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 43; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 14)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.1021  1.0498     14     no         AACHECK
+## tau^2.2    0.2355  0.4852      2     no  AZOX + TEBU 2X
+## tau^2.3    0.9694  0.9846      5     no  PIRA + METC 1X
+## tau^2.4    1.0934  1.0457     12     no  PIRA + METC 2X
+## tau^2.5    0.8778  0.9369      3     no         TEBU 2X
+## tau^2.6    1.0799  1.0392      5     no  TFLX + PROT 2X
+## tau^2.7    0.0015  0.0394      2     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    1.0000    0.8845    0.8863    1.0000    0.9144
+## AZOX + TEBU 2X    1.0000         1    0.0000    0.8863    0.0000    0.9144
+## PIRA + METC 1X    0.8845    0.0000         1    1.0000    0.0000    0.9976
+## PIRA + METC 2X    0.8863    0.8863    1.0000         1    0.8884    0.9979
+## TEBU 2X           1.0000    0.0000    0.0000    0.8884         1    0.0000
+## TFLX + PROT 2X    0.9144    0.9144    0.9976    0.9979    0.0000         1
+## TFLX + TEBU 2X   -0.9997   -0.9997    0.0000   -0.8756    0.0000   -0.9051
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK          -0.9997       -    no    no    no    no    no    no
+## AZOX + TEBU 2X   -0.9997       2     -   yes    no   yes    no    no
+## PIRA + METC 1X    0.0000       5     0     -    no   yes    no   yes
+## PIRA + METC 2X   -0.8756      12     2     5     -    no    no    no
+## TEBU 2X           0.0000       3     0     0     1     -   yes   yes
+## TFLX + PROT 2X   -0.9051       5     2     2     5     0     -    no
+## TFLX + TEBU 2X         1       2     2     0     2     0     2     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 33) = 17345.5008, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:10): 
+## QM(df = 9) = 736.2921, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                              estimate      se     zval    pval    ci.lb
+## intrcpt                        1.6094  1.0523   1.5294  0.1262  -0.4530
+## AI2AZOX + TEBU 2X             -0.8148  0.1591  -5.1203  &lt;.0001  -1.1266
+## AI2PIRA + METC 1X             -0.8675  0.5270  -1.6460  0.0998  -1.9004
+## AI2PIRA + METC 2X             -1.2730  0.5668  -2.2457  0.0247  -2.3840
+## AI2TEBU 2X                    -0.7668  0.1104  -6.9474  &lt;.0001  -0.9831
+## AI2TFLX + PROT 2X             -1.1637  0.1498  -7.7691  &lt;.0001  -1.4573
+## AI2TFLX + TEBU 2X             -0.2904  0.3053  -0.9510  0.3416  -0.8889
+## reactionS                      0.8836  1.0923   0.8089  0.4186  -1.2573
+## AI2PIRA + METC 1X:reactionS    0.2262  0.5560   0.4067  0.6842  -0.8637
+## AI2PIRA + METC 2X:reactionS    0.0524  0.5916   0.0886  0.9294  -1.1072
+##                                ci.ub     
+## intrcpt                       3.6719     
+## AI2AZOX + TEBU 2X            -0.5029  ***
+## AI2PIRA + METC 1X             0.1654    .
+## AI2PIRA + METC 2X            -0.1620    *
+## AI2TEBU 2X                   -0.5504  ***
+## AI2TFLX + PROT 2X            -0.8701  ***
+## AI2TFLX + TEBU 2X             0.3081     
+## reactionS                     3.0245     
+## AI2PIRA + METC 1X:reactionS   1.3160     
+## AI2PIRA + METC 2X:reactionS   1.2120     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_reaction, btt=9:10)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:10): 
+## QM(df = 2) = 0.3728, p-val = 0.8299</code></pre>
+</div>
+<div id="disease-pressure-1" class="section level3">
+<h3>Disease Pressure</h3>
+<pre class="r"><code>median(fhb_sev_publ$sev_check)</code></pre>
+<pre><code>## [1] 6.685</code></pre>
+<pre class="r"><code>library(tidyverse)
+fhb_sev_publ &lt;- fhb_sev_publ %&gt;%
+  mutate(sev_check_class = case_when(
+      sev_check &lt; 7 ~ &quot;low&quot;,
+      sev_check &gt;= 7 ~ &quot;high&quot;))
+
+mv_sev_check &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*sev_check_class,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_publ
+)
+
+mv_sev_check</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 78; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 26)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    0.6505  0.8065     26     no         AACHECK
+## tau^2.2    0.0000  0.0000      2     no  AZOX + TEBU 2X
+## tau^2.3    1.1340  1.0649     16     no  PIRA + METC 1X
+## tau^2.4    0.9766  0.9882     24     no  PIRA + METC 2X
+## tau^2.5    0.4193  0.6476      3     no         TEBU 2X
+## tau^2.6    1.0190  1.0095      5     no  TFLX + PROT 2X
+## tau^2.7    0.0000  0.0000      2     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1   -0.9977    0.8411    0.8677    1.0000    0.8698
+## AZOX + TEBU 2X   -0.9977         1    0.0000   -0.8994    0.0000   -0.9011
+## PIRA + METC 1X    0.8411    0.0000         1    0.9987    0.0000    0.9985
+## PIRA + METC 2X    0.8677   -0.8994    0.9987         1    0.8715    1.0000
+## TEBU 2X           1.0000    0.0000    0.0000    0.8715         1    0.0000
+## TFLX + PROT 2X    0.8698   -0.9011    0.9985    1.0000    0.0000         1
+## TFLX + TEBU 2X    0.3074   -0.3684    0.0000    0.7198    0.0000    0.7171
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.3074       -    no    no    no    no    no    no
+## AZOX + TEBU 2X   -0.3684       2     -   yes    no   yes    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.7198      24     2    16     -    no    no    no
+## TEBU 2X           0.0000       3     0     0     1     -   yes   yes
+## TFLX + PROT 2X    0.7171       5     2     2     5     0     -    no
+## TFLX + TEBU 2X         1       2     2     0     2     0     2     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 64) = 12394.1066, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:14): 
+## QM(df = 13) = 384.4541, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                       estimate      se     zval    pval
+## intrcpt                                 3.2251  0.2448  13.1759  &lt;.0001
+## AI2AZOX + TEBU 2X                      -0.7915  0.2458  -3.2202  0.0013
+## AI2PIRA + METC 1X                      -0.8593  0.2318  -3.7069  0.0002
+## AI2PIRA + METC 2X                      -1.3767  0.1901  -7.2414  &lt;.0001
+## AI2TEBU 2X                             -0.8100  0.1248  -6.4927  &lt;.0001
+## AI2TFLX + PROT 2X                      -1.2053  0.1940  -6.2134  &lt;.0001
+## AI2TFLX + TEBU 2X                      -1.0850  0.2466  -4.4003  &lt;.0001
+## sev_check_classlow                     -1.9721  0.3226  -6.1125  &lt;.0001
+## AI2AZOX + TEBU 2X:sev_check_classlow    1.0710  0.5601   1.9122  0.0558
+## AI2PIRA + METC 1X:sev_check_classlow   -0.0488  0.2874  -0.1700  0.8650
+## AI2PIRA + METC 2X:sev_check_classlow   -0.0246  0.2399  -0.1023  0.9185
+## AI2TEBU 2X:sev_check_classlow           0.2124  0.2817   0.7541  0.4508
+## AI2TFLX + PROT 2X:sev_check_classlow   -0.5278  0.5361  -0.9845  0.3249
+## AI2TFLX + TEBU 2X:sev_check_classlow    2.0480  0.3979   5.1474  &lt;.0001
+##                                         ci.lb    ci.ub     
+## intrcpt                                2.7453   3.7048  ***
+## AI2AZOX + TEBU 2X                     -1.2732  -0.3097   **
+## AI2PIRA + METC 1X                     -1.3137  -0.4050  ***
+## AI2PIRA + METC 2X                     -1.7493  -1.0040  ***
+## AI2TEBU 2X                            -1.0545  -0.5655  ***
+## AI2TFLX + PROT 2X                     -1.5855  -0.8251  ***
+## AI2TFLX + TEBU 2X                     -1.5683  -0.6017  ***
+## sev_check_classlow                    -2.6044  -1.3397  ***
+## AI2AZOX + TEBU 2X:sev_check_classlow  -0.0267   2.1688    .
+## AI2PIRA + METC 1X:sev_check_classlow  -0.6121   0.5144     
+## AI2PIRA + METC 2X:sev_check_classlow  -0.4948   0.4457     
+## AI2TEBU 2X:sev_check_classlow         -0.3397   0.7645     
+## AI2TFLX + PROT 2X:sev_check_classlow  -1.5785   0.5229     
+## AI2TFLX + TEBU 2X:sev_check_classlow   1.2682   2.8277  ***
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_check, btt=9:14)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:14): 
+## QM(df = 6) = 27.9036, p-val &lt; .0001</code></pre>
+</div>
+<div id="baseline-10-1" class="section level3">
+<h3>Baseline 10%</h3>
+<pre class="r"><code>library(tidyverse)
+library(metafor)
+
+fhb_sev_publ &lt;- fhb_sev_publ %&gt;%
+  mutate(sev_check_class = case_when(
+      sev_check &lt; 10 ~ &quot;low&quot;,
+      sev_check &gt;= 10 ~ &quot;high&quot;))
+
+mv_sev_check &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*sev_check_class,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_publ
+)
+
+mv_sev_check</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 78; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 26)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    0.6103  0.7812     26     no         AACHECK
+## tau^2.2    0.0000  0.0000      2     no  AZOX + TEBU 2X
+## tau^2.3    1.1841  1.0882     16     no  PIRA + METC 1X
+## tau^2.4    0.9806  0.9902     24     no  PIRA + METC 2X
+## tau^2.5    0.3944  0.6280      3     no         TEBU 2X
+## tau^2.6    1.0166  1.0083      5     no  TFLX + PROT 2X
+## tau^2.7    0.0000  0.0000      2     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    0.9549    0.8521    0.8747    1.0000    0.8812
+## AZOX + TEBU 2X    0.9549         1    0.0000    0.9790    0.0000    0.9816
+## PIRA + METC 1X    0.8521    0.0000         1    0.9990    0.0000    0.9983
+## PIRA + METC 2X    0.8747    0.9790    0.9990         1    0.8787    0.9999
+## TEBU 2X           1.0000    0.0000    0.0000    0.8787         1    0.0000
+## TFLX + PROT 2X    0.8812    0.9816    0.9983    0.9999    0.0000         1
+## TFLX + TEBU 2X    0.0802    0.3244    0.0000    0.4862    0.0000    0.4765
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.0802       -    no    no    no    no    no    no
+## AZOX + TEBU 2X    0.3244       2     -   yes    no   yes    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.4862      24     2    16     -    no    no    no
+## TEBU 2X           0.0000       3     0     0     1     -   yes   yes
+## TFLX + PROT 2X    0.4765       5     2     2     5     0     -    no
+## TFLX + TEBU 2X         1       2     2     0     2     0     2     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 64) = 12233.0808, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:14): 
+## QM(df = 13) = 397.2478, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                       estimate      se     zval    pval
+## intrcpt                                 3.3459  0.2486  13.4610  &lt;.0001
+## AI2AZOX + TEBU 2X                      -0.9123  0.2496  -3.6556  0.0003
+## AI2PIRA + METC 1X                      -0.9658  0.2518  -3.8358  0.0001
+## AI2PIRA + METC 2X                      -1.4033  0.1966  -7.1380  &lt;.0001
+## AI2TEBU 2X                             -0.8346  0.1250  -6.6762  &lt;.0001
+## AI2TFLX + PROT 2X                      -1.2489  0.1969  -6.3427  &lt;.0001
+## AI2TFLX + TEBU 2X                      -1.2058  0.2503  -4.8167  &lt;.0001
+## sev_check_classlow                     -2.0467  0.3173  -6.4494  &lt;.0001
+## AI2AZOX + TEBU 2X:sev_check_classlow    1.1456  0.5571   2.0565  0.0397
+## AI2PIRA + METC 1X:sev_check_classlow    0.1033  0.3011   0.3432  0.7315
+## AI2PIRA + METC 2X:sev_check_classlow    0.0268  0.2415   0.1111  0.9115
+## AI2TEBU 2X:sev_check_classlow           0.2267  0.2813   0.8061  0.4202
+## AI2TFLX + PROT 2X:sev_check_classlow   -0.4451  0.5343  -0.8330  0.4048
+## AI2TFLX + TEBU 2X:sev_check_classlow    2.1225  0.3936   5.3929  &lt;.0001
+##                                         ci.lb    ci.ub     
+## intrcpt                                2.8587   3.8330  ***
+## AI2AZOX + TEBU 2X                     -1.4014  -0.4231  ***
+## AI2PIRA + METC 1X                     -1.4593  -0.4723  ***
+## AI2PIRA + METC 2X                     -1.7886  -1.0180  ***
+## AI2TEBU 2X                            -1.0796  -0.5896  ***
+## AI2TFLX + PROT 2X                     -1.6348  -0.8629  ***
+## AI2TFLX + TEBU 2X                     -1.6965  -0.7151  ***
+## sev_check_classlow                    -2.6686  -1.4247  ***
+## AI2AZOX + TEBU 2X:sev_check_classlow   0.0538   2.2374    *
+## AI2PIRA + METC 1X:sev_check_classlow  -0.4868   0.6934     
+## AI2PIRA + METC 2X:sev_check_classlow  -0.4466   0.5002     
+## AI2TEBU 2X:sev_check_classlow         -0.3246   0.7780     
+## AI2TFLX + PROT 2X:sev_check_classlow  -1.4923   0.6021     
+## AI2TFLX + TEBU 2X:sev_check_classlow   1.3511   2.8939  ***
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_check, btt=9:14)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:14): 
+## QM(df = 6) = 31.5423, p-val &lt; .0001</code></pre>
+</div>
+<div id="sev_check-as-continuous-1" class="section level3">
+<h3>Sev_check as continuous</h3>
+<pre class="r"><code>mv_sev_check_cont &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*as.numeric(sev_check),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_publ
+)
+
+mv_sev_check_cont</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 78; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 26)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    0.4535  0.6734     26     no         AACHECK
+## tau^2.2    0.0000  0.0000      2     no  AZOX + TEBU 2X
+## tau^2.3    0.7576  0.8704     16     no  PIRA + METC 1X
+## tau^2.4    0.6521  0.8075     24     no  PIRA + METC 2X
+## tau^2.5    0.0226  0.1502      3     no         TEBU 2X
+## tau^2.6    0.3720  0.6099      5     no  TFLX + PROT 2X
+## tau^2.7    0.0000  0.0000      2     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1   -0.9996    0.7616    0.7996   -1.0000   -0.9029
+## AZOX + TEBU 2X   -0.9996         1    0.0000   -0.7844    0.0000    0.9131
+## PIRA + METC 1X    0.7616    0.0000         1    0.9982    0.0000   -0.4090
+## PIRA + METC 2X    0.7996   -0.7844    0.9982         1   -0.7973   -0.4637
+## TEBU 2X          -1.0000    0.0000    0.0000   -0.7973         1    0.0000
+## TFLX + PROT 2X   -0.9029    0.9131   -0.4090   -0.4637    0.0000         1
+## TFLX + TEBU 2X    0.7237   -0.7061    0.0000    0.9920    0.0000   -0.3574
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.7237       -    no    no    no    no    no    no
+## AZOX + TEBU 2X   -0.7061       2     -   yes    no   yes    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.9920      24     2    16     -    no    no    no
+## TEBU 2X           0.0000       3     0     0     1     -   yes   yes
+## TFLX + PROT 2X   -0.3574       5     2     2     5     0     -    no
+## TFLX + TEBU 2X         1       2     2     0     2     0     2     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 64) = 8526.7152, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:14): 
+## QM(df = 13) = 3382.2818, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                          estimate      se      zval
+## intrcpt                                    1.3114  0.1649    7.9506
+## AI2AZOX + TEBU 2X                          0.1149  0.5372    0.2139
+## AI2PIRA + METC 1X                         -0.9657  0.1563   -6.1790
+## AI2PIRA + METC 2X                         -1.4455  0.1365  -10.5896
+## AI2TEBU 2X                                -0.5955  0.3344   -1.7809
+## AI2TFLX + PROT 2X                          0.1677  0.3774    0.4443
+## AI2TFLX + TEBU 2X                          0.9135  0.3063    2.9820
+## as.numeric(sev_check)                      0.0445  0.0055    8.0274
+## AI2AZOX + TEBU 2X:as.numeric(sev_check)   -0.0283  0.0099   -2.8428
+## AI2PIRA + METC 1X:as.numeric(sev_check)    0.0050  0.0059    0.8361
+## AI2PIRA + METC 2X:as.numeric(sev_check)    0.0024  0.0045    0.5442
+## AI2TEBU 2X:as.numeric(sev_check)           0.0128  0.0103    1.2373
+## AI2TFLX + PROT 2X:as.numeric(sev_check)   -0.0251  0.0109   -2.2911
+## AI2TFLX + TEBU 2X:as.numeric(sev_check)   -0.0459  0.0070   -6.5973
+##                                            pval    ci.lb    ci.ub     
+## intrcpt                                  &lt;.0001   0.9881   1.6346  ***
+## AI2AZOX + TEBU 2X                        0.8306  -0.9379   1.1678     
+## AI2PIRA + METC 1X                        &lt;.0001  -1.2720  -0.6594  ***
+## AI2PIRA + METC 2X                        &lt;.0001  -1.7131  -1.1780  ***
+## AI2TEBU 2X                               0.0749  -1.2509   0.0599    .
+## AI2TFLX + PROT 2X                        0.6569  -0.5720   0.9073     
+## AI2TFLX + TEBU 2X                        0.0029   0.3131   1.5139   **
+## as.numeric(sev_check)                    &lt;.0001   0.0336   0.0554  ***
+## AI2AZOX + TEBU 2X:as.numeric(sev_check)  0.0045  -0.0478  -0.0088   **
+## AI2PIRA + METC 1X:as.numeric(sev_check)  0.4031  -0.0067   0.0166     
+## AI2PIRA + METC 2X:as.numeric(sev_check)  0.5863  -0.0064   0.0113     
+## AI2TEBU 2X:as.numeric(sev_check)         0.2160  -0.0075   0.0330     
+## AI2TFLX + PROT 2X:as.numeric(sev_check)  0.0220  -0.0465  -0.0036    *
+## AI2TFLX + TEBU 2X:as.numeric(sev_check)  &lt;.0001  -0.0595  -0.0323  ***
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_check_cont, btt=9:14)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:14): 
+## QM(df = 6) = 79.1344, p-val &lt; .0001</code></pre>
+</div>
+<div id="yield_class-1" class="section level3">
+<h3>yield_class</h3>
+<pre class="r"><code>#Moderator yield_class
+
+summary(fhb_sev_publ$yld_check) # Median = 2993; Mean = 2880.45 </code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    1283    1962    2946    3032    3613    6048      12</code></pre>
+<pre class="r"><code>fhb_sev_publ &lt;- fhb_sev_publ %&gt;%
+  mutate(yld_check_class = case_when(
+      yld_check &lt; 3000 ~ &quot;low&quot;,
+      yld_check &gt;= 3000 ~ &quot;high&quot;))
+table(fhb_sev_publ$AI2, fhb_sev_publ$yld_check_class)</code></pre>
+<pre><code>##                 
+##                  high low
+##   AACHECK          11  11
+##   AZOX + TEBU 2X    2   0
+##   PIRA + METC 1X    3   9
+##   PIRA + METC 2X   10  10
+##   TEBU 2X           2   1
+##   TFLX + PROT 2X    3   2
+##   TFLX + TEBU 2X    2   0</code></pre>
+<pre class="r"><code>mv_yld_check &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*factor(yld_check_class),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_publ
+)
+
+mv_yld_check</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 66; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 22)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.5934  1.2623     22     no         AACHECK
+## tau^2.2    0.3464  0.5885      2     no  AZOX + TEBU 2X
+## tau^2.3    2.0357  1.4268     12     no  PIRA + METC 1X
+## tau^2.4    2.0613  1.4357     20     no  PIRA + METC 2X
+## tau^2.5    1.0115  1.0057      3     no         TEBU 2X
+## tau^2.6    1.9321  1.3900      5     no  TFLX + PROT 2X
+## tau^2.7    0.0021  0.0458      2     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    1.0000    0.9332    0.9393    1.0000    0.9673
+## AZOX + TEBU 2X    1.0000         1    0.0000    0.9393    0.0000    0.9673
+## PIRA + METC 1X    0.9332    0.0000         1    0.9998    0.0000    0.9938
+## PIRA + METC 2X    0.9393    0.9393    0.9998         1    0.9400    0.9956
+## TEBU 2X           1.0000    0.0000    0.0000    0.9400         1    0.0000
+## TFLX + PROT 2X    0.9673    0.9673    0.9938    0.9956    0.0000         1
+## TFLX + TEBU 2X   -0.9995   -0.9995    0.0000   -0.9280    0.0000   -0.9588
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK          -0.9995       -    no    no    no    no    no    no
+## AZOX + TEBU 2X   -0.9995       2     -   yes    no   yes    no    no
+## PIRA + METC 1X    0.0000      12     0     -    no   yes    no   yes
+## PIRA + METC 2X   -0.9280      20     2    12     -    no    no    no
+## TEBU 2X           0.0000       3     0     0     1     -   yes   yes
+## TFLX + PROT 2X   -0.9588       5     2     2     5     0     -    no
+## TFLX + TEBU 2X         1       2     2     0     2     0     2     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 54) = 54782.3154, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:12): 
+## QM(df = 11) = 978.9897, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                               estimate      se     zval
+## intrcpt                                         1.7190  0.3823   4.4970
+## AI2AZOX + TEBU 2X                              -0.4082  0.2053  -1.9886
+## AI2PIRA + METC 1X                              -0.7715  0.1965  -3.9267
+## AI2PIRA + METC 2X                              -1.1510  0.1776  -6.4790
+## AI2TEBU 2X                                     -0.6717  0.1863  -3.6046
+## AI2TFLX + PROT 2X                              -1.2834  0.1324  -9.6918
+## AI2TFLX + TEBU 2X                               0.5117  0.3972   1.2883
+## factor(yld_check_class)low                      0.9277  0.5399   1.7183
+## AI2PIRA + METC 1X:factor(yld_check_class)low   -0.1098  0.2633  -0.4171
+## AI2PIRA + METC 2X:factor(yld_check_class)low   -0.3564  0.2520  -1.4141
+## AI2TEBU 2X:factor(yld_check_class)low           0.0358  0.2414   0.1481
+## AI2TFLX + PROT 2X:factor(yld_check_class)low    0.1610  0.2510   0.6415
+##                                                 pval    ci.lb    ci.ub
+## intrcpt                                       &lt;.0001   0.9698   2.4682
+## AI2AZOX + TEBU 2X                             0.0467  -0.8105  -0.0059
+## AI2PIRA + METC 1X                             &lt;.0001  -1.1565  -0.3864
+## AI2PIRA + METC 2X                             &lt;.0001  -1.4992  -0.8028
+## AI2TEBU 2X                                    0.0003  -1.0369  -0.3065
+## AI2TFLX + PROT 2X                             &lt;.0001  -1.5429  -1.0238
+## AI2TFLX + TEBU 2X                             0.1977  -0.2668   1.2903
+## factor(yld_check_class)low                    0.0857  -0.1305   1.9859
+## AI2PIRA + METC 1X:factor(yld_check_class)low  0.6766  -0.6258   0.4062
+## AI2PIRA + METC 2X:factor(yld_check_class)low  0.1573  -0.8504   0.1376
+## AI2TEBU 2X:factor(yld_check_class)low         0.8822  -0.4374   0.5089
+## AI2TFLX + PROT 2X:factor(yld_check_class)low  0.5212  -0.3310   0.6530
+##                                                  
+## intrcpt                                       ***
+## AI2AZOX + TEBU 2X                               *
+## AI2PIRA + METC 1X                             ***
+## AI2PIRA + METC 2X                             ***
+## AI2TEBU 2X                                    ***
+## AI2TFLX + PROT 2X                             ***
+## AI2TFLX + TEBU 2X                                
+## factor(yld_check_class)low                      .
+## AI2PIRA + METC 1X:factor(yld_check_class)low     
+## AI2PIRA + METC 2X:factor(yld_check_class)low     
+## AI2TEBU 2X:factor(yld_check_class)low            
+## AI2TFLX + PROT 2X:factor(yld_check_class)low     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_yld_check, btt=9:14)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:12): 
+## QM(df = 4) = 8.0488, p-val = 0.0898</code></pre>
+</div>
+<div id="state-1" class="section level3">
+<h3>State</h3>
+<pre class="r"><code># Number of entries by fungicide and state
+table(fhb_sev_publ$AI2, fhb_sev_publ$state)</code></pre>
+<pre><code>##                 
+##                  PR RS SC
+##   AACHECK         3 22  1
+##   AZOX + TEBU 2X  1  0  1
+##   PIRA + METC 1X  2 14  0
+##   PIRA + METC 2X  3 20  1
+##   TEBU 2X         0  3  0
+##   TFLX + PROT 2X  3  1  1
+##   TFLX + TEBU 2X  1  0  1</code></pre>
+<pre class="r"><code>mv_sev_state &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*factor(state),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_publ
+)
+
+mv_sev_state</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 78; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 26)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.2503  1.1182     26     no         AACHECK
+## tau^2.2    0.0000  0.0000      2     no  AZOX + TEBU 2X
+## tau^2.3    1.8202  1.3491     16     no  PIRA + METC 1X
+## tau^2.4    1.6315  1.2773     24     no  PIRA + METC 2X
+## tau^2.5    1.0285  1.0141      3     no         TEBU 2X
+## tau^2.6    1.4718  1.2132      5     no  TFLX + PROT 2X
+## tau^2.7    0.0000  0.0000      2     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    1.0000    0.9376    0.9557    1.0000    0.9180
+## AZOX + TEBU 2X    1.0000         1    0.0000    0.9553    0.0000    0.9174
+## PIRA + METC 1X    0.9376    0.0000         1    0.9984    0.0000    0.9986
+## PIRA + METC 2X    0.9557    0.9553    0.9984         1    0.9573    0.9940
+## TEBU 2X           1.0000    0.0000    0.0000    0.9573         1    0.0000
+## TFLX + PROT 2X    0.9180    0.9174    0.9986    0.9940    0.0000         1
+## TFLX + TEBU 2X    0.9199    0.9194    0.0000    0.9939    0.0000    0.9991
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.9199       -    no    no    no    no    no    no
+## AZOX + TEBU 2X    0.9194       2     -   yes    no   yes    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.9939      24     2    16     -    no    no    no
+## TEBU 2X           0.0000       3     0     0     1     -   yes   yes
+## TFLX + PROT 2X    0.9991       5     2     2     5     0     -    no
+## TFLX + TEBU 2X         1       2     2     0     2     0     2     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 62) = 16144.4238, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:16): 
+## QM(df = 15) = 775.6597, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                    estimate      se     zval    pval
+## intrcpt                              3.7149  0.6468   5.7437  &lt;.0001
+## AI2AZOX + TEBU 2X                   -1.2813  0.6472  -1.9799  0.0477
+## AI2PIRA + METC 1X                   -1.0786  0.3186  -3.3852  0.0007
+## AI2PIRA + METC 2X                   -1.7445  0.2405  -7.2525  &lt;.0001
+## AI2TEBU 2X                          -0.7233  0.1081  -6.6940  &lt;.0001
+## AI2TFLX + PROT 2X                   -1.4075  0.2967  -4.7443  &lt;.0001
+## AI2TFLX + TEBU 2X                   -1.5748  0.6475  -2.4323  0.0150
+## factor(state)RS                     -1.8528  0.6896  -2.6868  0.0072
+## factor(state)SC                     -1.8370  1.3317  -1.3794  0.1678
+## AI2PIRA + METC 1X:factor(state)RS    0.1818  0.3435   0.5293  0.5966
+## AI2PIRA + METC 2X:factor(state)RS    0.3423  0.2627   1.3030  0.1926
+## AI2TFLX + PROT 2X:factor(state)RS    0.0046  0.4952   0.0093  0.9926
+## AI2AZOX + TEBU 2X:factor(state)SC    0.9359  1.4082   0.6646  0.5063
+## AI2PIRA + METC 2X:factor(state)SC    2.0229  0.6120   3.3055  0.0009
+## AI2TFLX + PROT 2X:factor(state)SC    1.1350  0.7779   1.4590  0.1446
+## AI2TFLX + TEBU 2X:factor(state)SC    1.9128  1.3519   1.4149  0.1571
+##                                      ci.lb    ci.ub     
+## intrcpt                             2.4472   4.9826  ***
+## AI2AZOX + TEBU 2X                  -2.5497  -0.0129    *
+## AI2PIRA + METC 1X                  -1.7030  -0.4541  ***
+## AI2PIRA + METC 2X                  -2.2159  -1.2730  ***
+## AI2TEBU 2X                         -0.9351  -0.5115  ***
+## AI2TFLX + PROT 2X                  -1.9889  -0.8260  ***
+## AI2TFLX + TEBU 2X                  -2.8439  -0.3058    *
+## factor(state)RS                    -3.2044  -0.5012   **
+## factor(state)SC                    -4.4470   0.7731     
+## AI2PIRA + METC 1X:factor(state)RS  -0.4915   0.8551     
+## AI2PIRA + METC 2X:factor(state)RS  -0.1726   0.8571     
+## AI2TFLX + PROT 2X:factor(state)RS  -0.9660   0.9751     
+## AI2AZOX + TEBU 2X:factor(state)SC  -1.8241   3.6959     
+## AI2PIRA + METC 2X:factor(state)SC   0.8235   3.2224  ***
+## AI2TFLX + PROT 2X:factor(state)SC  -0.3897   2.6597     
+## AI2TFLX + TEBU 2X:factor(state)SC  -0.7368   4.5625     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># anova(fhb_mv_AI_state,btt=8:15)
+# 
+# anova(fhb_mv_AI_state,btt=8:11)
+# 
+# anova(fhb_mv_AI_state,btt=11:15)</code></pre>
+</div>
+<div id="publication" class="section level3">
+<h3>Publication</h3>
+<pre class="r"><code>mv_sev_publication &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*factor(publication),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev_publ
+)
+
+mv_sev_publication</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 78; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 26)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.3944  1.1809     26     no         AACHECK
+## tau^2.2    0.3553  0.5961      2     no  AZOX + TEBU 2X
+## tau^2.3    1.8948  1.3765     16     no  PIRA + METC 1X
+## tau^2.4    1.6265  1.2753     24     no  PIRA + METC 2X
+## tau^2.5    0.8941  0.9456      3     no         TEBU 2X
+## tau^2.6    1.8874  1.3738      5     no  TFLX + PROT 2X
+## tau^2.7    0.0023  0.0480      2     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    1.0000    0.9177    0.9357    1.0000    0.9692
+## AZOX + TEBU 2X    1.0000         1    0.0000    0.9357    0.0000    0.9692
+## PIRA + METC 1X    0.9177    0.0000         1    0.9989    0.0000    0.9873
+## PIRA + METC 2X    0.9357    0.9357    0.9989         1    0.9375    0.9937
+## TEBU 2X           1.0000    0.0000    0.0000    0.9375         1    0.0000
+## TFLX + PROT 2X    0.9692    0.9692    0.9873    0.9937    0.0000         1
+## TFLX + TEBU 2X   -0.9998   -0.9998    0.0000   -0.9288    0.0000   -0.9643
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK          -0.9998       -    no    no    no    no    no    no
+## AZOX + TEBU 2X   -0.9998       2     -   yes    no   yes    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X   -0.9288      24     2    16     -    no    no    no
+## TEBU 2X           0.0000       3     0     0     1     -   yes   yes
+## TFLX + PROT 2X   -0.9643       5     2     2     5     0     -    no
+## TFLX + TEBU 2X         1       2     2     0     2     0     2     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 63) = 86643.4721, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:15): 
+## QM(df = 14) = 1387.5274, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                              estimate      se     zval
+## intrcpt                                        2.7661  0.4833   5.7239
+## AI2AZOX + TEBU 2X                             -0.4769  0.1643  -2.9017
+## AI2PIRA + METC 1X                             -1.0220  0.3033  -3.3698
+## AI2PIRA + METC 2X                             -1.5988  0.3080  -5.1906
+## AI2TEBU 2X                                    -0.7176  0.1503  -4.7739
+## AI2TFLX + PROT 2X                             -1.0731  0.2215  -4.8452
+## AI2TFLX + TEBU 2X                              0.5711  0.3434   1.6633
+## factor(publication)Resumo                     -1.0960  0.5845  -1.8752
+## factor(publication)Tese                       -0.4665  0.6592  -0.7077
+## AI2PIRA + METC 1X:factor(publication)Resumo    0.0337  0.3479   0.0969
+## AI2PIRA + METC 2X:factor(publication)Resumo    0.0902  0.3391   0.2660
+## AI2TFLX + PROT 2X:factor(publication)Resumo   -0.6987  0.2517  -2.7765
+## AI2PIRA + METC 1X:factor(publication)Tese      0.3992  0.4335   0.9208
+## AI2PIRA + METC 2X:factor(publication)Tese      0.5067  0.3749   1.3518
+## AI2TEBU 2X:factor(publication)Tese            -0.0880  0.3051  -0.2884
+##                                                pval    ci.lb    ci.ub     
+## intrcpt                                      &lt;.0001   1.8190   3.7133  ***
+## AI2AZOX + TEBU 2X                            0.0037  -0.7989  -0.1548   **
+## AI2PIRA + METC 1X                            0.0008  -1.6164  -0.4276  ***
+## AI2PIRA + METC 2X                            &lt;.0001  -2.2025  -0.9951  ***
+## AI2TEBU 2X                                   &lt;.0001  -1.0122  -0.4230  ***
+## AI2TFLX + PROT 2X                            &lt;.0001  -1.5071  -0.6390  ***
+## AI2TFLX + TEBU 2X                            0.0963  -0.1019   1.2442    .
+## factor(publication)Resumo                    0.0608  -2.2416   0.0496    .
+## factor(publication)Tese                      0.4791  -1.7586   0.8256     
+## AI2PIRA + METC 1X:factor(publication)Resumo  0.9228  -0.6482   0.7157     
+## AI2PIRA + METC 2X:factor(publication)Resumo  0.7903  -0.5744   0.7548     
+## AI2TFLX + PROT 2X:factor(publication)Resumo  0.0055  -1.1920  -0.2055   **
+## AI2PIRA + METC 1X:factor(publication)Tese    0.3572  -0.4505   1.2489     
+## AI2PIRA + METC 2X:factor(publication)Tese    0.1764  -0.2280   1.2414     
+## AI2TEBU 2X:factor(publication)Tese           0.7731  -0.6861   0.5101     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_publication, btt=10:16)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 10:15): 
+## QM(df = 6) = 10.0723, p-val = 0.1216</code></pre>
+</div>
+</div>
+</div>
+<div id="overall" class="section level1">
+<h1>Overall</h1>
+<div id="covariance-structure-2" class="section level2">
+<h2>covariance structure</h2>
+<p>Now we will fit models with CS, HCS and UN matrix-covariance structure. We will then compare them with <code>anova</code> function to choose among the best model.</p>
+<pre class="r"><code>library(metafor)
+
+
+mv_sev_HCS &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;HCS&quot;,
+  method = &quot;ML&quot;,
+  data = fhb_sev
+)
+
+mv_sev &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev
+)
+
+mv_sev</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 248; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 61)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.6179  1.2720     61     no         AACHECK
+## tau^2.2    1.8730  1.3686     25     no  AZOX + TEBU 2X
+## tau^2.3    2.2086  1.4861     16     no  PIRA + METC 1X
+## tau^2.4    2.1717  1.4737     57     no  PIRA + METC 2X
+## tau^2.5    1.7818  1.3349     14     no         TEBU 2X
+## tau^2.6    1.9330  1.3903     39     no  TFLX + PROT 2X
+## tau^2.7    1.8594  1.3636     36     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    0.9317    0.9182    0.9278    0.9392    0.9150
+## AZOX + TEBU 2X    0.9317         1    0.0000    0.9819    0.9991    0.9947
+## PIRA + METC 1X    0.9182    0.0000         1    0.9985    0.0000    0.9893
+## PIRA + METC 2X    0.9278    0.9819    0.9985         1    0.9782    0.9815
+## TEBU 2X           0.9392    0.9991    0.0000    0.9782         1    0.9952
+## TFLX + PROT 2X    0.9150    0.9947    0.9893    0.9815    0.9952         1
+## TFLX + TEBU 2X    0.9112    0.9952    0.0000    0.9842    0.9936    0.9966
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.9112       -    no    no    no    no    no    no
+## AZOX + TEBU 2X    0.9952      25     -   yes    no    no    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.9842      57    24    16     -    no    no    no
+## TEBU 2X           0.9936      14    11     0    11     -    no    no
+## TFLX + PROT 2X    0.9966      39    24     2    38    10     -    no
+## TFLX + TEBU 2X         1      36    25     0    34    11    35     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 241) = 172176.0878, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:7): 
+## QM(df = 6) = 257.0960, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                    estimate      se      zval    pval    ci.lb    ci.ub
+## intrcpt              2.0838  0.1635   12.7452  &lt;.0001   1.7633   2.4042
+## AI2AZOX + TEBU 2X   -0.8965  0.0790  -11.3500  &lt;.0001  -1.0513  -0.7417
+## AI2PIRA + METC 1X   -0.5987  0.0985   -6.0800  &lt;.0001  -0.7917  -0.4057
+## AI2PIRA + METC 2X   -1.0462  0.0802  -13.0514  &lt;.0001  -1.2033  -0.8891
+## AI2TEBU 2X          -0.9236  0.0757  -12.1971  &lt;.0001  -1.0720  -0.7752
+## AI2TFLX + PROT 2X   -0.9995  0.0840  -11.8947  &lt;.0001  -1.1642  -0.8348
+## AI2TFLX + TEBU 2X   -0.8901  0.0833  -10.6889  &lt;.0001  -1.0533  -0.7269
+##                       
+## intrcpt            ***
+## AI2AZOX + TEBU 2X  ***
+## AI2PIRA + METC 1X  ***
+## AI2PIRA + METC 2X  ***
+## AI2TEBU 2X         ***
+## AI2TFLX + PROT 2X  ***
+## AI2TFLX + TEBU 2X  ***
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>We can see below that the UN structure is a better model.</p>
+<pre class="r"><code>anova(mv_sev_HCS, mv_sev)</code></pre>
+<pre><code>##         df      AIC      BIC     AICc    logLik     LRT   pval          QE
+## Full    32 420.2029 532.6326 430.0261 -178.1014                172176.0878
+## Reduced 15 467.7158 520.4172 469.7848 -218.8579 81.5129 &lt;.0001 172176.0878</code></pre>
+<pre class="r"><code>AIC(mv_sev_HCS)</code></pre>
+<pre><code>## [1] 467.7158</code></pre>
+</div>
+<div id="percent-control-2" class="section level2">
+<h2>Percent control</h2>
+<p>Let’s obtain the percent control from the estimated ratios.</p>
+<pre class="r"><code>efficacy_sev &lt;- data.frame(cbind(
+  (1 - exp(mv_sev$b)) * 100,
+  (1 - exp(mv_sev$ci.lb)) * 100,
+  (1 - exp(mv_sev$ci.ub)) * 100
+))
+
+
+
+efficacy_sev</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["X1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["X2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["X3"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"-703.46131","2":"-483.17486","3":"-1006.95800","_rn_":"intrcpt"},{"1":"59.19924","2":"65.05083","3":"52.36791","_rn_":"AI2AZOX + TEBU 2X"},{"1":"45.04562","2":"54.69057","3":"33.34755","_rn_":"AI2PIRA + METC 1X"},{"1":"64.87290","2":"69.98004","3":"58.89692","_rn_":"AI2PIRA + METC 2X"},{"1":"60.29241","2":"65.76925","3":"53.93927","_rn_":"AI2TEBU 2X"},{"1":"63.19299","2":"68.78191","3":"56.60350","_rn_":"AI2TFLX + PROT 2X"},{"1":"58.93782","2":"65.12127","3":"51.65816","_rn_":"AI2TFLX + TEBU 2X"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>efficacy_res = efficacy_sev %&gt;% 
+  set_names(&quot;efficacy&quot;, &quot;eff_sup&quot;, &quot;eff_inf&quot;) %&gt;% 
+  mutate(fungicide = c(&quot;check&quot;, &quot;AZOX + TEBU 2X&quot;, &quot;PIRA + METC 1X&quot;, &quot;PIRA + METC 2X&quot;, &quot;TEBU 2X&quot;, &quot;TFLX + PROT 2X&quot;, &quot;TFLX + TEBU 2X&quot;)) %&gt;% 
+  filter(fungicide != &quot;check&quot;)
+efficacy_res</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["efficacy"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["eff_sup"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["eff_inf"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["fungicide"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"59.19924","2":"65.05083","3":"52.36791","4":"AZOX + TEBU 2X"},{"1":"45.04562","2":"54.69057","3":"33.34755","4":"PIRA + METC 1X"},{"1":"64.87290","2":"69.98004","3":"58.89692","4":"PIRA + METC 2X"},{"1":"60.29241","2":"65.76925","3":"53.93927","4":"TEBU 2X"},{"1":"63.19299","2":"68.78191","3":"56.60350","4":"TFLX + PROT 2X"},{"1":"58.93782","2":"65.12127","3":"51.65816","4":"TFLX + TEBU 2X"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>library(readr)
+write_csv(efficacy_res, &quot;data/efficacy.csv&quot;)</code></pre>
+</div>
+<div id="contrasts-2" class="section level2">
+<h2>Contrasts</h2>
+<p>We can set linear contrasts between treatments of interest and get the P-value using the <code>anova</code> function.</p>
+<pre class="r"><code>anova(mv_sev, L = rbind(
+  c(0, 1, -1, 0, 0, 0, 0),
+  c(0, 1, 0, -1, 0, 0, 0),
+  c(0, 1, 0, 0, -1, 0, 0),
+  c(0, 1, 0, 0, 0, -1, 0),
+  c(0, 1, 0, 0, 0, 0, -1),
+  c(0, 0, 1, -1, 0, 0, 0),
+  c(0, 0, 1, 0, -1, 0, 0),
+  c(0, 0, 1, 0, 0, -1, 0),
+  c(0, 0, 1, 0, 0, 0, -1),
+  c(0, 0, 0, 1, -1, 0, 0),
+  c(0, 0, 0, 1, 0, -1, 0),
+  c(0, 0, 0, 1, 0, 0, -1),
+  c(0, 0, 0, 0, 1, -1, 0),
+  c(0, 0, 0, 0, 1, 0, -1),
+  c(0, 0, 0, 0, 0, 1, -1)
+))</code></pre>
+<pre><code>## 
+## Hypotheses:                                             
+## 1:  AI2AZOX + TEBU 2X - AI2PIRA + METC 1X = 0
+## 2:  AI2AZOX + TEBU 2X - AI2PIRA + METC 2X = 0
+## 3:         AI2AZOX + TEBU 2X - AI2TEBU 2X = 0
+## 4:  AI2AZOX + TEBU 2X - AI2TFLX + PROT 2X = 0
+## 5:  AI2AZOX + TEBU 2X - AI2TFLX + TEBU 2X = 0
+## 6:  AI2PIRA + METC 1X - AI2PIRA + METC 2X = 0
+## 7:         AI2PIRA + METC 1X - AI2TEBU 2X = 0
+## 8:  AI2PIRA + METC 1X - AI2TFLX + PROT 2X = 0
+## 9:  AI2PIRA + METC 1X - AI2TFLX + TEBU 2X = 0
+## 10:        AI2PIRA + METC 2X - AI2TEBU 2X = 0
+## 11: AI2PIRA + METC 2X - AI2TFLX + PROT 2X = 0
+## 12: AI2PIRA + METC 2X - AI2TFLX + TEBU 2X = 0
+## 13:        AI2TEBU 2X - AI2TFLX + PROT 2X = 0
+## 14:        AI2TEBU 2X - AI2TFLX + TEBU 2X = 0
+## 15: AI2TFLX + PROT 2X - AI2TFLX + TEBU 2X = 0
+## 
+## Results:
+##     estimate     se    zval   pval
+## 1:   -0.2978 0.0876 -3.3983 0.0007
+## 2:    0.1497 0.0642  2.3318 0.0197
+## 3:    0.0272 0.0355  0.7660 0.4437
+## 4:    0.1030 0.0475  2.1673 0.0302
+## 5:   -0.0064 0.0437 -0.1462 0.8837
+## 6:    0.4475 0.0635  7.0522 &lt;.0001
+## 7:    0.3250 0.0913  3.5578 0.0004
+## 8:    0.4008 0.0846  4.7352 &lt;.0001
+## 9:    0.2914 0.0830  3.5110 0.0004
+## 10:  -0.1226 0.0699 -1.7532 0.0796
+## 11:  -0.0467 0.0603 -0.7749 0.4384
+## 12:  -0.1561 0.0570 -2.7369 0.0062
+## 13:   0.0759 0.0464  1.6365 0.1017
+## 14:  -0.0335 0.0474 -0.7074 0.4793
+## 15:  -0.1094 0.0363 -3.0156 0.0026</code></pre>
+</div>
+<div id="moderators-2" class="section level2">
+<h2>Moderators</h2>
+<div id="cultivar-2" class="section level3">
+<h3>Cultivar</h3>
+<pre class="r"><code># creating two groups of cultivars (MR, S)
+table(fhb_sev$cultivar, fhb_sev$reaction)</code></pre>
+<pre><code>##                      
+##                       MR MS MS/MR MS/S  S
+##   Ametista             0  8     0    0  0
+##   BRS Grauna           0  0     0    5  0
+##   BRS208               0 87     0    0  0
+##   BRS23                0  4     0    0  0
+##   BRSGuabijú           0  5     0    0  0
+##   BRSGuamirim          3  0     0    0  0
+##   Campeiro             0 14     0    0  0
+##   Campo Real           0  0     0    0  0
+##   CD105                0  0     0    0  5
+##   Celebra              0  0     4    0  0
+##   Fundacep Bravo       0  8     0    0  0
+##   Fundacep46 Nova Era  0  6     0    0  0
+##   linhagem 01/14       0  0     0    0  0
+##   Linhagem 01/14       0  0     0    0  0
+##   Marfim               0  0     0    8  0
+##   Raízes               0  0     0    0  0
+##   Supera               0  0     0    0  0
+##   TBIO Itaipu          0  6     0    0  0
+##   TBIO Pioneiro        0  0     0    0  0
+##   Tbio Sinuelo         0  6     0    0  0
+##   TBIO Toruk           0 23     0    0  0
+##   TEC 02/13            0  0     0    0  0
+##   TEC 10               0  9     0    0  0
+##   Vigore               0  0     0    0  0</code></pre>
+<pre class="r"><code>nrow(table(fhb_sev$cultivar, fhb_sev$reaction))</code></pre>
+<pre><code>## [1] 24</code></pre>
+<pre class="r"><code># Renaming the reactions 
+library(plyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     compact</code></pre>
+<pre class="r"><code>fhb_sev$reaction &lt;- revalue(fhb_sev$reaction, c(&quot;MS&quot; = &quot;S&quot;))
+fhb_sev$reaction &lt;- revalue(fhb_sev$reaction, c(&quot;MS/MR&quot; = &quot;MR&quot;))
+fhb_sev$reaction &lt;- revalue(fhb_sev$reaction, c(&quot;MR/R&quot; = &quot;MR&quot;))</code></pre>
+<pre><code>## The following `from` values were not present in `x`: MR/R</code></pre>
+<pre class="r"><code>fhb_sev$reaction &lt;- revalue(fhb_sev$reaction, c(&quot;MS/S&quot; = &quot;S&quot;))
+detach(&quot;package:plyr&quot;, unload = TRUE)
+
+table(fhb_sev$cultivar, fhb_sev$reaction)</code></pre>
+<pre><code>##                      
+##                       MR  S
+##   Ametista             0  8
+##   BRS Grauna           0  5
+##   BRS208               0 87
+##   BRS23                0  4
+##   BRSGuabijú           0  5
+##   BRSGuamirim          3  0
+##   Campeiro             0 14
+##   Campo Real           0  0
+##   CD105                0  5
+##   Celebra              4  0
+##   Fundacep Bravo       0  8
+##   Fundacep46 Nova Era  0  6
+##   linhagem 01/14       0  0
+##   Linhagem 01/14       0  0
+##   Marfim               0  8
+##   Raízes               0  0
+##   Supera               0  0
+##   TBIO Itaipu          0  6
+##   TBIO Pioneiro        0  0
+##   Tbio Sinuelo         0  6
+##   TBIO Toruk           0 23
+##   TEC 02/13            0  0
+##   TEC 10               0  9
+##   Vigore               0  0</code></pre>
+<pre class="r"><code>table(fhb_sev$reaction)</code></pre>
+<pre><code>## 
+##  MR   S 
+##   7 194</code></pre>
+<pre class="r"><code>table(fhb_sev$AI2, fhb_sev$reaction)</code></pre>
+<pre><code>##                 
+##                  MR  S
+##   AACHECK         2 44
+##   AZOX + TEBU 2X  0 25
+##   PIRA + METC 1X  1  4
+##   PIRA + METC 2X  2 40
+##   TEBU 2X         0 14
+##   TFLX + PROT 2X  1 35
+##   TFLX + TEBU 2X  1 32</code></pre>
+<pre class="r"><code>library(metafor)
+
+
+mv_reaction &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*reaction,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev
+)
+
+mv_reaction</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 201; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 46)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.5063  1.2273     46     no         AACHECK
+## tau^2.2    1.6252  1.2748     25     no  AZOX + TEBU 2X
+## tau^2.3    1.5117  1.2295      5     no  PIRA + METC 1X
+## tau^2.4    1.7963  1.3403     42     no  PIRA + METC 2X
+## tau^2.5    1.5539  1.2466     14     no         TEBU 2X
+## tau^2.6    1.6475  1.2836     36     no  TFLX + PROT 2X
+## tau^2.7    1.5906  1.2612     33     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    0.9288    0.9283    0.9269    0.9360    0.9110
+## AZOX + TEBU 2X    0.9288         1    0.0000    0.9767    0.9988    0.9938
+## PIRA + METC 1X    0.9283    0.0000         1    0.9998    0.0000    0.9799
+## PIRA + METC 2X    0.9269    0.9767    0.9998         1    0.9713    0.9756
+## TEBU 2X           0.9360    0.9988    0.0000    0.9713         1    0.9945
+## TFLX + PROT 2X    0.9110    0.9938    0.9799    0.9756    0.9945         1
+## TFLX + TEBU 2X    0.9074    0.9943    0.0000    0.9778    0.9923    0.9949
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.9074       -    no    no    no    no    no    no
+## AZOX + TEBU 2X    0.9943      25     -   yes    no    no    no    no
+## PIRA + METC 1X    0.0000       5     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.9778      42    24     5     -    no    no    no
+## TEBU 2X           0.9923      14    11     0    11     -    no    no
+## TFLX + PROT 2X    0.9949      36    24     2    35    10     -    no
+## TFLX + TEBU 2X         1      33    25     0    31    11    32     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 189) = 85490.5575, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:12): 
+## QM(df = 11) = 174.6521, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                              estimate      se      zval    pval    ci.lb
+## intrcpt                        1.4165  0.8689    1.6303  0.1030  -0.2864
+## AI2AZOX + TEBU 2X             -0.7929  0.0844   -9.3896  &lt;.0001  -0.9585
+## AI2PIRA + METC 1X             -0.8736  0.3955   -2.2090  0.0272  -1.6487
+## AI2PIRA + METC 2X             -1.3026  0.3890   -3.3490  0.0008  -2.0650
+## AI2TEBU 2X                    -0.8350  0.0810  -10.3082  &lt;.0001  -0.9938
+## AI2TFLX + PROT 2X             -1.3189  0.4758   -2.7721  0.0056  -2.2513
+## AI2TFLX + TEBU 2X             -1.1216  0.4643   -2.4155  0.0157  -2.0317
+## reactionS                      0.7369  0.8885    0.8293  0.4069  -1.0046
+## AI2PIRA + METC 1X:reactionS    0.5107  0.4134    1.2355  0.2166  -0.2995
+## AI2PIRA + METC 2X:reactionS    0.4117  0.3988    1.0325  0.3019  -0.3699
+## AI2TFLX + PROT 2X:reactionS    0.4392  0.4844    0.9067  0.3646  -0.5102
+## AI2TFLX + TEBU 2X:reactionS    0.3553  0.4733    0.7508  0.4528  -0.5723
+##                                ci.ub     
+## intrcpt                       3.1195     
+## AI2AZOX + TEBU 2X            -0.6274  ***
+## AI2PIRA + METC 1X            -0.0985    *
+## AI2PIRA + METC 2X            -0.5403  ***
+## AI2TEBU 2X                   -0.6762  ***
+## AI2TFLX + PROT 2X            -0.3864   **
+## AI2TFLX + TEBU 2X            -0.2115    *
+## reactionS                     2.4784     
+## AI2PIRA + METC 1X:reactionS   1.3210     
+## AI2PIRA + METC 2X:reactionS   1.1933     
+## AI2TFLX + PROT 2X:reactionS   1.3887     
+## AI2TFLX + TEBU 2X:reactionS   1.2829     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_reaction, btt=9:12)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:12): 
+## QM(df = 4) = 1.7383, p-val = 0.7837</code></pre>
+</div>
+<div id="year-as-continuous-1" class="section level3">
+<h3>Year as continuous</h3>
+<pre class="r"><code># Number of entries by fungicide and year
+table(fhb_sev$AI2, fhb_sev$year)</code></pre>
+<pre><code>##                 
+##                  2000 2009 2011 2012 2013 2014 2015 2016 2017 2018
+##   AACHECK           2    4    7    6   12   14    1    3    8    4
+##   AZOX + TEBU 2X    0    0    7    5    8    5    0    0    0    0
+##   PIRA + METC 1X    0    4    0    0    4    8    0    0    0    0
+##   PIRA + METC 2X    0    4    6    6   12   14    1    3    7    4
+##   TEBU 2X           2    0    7    0    0    4    0    1    0    0
+##   TFLX + PROT 2X    0    0    6    6    8    7    1    0    7    4
+##   TFLX + TEBU 2X    0    0    7    5    8    5    1    0    6    4</code></pre>
+<pre class="r"><code>mv_sev_year &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*year,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;HCS&quot;,
+  method = &quot;ML&quot;,
+  data = fhb_sev %&gt;% mutate(year = year-2000))
+
+
+mv_sev_year</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 248; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 61)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.6613  1.2889     61     no         AACHECK
+## tau^2.2    1.7493  1.3226     25     no  AZOX + TEBU 2X
+## tau^2.3    1.9367  1.3917     16     no  PIRA + METC 1X
+## tau^2.4    2.1394  1.4627     57     no  PIRA + METC 2X
+## tau^2.5    1.8217  1.3497     14     no         TEBU 2X
+## tau^2.6    1.7207  1.3117     39     no  TFLX + PROT 2X
+## tau^2.7    1.7615  1.3272     36     no  TFLX + TEBU 2X
+## rho        0.9540                    no                
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 234) = 160079.9786, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:14): 
+## QM(df = 13) = 358.9249, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                         estimate      se     zval    pval    ci.lb
+## intrcpt                   2.0497  0.6653   3.0808  0.0021   0.7457
+## AI2AZOX + TEBU 2X        -1.4342  0.9910  -1.4472  0.1478  -3.3764
+## AI2PIRA + METC 1X        -0.7467  0.7138  -1.0462  0.2955  -2.1457
+## AI2PIRA + METC 2X        -1.3428  0.4202  -3.1956  0.0014  -2.1664
+## AI2TEBU 2X               -1.0252  0.3001  -3.4163  0.0006  -1.6134
+## AI2TFLX + PROT 2X        -1.0420  0.4512  -2.3094  0.0209  -1.9263
+## AI2TFLX + TEBU 2X        -0.5300  0.4327  -1.2249  0.2206  -1.3781
+## year                      0.0033  0.0486   0.0687  0.9453  -0.0920
+## AI2AZOX + TEBU 2X:year    0.0460  0.0779   0.5903  0.5550  -0.1066
+## AI2PIRA + METC 1X:year   -0.0141  0.0560  -0.2527  0.8005  -0.1239
+## AI2PIRA + METC 2X:year    0.0207  0.0297   0.6968  0.4859  -0.0375
+## AI2TEBU 2X:year           0.0147  0.0251   0.5859  0.5580  -0.0344
+## AI2TFLX + PROT 2X:year    0.0078  0.0311   0.2505  0.8022  -0.0532
+## AI2TFLX + TEBU 2X:year   -0.0196  0.0302  -0.6500  0.5157  -0.0788
+##                           ci.ub     
+## intrcpt                  3.3538   **
+## AI2AZOX + TEBU 2X        0.5081     
+## AI2PIRA + METC 1X        0.6522     
+## AI2PIRA + METC 2X       -0.5192   **
+## AI2TEBU 2X              -0.4371  ***
+## AI2TFLX + PROT 2X       -0.1577    *
+## AI2TFLX + TEBU 2X        0.3181     
+## year                     0.0987     
+## AI2AZOX + TEBU 2X:year   0.1986     
+## AI2PIRA + METC 1X:year   0.0956     
+## AI2PIRA + METC 2X:year   0.0789     
+## AI2TEBU 2X:year          0.0638     
+## AI2TFLX + PROT 2X:year   0.0687     
+## AI2TFLX + TEBU 2X:year   0.0395     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_year, btt=9:14)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:14): 
+## QM(df = 6) = 2.2574, p-val = 0.8946</code></pre>
+</div>
+<div id="disease-pressure-2" class="section level3">
+<h3>Disease Pressure</h3>
+<pre class="r"><code>median(fhb_sev$sev_check)</code></pre>
+<pre><code>## [1] 6.8</code></pre>
+<pre class="r"><code>library(tidyverse)
+fhb_sev &lt;- fhb_sev %&gt;%
+  mutate(sev_check_class = case_when(
+      sev_check &lt; 7 ~ &quot;low&quot;,
+      sev_check &gt;= 7 ~ &quot;high&quot;))
+
+mv_sev_check &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*sev_check_class,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev
+)
+
+mv_sev_check</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 248; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 61)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    0.7279  0.8532     61     no         AACHECK
+## tau^2.2    1.0226  1.0112     25     no  AZOX + TEBU 2X
+## tau^2.3    1.2717  1.1277     16     no  PIRA + METC 1X
+## tau^2.4    1.1466  1.0708     57     no  PIRA + METC 2X
+## tau^2.5    0.9849  0.9924     14     no         TEBU 2X
+## tau^2.6    1.0792  1.0389     39     no  TFLX + PROT 2X
+## tau^2.7    1.0365  1.0181     36     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    0.8705    0.8413    0.8590    0.8803    0.8415
+## AZOX + TEBU 2X    0.8705         1    0.0000    0.9667    0.9987    0.9910
+## PIRA + METC 1X    0.8413    0.0000         1    0.9982    0.0000    0.9775
+## PIRA + METC 2X    0.8590    0.9667    0.9982         1    0.9586    0.9668
+## TEBU 2X           0.8803    0.9987    0.0000    0.9586         1    0.9918
+## TFLX + PROT 2X    0.8415    0.9910    0.9775    0.9668    0.9918         1
+## TFLX + TEBU 2X    0.8337    0.9909    0.0000    0.9716    0.9887    0.9939
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.8337       -    no    no    no    no    no    no
+## AZOX + TEBU 2X    0.9909      25     -   yes    no    no    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.9716      57    24    16     -    no    no    no
+## TEBU 2X           0.9887      14    11     0    11     -    no    no
+## TFLX + PROT 2X    0.9939      39    24     2    38    10     -    no
+## TFLX + TEBU 2X         1      36    25     0    34    11    35     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 234) = 55062.5298, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:14): 
+## QM(df = 13) = 357.0008, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                       estimate      se     zval    pval
+## intrcpt                                 3.0425  0.1566  19.4263  &lt;.0001
+## AI2AZOX + TEBU 2X                      -0.9205  0.1064  -8.6475  &lt;.0001
+## AI2PIRA + METC 1X                      -0.5834  0.1943  -3.0028  0.0027
+## AI2PIRA + METC 2X                      -0.9716  0.1126  -8.6273  &lt;.0001
+## AI2TEBU 2X                             -0.9729  0.1020  -9.5332  &lt;.0001
+## AI2TFLX + PROT 2X                      -1.0170  0.1137  -8.9476  &lt;.0001
+## AI2TFLX + TEBU 2X                      -0.9235  0.1139  -8.1053  &lt;.0001
+## sev_check_classlow                     -1.8900  0.2204  -8.5772  &lt;.0001
+## AI2AZOX + TEBU 2X:sev_check_classlow    0.0509  0.1629   0.3127  0.7545
+## AI2PIRA + METC 1X:sev_check_classlow   -0.0381  0.2365  -0.1610  0.8721
+## AI2PIRA + METC 2X:sev_check_classlow   -0.1343  0.1601  -0.8391  0.4014
+## AI2TEBU 2X:sev_check_classlow           0.1198  0.1908   0.6280  0.5300
+## AI2TFLX + PROT 2X:sev_check_classlow    0.0397  0.1737   0.2288  0.8190
+## AI2TFLX + TEBU 2X:sev_check_classlow    0.0723  0.1697   0.4263  0.6699
+##                                         ci.lb    ci.ub     
+## intrcpt                                2.7355   3.3495  ***
+## AI2AZOX + TEBU 2X                     -1.1291  -0.7119  ***
+## AI2PIRA + METC 1X                     -0.9642  -0.2026   **
+## AI2PIRA + METC 2X                     -1.1924  -0.7509  ***
+## AI2TEBU 2X                            -1.1729  -0.7728  ***
+## AI2TFLX + PROT 2X                     -1.2398  -0.7942  ***
+## AI2TFLX + TEBU 2X                     -1.1468  -0.7002  ***
+## sev_check_classlow                    -2.3219  -1.4581  ***
+## AI2AZOX + TEBU 2X:sev_check_classlow  -0.2684   0.3703     
+## AI2PIRA + METC 1X:sev_check_classlow  -0.5015   0.4254     
+## AI2PIRA + METC 2X:sev_check_classlow  -0.4481   0.1795     
+## AI2TEBU 2X:sev_check_classlow         -0.2541   0.4937     
+## AI2TFLX + PROT 2X:sev_check_classlow  -0.3006   0.3801     
+## AI2TFLX + TEBU 2X:sev_check_classlow  -0.2602   0.4048     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_check, btt=9:14)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:14): 
+## QM(df = 6) = 3.5757, p-val = 0.7339</code></pre>
+</div>
+<div id="baseline-10-2" class="section level3">
+<h3>Baseline 10%</h3>
+<pre class="r"><code>library(tidyverse)
+library(metafor)
+
+fhb_sev &lt;- fhb_sev %&gt;%
+  mutate(sev_check_class = case_when(
+      sev_check &lt; 10 ~ &quot;low&quot;,
+      sev_check &gt;= 10 ~ &quot;high&quot;))
+
+mv_sev_check &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*sev_check_class,
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev
+)
+
+mv_sev_check</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 248; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 61)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    0.6524  0.8077     61     no         AACHECK
+## tau^2.2    0.9945  0.9972     25     no  AZOX + TEBU 2X
+## tau^2.3    1.3006  1.1404     16     no  PIRA + METC 1X
+## tau^2.4    1.1432  1.0692     57     no  PIRA + METC 2X
+## tau^2.5    1.0362  1.0179     14     no         TEBU 2X
+## tau^2.6    1.0846  1.0415     39     no  TFLX + PROT 2X
+## tau^2.7    0.9898  0.9949     36     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    0.8737    0.8497    0.8628    0.8968    0.8473
+## AZOX + TEBU 2X    0.8737         1    0.0000    0.9678    0.9976    0.9909
+## PIRA + METC 1X    0.8497    0.0000         1    0.9984    0.0000    0.9795
+## PIRA + METC 2X    0.8628    0.9678    0.9984         1    0.9786    0.9688
+## TEBU 2X           0.8968    0.9976    0.0000    0.9786         1    0.9891
+## TFLX + PROT 2X    0.8473    0.9909    0.9795    0.9688    0.9891         1
+## TFLX + TEBU 2X    0.8292    0.9899    0.0000    0.9707    0.9869    0.9938
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.8292       -    no    no    no    no    no    no
+## AZOX + TEBU 2X    0.9899      25     -   yes    no    no    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.9707      57    24    16     -    no    no    no
+## TEBU 2X           0.9869      14    11     0    11     -    no    no
+## TFLX + PROT 2X    0.9938      39    24     2    38    10     -    no
+## TFLX + TEBU 2X         1      36    25     0    34    11    35     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 234) = 50502.2660, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:14): 
+## QM(df = 13) = 416.0981, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                       estimate      se     zval    pval
+## intrcpt                                 3.4359  0.1770  19.4079  &lt;.0001
+## AI2AZOX + TEBU 2X                      -0.9612  0.1237  -7.7694  &lt;.0001
+## AI2PIRA + METC 1X                      -0.6683  0.2162  -3.0907  0.0020
+## AI2PIRA + METC 2X                      -0.9859  0.1313  -7.5059  &lt;.0001
+## AI2TEBU 2X                             -1.0122  0.1145  -8.8409  &lt;.0001
+## AI2TFLX + PROT 2X                      -1.0768  0.1338  -8.0453  &lt;.0001
+## AI2TFLX + TEBU 2X                      -0.9588  0.1337  -7.1702  &lt;.0001
+## sev_check_classlow                     -2.0658  0.2192  -9.4244  &lt;.0001
+## AI2AZOX + TEBU 2X:sev_check_classlow    0.0966  0.1612   0.5994  0.5489
+## AI2PIRA + METC 1X:sev_check_classlow    0.1070  0.2485   0.4307  0.6667
+## AI2PIRA + METC 2X:sev_check_classlow   -0.0808  0.1651  -0.4891  0.6248
+## AI2TEBU 2X:sev_check_classlow           0.2619  0.1711   1.5304  0.1259
+## AI2TFLX + PROT 2X:sev_check_classlow    0.1104  0.1732   0.6374  0.5239
+## AI2TFLX + TEBU 2X:sev_check_classlow    0.1078  0.1710   0.6302  0.5286
+##                                         ci.lb    ci.ub     
+## intrcpt                                3.0889   3.7829  ***
+## AI2AZOX + TEBU 2X                     -1.2037  -0.7187  ***
+## AI2PIRA + METC 1X                     -1.0921  -0.2445   **
+## AI2PIRA + METC 2X                     -1.2433  -0.7284  ***
+## AI2TEBU 2X                            -1.2366  -0.7878  ***
+## AI2TFLX + PROT 2X                     -1.3391  -0.8144  ***
+## AI2TFLX + TEBU 2X                     -1.2209  -0.6967  ***
+## sev_check_classlow                    -2.4954  -1.6362  ***
+## AI2AZOX + TEBU 2X:sev_check_classlow  -0.2193   0.4125     
+## AI2PIRA + METC 1X:sev_check_classlow  -0.3800   0.5941     
+## AI2PIRA + METC 2X:sev_check_classlow  -0.4044   0.2429     
+## AI2TEBU 2X:sev_check_classlow         -0.0735   0.5974     
+## AI2TFLX + PROT 2X:sev_check_classlow  -0.2290   0.4497     
+## AI2TFLX + TEBU 2X:sev_check_classlow  -0.2274   0.4430     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_check, btt=9:14)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:14): 
+## QM(df = 6) = 7.1426, p-val = 0.3079</code></pre>
+</div>
+<div id="sev_check-as-continuous-2" class="section level3">
+<h3>Sev_check as continuous</h3>
+<pre class="r"><code>mv_sev_check_cont &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*as.numeric(sev_check),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev
+)
+
+mv_sev_check_cont</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 248; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 61)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    0.4667  0.6832     61     no         AACHECK
+## tau^2.2    0.7774  0.8817     25     no  AZOX + TEBU 2X
+## tau^2.3    0.9219  0.9602     16     no  PIRA + METC 1X
+## tau^2.4    0.8683  0.9318     57     no  PIRA + METC 2X
+## tau^2.5    0.7154  0.8458     14     no         TEBU 2X
+## tau^2.6    0.7351  0.8574     39     no  TFLX + PROT 2X
+## tau^2.7    0.7990  0.8939     36     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    0.8254    0.7847    0.8057    0.9100    0.7622
+## AZOX + TEBU 2X    0.8254         1    0.0000    0.9562    0.9798    0.9853
+## PIRA + METC 1X    0.7847    0.0000         1    0.9969    0.0000    0.9721
+## PIRA + METC 2X    0.8057    0.9562    0.9969         1    0.9326    0.9531
+## TEBU 2X           0.9100    0.9798    0.0000    0.9326         1    0.9589
+## TFLX + PROT 2X    0.7622    0.9853    0.9721    0.9531    0.9589         1
+## TFLX + TEBU 2X    0.7764    0.9894    0.0000    0.9617    0.9586    0.9917
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.7764       -    no    no    no    no    no    no
+## AZOX + TEBU 2X    0.9894      25     -   yes    no    no    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.9617      57    24    16     -    no    no    no
+## TEBU 2X           0.9586      14    11     0    11     -    no    no
+## TFLX + PROT 2X    0.9917      39    24     2    38    10     -    no
+## TFLX + TEBU 2X         1      36    25     0    34    11    35     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 234) = 39657.8422, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:14): 
+## QM(df = 13) = 881.0171, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                          estimate      se      zval
+## intrcpt                                    1.3181  0.1092   12.0695
+## AI2AZOX + TEBU 2X                         -0.8887  0.1038   -8.5612
+## AI2PIRA + METC 1X                         -0.6395  0.1192   -5.3634
+## AI2PIRA + METC 2X                         -1.0965  0.0994  -11.0297
+## AI2TEBU 2X                                -0.8448  0.1017   -8.3107
+## AI2TFLX + PROT 2X                         -0.9718  0.1072   -9.0623
+## AI2TFLX + TEBU 2X                         -0.8677  0.1065   -8.1460
+## as.numeric(sev_check)                      0.0436  0.0036   12.1225
+## AI2AZOX + TEBU 2X:as.numeric(sev_check)   -0.0005  0.0029   -0.1648
+## AI2PIRA + METC 1X:as.numeric(sev_check)    0.0024  0.0047    0.5235
+## AI2PIRA + METC 2X:as.numeric(sev_check)    0.0027  0.0031    0.8769
+## AI2TEBU 2X:as.numeric(sev_check)          -0.0012  0.0023   -0.5381
+## AI2TFLX + PROT 2X:as.numeric(sev_check)   -0.0011  0.0032   -0.3410
+## AI2TFLX + TEBU 2X:as.numeric(sev_check)   -0.0017  0.0032   -0.5218
+##                                            pval    ci.lb    ci.ub     
+## intrcpt                                  &lt;.0001   1.1041   1.5321  ***
+## AI2AZOX + TEBU 2X                        &lt;.0001  -1.0921  -0.6852  ***
+## AI2PIRA + METC 1X                        &lt;.0001  -0.8732  -0.4058  ***
+## AI2PIRA + METC 2X                        &lt;.0001  -1.2913  -0.9017  ***
+## AI2TEBU 2X                               &lt;.0001  -1.0441  -0.6456  ***
+## AI2TFLX + PROT 2X                        &lt;.0001  -1.1820  -0.7616  ***
+## AI2TFLX + TEBU 2X                        &lt;.0001  -1.0764  -0.6589  ***
+## as.numeric(sev_check)                    &lt;.0001   0.0366   0.0507  ***
+## AI2AZOX + TEBU 2X:as.numeric(sev_check)  0.8691  -0.0062   0.0053     
+## AI2PIRA + METC 1X:as.numeric(sev_check)  0.6006  -0.0067   0.0116     
+## AI2PIRA + METC 2X:as.numeric(sev_check)  0.3805  -0.0033   0.0087     
+## AI2TEBU 2X:as.numeric(sev_check)         0.5905  -0.0057   0.0032     
+## AI2TFLX + PROT 2X:as.numeric(sev_check)  0.7331  -0.0073   0.0051     
+## AI2TFLX + TEBU 2X:as.numeric(sev_check)  0.6018  -0.0080   0.0046     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_check_cont, btt=9:14)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:14): 
+## QM(df = 6) = 6.3502, p-val = 0.3851</code></pre>
+</div>
+<div id="yield_class-2" class="section level3">
+<h3>yield_class</h3>
+<pre class="r"><code>#Moderator yield_class
+
+summary(fhb_sev$yld_check) # Median = 2993; Mean = 2880.45 </code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##   67.33 2108.00 3015.00 2902.19 3610.00 6048.00      12</code></pre>
+<pre class="r"><code>fhb_sev &lt;- fhb_sev %&gt;%
+  mutate(yld_check_class = case_when(
+      yld_check &lt; 3000 ~ &quot;low&quot;,
+      yld_check &gt;= 3000 ~ &quot;high&quot;))
+table(fhb_sev$AI2, fhb_sev$yld_check_class)</code></pre>
+<pre><code>##                 
+##                  high low
+##   AACHECK          30  27
+##   AZOX + TEBU 2X   14  11
+##   PIRA + METC 1X    3   9
+##   PIRA + METC 2X   27  26
+##   TEBU 2X           8   6
+##   TFLX + PROT 2X   21  18
+##   TFLX + TEBU 2X   20  16</code></pre>
+<pre class="r"><code>mv_yld_check &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*factor(yld_check_class),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev
+)
+
+mv_yld_check</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 236; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 57)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.6498  1.2844     57     no         AACHECK
+## tau^2.2    1.8550  1.3620     25     no  AZOX + TEBU 2X
+## tau^2.3    1.9359  1.3914     12     no  PIRA + METC 1X
+## tau^2.4    2.1465  1.4651     53     no  PIRA + METC 2X
+## tau^2.5    1.6997  1.3037     14     no         TEBU 2X
+## tau^2.6    1.7535  1.3242     39     no  TFLX + PROT 2X
+## tau^2.7    1.7426  1.3201     36     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    0.9303    0.9231    0.9293    0.9404    0.9294
+## AZOX + TEBU 2X    0.9303         1    0.0000    0.9812    0.9995    0.9974
+## PIRA + METC 1X    0.9231    0.0000         1    0.9997    0.0000    0.9859
+## PIRA + METC 2X    0.9293    0.9812    0.9997         1    0.9807    0.9841
+## TEBU 2X           0.9404    0.9995    0.0000    0.9807         1    0.9976
+## TFLX + PROT 2X    0.9294    0.9974    0.9859    0.9841    0.9976         1
+## TFLX + TEBU 2X    0.9213    0.9964    0.0000    0.9863    0.9953    0.9959
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.9213       -    no    no    no    no    no    no
+## AZOX + TEBU 2X    0.9964      25     -   yes    no    no    no    no
+## PIRA + METC 1X    0.0000      12     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.9863      53    24    12     -    no    no    no
+## TEBU 2X           0.9953      14    11     0    11     -    no    no
+## TFLX + PROT 2X    0.9959      39    24     2    38    10     -    no
+## TFLX + TEBU 2X         1      36    25     0    34    11    35     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 222) = 131656.2133, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:14): 
+## QM(df = 13) = 238.8309, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                               estimate      se      zval
+## intrcpt                                         1.8963  0.2353    8.0601
+## AI2AZOX + TEBU 2X                              -0.9479  0.1104   -8.5869
+## AI2PIRA + METC 1X                              -0.7660  0.1402   -5.4632
+## AI2PIRA + METC 2X                              -1.0472  0.1115   -9.3919
+## AI2TEBU 2X                                     -0.9941  0.1180   -8.4269
+## AI2TFLX + PROT 2X                              -1.0986  0.1043  -10.5367
+## AI2TFLX + TEBU 2X                              -0.9585  0.1077   -8.9013
+## factor(yld_check_class)low                      0.4716  0.3420    1.3787
+## AI2AZOX + TEBU 2X:factor(yld_check_class)low    0.1369  0.1612    0.8493
+## AI2PIRA + METC 1X:factor(yld_check_class)low    0.3282  0.1894    1.7322
+## AI2PIRA + METC 2X:factor(yld_check_class)low    0.1000  0.1623    0.6160
+## AI2TEBU 2X:factor(yld_check_class)low           0.2273  0.1595    1.4255
+## AI2TFLX + PROT 2X:factor(yld_check_class)low    0.3390  0.1523    2.2254
+## AI2TFLX + TEBU 2X:factor(yld_check_class)low    0.2535  0.1581    1.6032
+##                                                 pval    ci.lb    ci.ub
+## intrcpt                                       &lt;.0001   1.4352   2.3575
+## AI2AZOX + TEBU 2X                             &lt;.0001  -1.1643  -0.7315
+## AI2PIRA + METC 1X                             &lt;.0001  -1.0408  -0.4912
+## AI2PIRA + METC 2X                             &lt;.0001  -1.2657  -0.8286
+## AI2TEBU 2X                                    &lt;.0001  -1.2253  -0.7629
+## AI2TFLX + PROT 2X                             &lt;.0001  -1.3029  -0.8942
+## AI2TFLX + TEBU 2X                             &lt;.0001  -1.1695  -0.7474
+## factor(yld_check_class)low                    0.1680  -0.1988   1.1419
+## AI2AZOX + TEBU 2X:factor(yld_check_class)low  0.3957  -0.1791   0.4530
+## AI2PIRA + METC 1X:factor(yld_check_class)low  0.0832  -0.0431   0.6995
+## AI2PIRA + METC 2X:factor(yld_check_class)low  0.5379  -0.2181   0.4180
+## AI2TEBU 2X:factor(yld_check_class)low         0.1540  -0.0852   0.5399
+## AI2TFLX + PROT 2X:factor(yld_check_class)low  0.0261   0.0404   0.6376
+## AI2TFLX + TEBU 2X:factor(yld_check_class)low  0.1089  -0.0564   0.5634
+##                                                  
+## intrcpt                                       ***
+## AI2AZOX + TEBU 2X                             ***
+## AI2PIRA + METC 1X                             ***
+## AI2PIRA + METC 2X                             ***
+## AI2TEBU 2X                                    ***
+## AI2TFLX + PROT 2X                             ***
+## AI2TFLX + TEBU 2X                             ***
+## factor(yld_check_class)low                       
+## AI2AZOX + TEBU 2X:factor(yld_check_class)low     
+## AI2PIRA + METC 1X:factor(yld_check_class)low    .
+## AI2PIRA + METC 2X:factor(yld_check_class)low     
+## AI2TEBU 2X:factor(yld_check_class)low            
+## AI2TFLX + PROT 2X:factor(yld_check_class)low    *
+## AI2TFLX + TEBU 2X:factor(yld_check_class)low     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_yld_check, btt=9:14)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 9:14): 
+## QM(df = 6) = 14.2606, p-val = 0.0269</code></pre>
+</div>
+<div id="state-2" class="section level3">
+<h3>State</h3>
+<pre class="r"><code># Number of entries by fungicide and state
+table(fhb_sev_coop$AI2, fhb_sev_coop$state)</code></pre>
+<pre><code>##                 
+##                  PR RS SC
+##   AACHECK        12 22  1
+##   AZOX + TEBU 2X  8 14  1
+##   PIRA + METC 2X 12 21  0
+##   TEBU 2X         4  6  1
+##   TFLX + PROT 2X 12 22  0
+##   TFLX + TEBU 2X 12 21  1</code></pre>
+<pre class="r"><code>mv_sev_state &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*factor(state),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev
+)
+
+mv_sev_state</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 248; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 61)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.4561  1.2067     61     no         AACHECK
+## tau^2.2    1.6216  1.2734     25     no  AZOX + TEBU 2X
+## tau^2.3    2.0739  1.4401     16     no  PIRA + METC 1X
+## tau^2.4    1.9378  1.3920     57     no  PIRA + METC 2X
+## tau^2.5    1.3495  1.1617     14     no         TEBU 2X
+## tau^2.6    1.8005  1.3418     39     no  TFLX + PROT 2X
+## tau^2.7    1.6897  1.2999     36     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    0.9141    0.9084    0.9203    0.9534    0.9143
+## AZOX + TEBU 2X    0.9141         1    0.0000    0.9802    0.9934    1.0000
+## PIRA + METC 1X    0.9084    0.0000         1    0.9987    0.0000    0.9878
+## PIRA + METC 2X    0.9203    0.9802    0.9987         1    0.9794    0.9815
+## TEBU 2X           0.9534    0.9934    0.0000    0.9794         1    0.9933
+## TFLX + PROT 2X    0.9143    1.0000    0.9878    0.9815    0.9933         1
+## TFLX + TEBU 2X    0.8973    0.9954    0.0000    0.9823    0.9832    0.9959
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.8973       -    no    no    no    no    no    no
+## AZOX + TEBU 2X    0.9954      25     -   yes    no    no    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.9823      57    24    16     -    no    no    no
+## TEBU 2X           0.9832      14    11     0    11     -    no    no
+## TFLX + PROT 2X    0.9959      39    24     2    38    10     -    no
+## TFLX + TEBU 2X         1      36    25     0    34    11    35     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 228) = 100673.2421, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:20): 
+## QM(df = 19) = 384.5528, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                    estimate      se     zval    pval
+## intrcpt                              2.6640  0.3130   8.5100  &lt;.0001
+## AI2AZOX + TEBU 2X                   -0.7975  0.1430  -5.5761  &lt;.0001
+## AI2PIRA + METC 1X                   -0.6098  0.2569  -2.3738  0.0176
+## AI2PIRA + METC 2X                   -0.9324  0.1535  -6.0748  &lt;.0001
+## AI2TEBU 2X                          -0.8833  0.1372  -6.4364  &lt;.0001
+## AI2TFLX + PROT 2X                   -1.0467  0.1485  -7.0498  &lt;.0001
+## AI2TFLX + TEBU 2X                   -0.8390  0.1574  -5.3318  &lt;.0001
+## factor(state)RS                     -0.7166  0.3624  -1.9774  0.0480
+## factor(state)SC                     -2.0015  0.9212  -2.1727  0.0298
+## AI2AZOX + TEBU 2X:factor(state)RS   -0.1658  0.1736  -0.9554  0.3394
+## AI2PIRA + METC 1X:factor(state)RS    0.0066  0.2813   0.0233  0.9814
+## AI2PIRA + METC 2X:factor(state)RS   -0.1618  0.1801  -0.8987  0.3688
+## AI2TEBU 2X:factor(state)RS           0.1237  0.1560   0.7927  0.4279
+## AI2TFLX + PROT 2X:factor(state)RS    0.0734  0.1793   0.4093  0.6823
+## AI2TFLX + TEBU 2X:factor(state)RS   -0.1033  0.1901  -0.5433  0.5869
+## AI2AZOX + TEBU 2X:factor(state)SC   -0.1804  0.4577  -0.3941  0.6935
+## AI2PIRA + METC 2X:factor(state)SC    0.2861  0.5574   0.5132  0.6078
+## AI2TEBU 2X:factor(state)SC          -0.3698  0.3698  -1.0000  0.3173
+## AI2TFLX + PROT 2X:factor(state)SC   -0.1350  0.6306  -0.2140  0.8305
+## AI2TFLX + TEBU 2X:factor(state)SC    0.1020  0.4833   0.2111  0.8328
+##                                      ci.lb    ci.ub     
+## intrcpt                             2.0504   3.2776  ***
+## AI2AZOX + TEBU 2X                  -1.0778  -0.5172  ***
+## AI2PIRA + METC 1X                  -1.1132  -0.1063    *
+## AI2PIRA + METC 2X                  -1.2332  -0.6316  ***
+## AI2TEBU 2X                         -1.1523  -0.6143  ***
+## AI2TFLX + PROT 2X                  -1.3377  -0.7557  ***
+## AI2TFLX + TEBU 2X                  -1.1474  -0.5306  ***
+## factor(state)RS                    -1.4269  -0.0063    *
+## factor(state)SC                    -3.8071  -0.1959    *
+## AI2AZOX + TEBU 2X:factor(state)RS  -0.5061   0.1744     
+## AI2PIRA + METC 1X:factor(state)RS  -0.5448   0.5579     
+## AI2PIRA + METC 2X:factor(state)RS  -0.5148   0.1911     
+## AI2TEBU 2X:factor(state)RS         -0.1821   0.4294     
+## AI2TFLX + PROT 2X:factor(state)RS  -0.2780   0.4248     
+## AI2TFLX + TEBU 2X:factor(state)RS  -0.4759   0.2693     
+## AI2AZOX + TEBU 2X:factor(state)SC  -1.0775   0.7167     
+## AI2PIRA + METC 2X:factor(state)SC  -0.8065   1.3787     
+## AI2TEBU 2X:factor(state)SC         -1.0946   0.3550     
+## AI2TFLX + PROT 2X:factor(state)SC  -1.3710   1.1010     
+## AI2TFLX + TEBU 2X:factor(state)SC  -0.8452   1.0493     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># anova(fhb_mv_AI_state,btt=8:15)
+# 
+# anova(fhb_mv_AI_state,btt=8:11)
+# 
+# anova(fhb_mv_AI_state,btt=11:15)</code></pre>
+</div>
+<div id="publication-1" class="section level3">
+<h3>Publication</h3>
+<pre class="r"><code># Renaming the treatments 
+library(plyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     compact</code></pre>
+<pre class="r"><code>fhb_sev$publication &lt;- revalue(fhb_sev$publication, c(&quot;Boletim&quot; = &quot;AABoletim&quot;))
+detach(&quot;package:plyr&quot;, unload = TRUE)
+
+
+mv_sev_publication &lt;- rma.mv(log_sev, vi,
+  mods = ~AI2*factor(publication),
+  random = list(~AI2 | factor(trial)),
+  struct = &quot;UN&quot;,
+  method = &quot;ML&quot;,
+  control = list(optimizer = &quot;nlm&quot;),
+  data = fhb_sev
+)
+
+mv_sev_publication</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 248; method: ML)
+## 
+## Variance Components: 
+## 
+## outer factor: factor(trial) (nlvls = 61)
+## inner factor: AI2           (nlvls = 7)
+## 
+##             estim    sqrt  k.lvl  fixed           level
+## tau^2.1    1.5391  1.2406     61     no         AACHECK
+## tau^2.2    1.7169  1.3103     25     no  AZOX + TEBU 2X
+## tau^2.3    2.0998  1.4491     16     no  PIRA + METC 1X
+## tau^2.4    1.8393  1.3562     57     no  PIRA + METC 2X
+## tau^2.5    1.6348  1.2786     14     no         TEBU 2X
+## tau^2.6    1.7541  1.3244     39     no  TFLX + PROT 2X
+## tau^2.7    1.6633  1.2897     36     no  TFLX + TEBU 2X
+## 
+##                 rho.AACH  rho.A+T2  rho.P+M1  rho.P+M2  rho.TEB2  rho.T+P2
+## AACHECK                1    0.9302    0.9304    0.9458    0.9314    0.9182
+## AZOX + TEBU 2X    0.9302         1    0.0000    0.9877    0.9987    0.9944
+## PIRA + METC 1X    0.9304    0.0000         1    0.9985    0.0000    0.9912
+## PIRA + METC 2X    0.9458    0.9877    0.9985         1    0.9908    0.9851
+## TEBU 2X           0.9314    0.9987    0.0000    0.9908         1    0.9980
+## TFLX + PROT 2X    0.9182    0.9944    0.9912    0.9851    0.9980         1
+## TFLX + TEBU 2X    0.9182    0.9986    0.0000    0.9808    0.9980    0.9964
+##                 rho.T+T2    AACH  A+T2  P+M1  P+M2  TEB2  T+P2  T+T2
+## AACHECK           0.9182       -    no    no    no    no    no    no
+## AZOX + TEBU 2X    0.9986      25     -   yes    no    no    no    no
+## PIRA + METC 1X    0.0000      16     0     -    no   yes    no   yes
+## PIRA + METC 2X    0.9808      57    24    16     -    no    no    no
+## TEBU 2X           0.9980      14    11     0    11     -    no    no
+## TFLX + PROT 2X    0.9964      39    24     2    38    10     -    no
+## TFLX + TEBU 2X         1      36    25     0    34    11    35     -
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 227) = 161748.7398, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2:21): 
+## QM(df = 20) = 418.0377, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                                              estimate      se     zval
+## intrcpt                                        2.0804  0.2106   9.8766
+## AI2AZOX + TEBU 2X                             -0.7645  0.0901  -8.4878
+## AI2PIRA + METC 1X                             -0.6768  0.3017  -2.2432
+## AI2PIRA + METC 2X                             -0.7902  0.0848  -9.3180
+## AI2TEBU 2X                                    -0.7847  0.0881  -8.9045
+## AI2TFLX + PROT 2X                             -0.8405  0.0967  -8.6917
+## AI2TFLX + TEBU 2X                             -0.7176  0.0938  -7.6504
+## factor(publication)Artigo                      0.6871  0.5496   1.2503
+## factor(publication)Resumo                     -0.4123  0.4045  -1.0194
+## factor(publication)Tese                        0.2193  0.5159   0.4251
+## AI2PIRA + METC 1X:factor(publication)Artigo   -0.3369  0.4238  -0.7949
+## AI2PIRA + METC 2X:factor(publication)Artigo   -0.7974  0.3169  -2.5165
+## AI2TEBU 2X:factor(publication)Artigo          -0.1133  0.3660  -0.3097
+## AI2AZOX + TEBU 2X:factor(publication)Resumo   -0.2438  0.2382  -1.0236
+## AI2PIRA + METC 1X:factor(publication)Resumo   -0.3289  0.3451  -0.9530
+## AI2PIRA + METC 2X:factor(publication)Resumo   -0.7279  0.1633  -4.4569
+## AI2TFLX + PROT 2X:factor(publication)Resumo   -0.3542  0.2611  -1.3565
+## AI2TFLX + TEBU 2X:factor(publication)Resumo   -0.5048  0.2685  -1.8803
+## AI2PIRA + METC 2X:factor(publication)Tese     -0.2949  0.2276  -1.2956
+## AI2TEBU 2X:factor(publication)Tese            -0.1938  0.4017  -0.4824
+## AI2TFLX + PROT 2X:factor(publication)Tese     -0.0444  0.3087  -0.1437
+##                                                pval    ci.lb    ci.ub     
+## intrcpt                                      &lt;.0001   1.6676   2.4932  ***
+## AI2AZOX + TEBU 2X                            &lt;.0001  -0.9410  -0.5880  ***
+## AI2PIRA + METC 1X                            0.0249  -1.2681  -0.0855    *
+## AI2PIRA + METC 2X                            &lt;.0001  -0.9564  -0.6240  ***
+## AI2TEBU 2X                                   &lt;.0001  -0.9574  -0.6120  ***
+## AI2TFLX + PROT 2X                            &lt;.0001  -1.0301  -0.6510  ***
+## AI2TFLX + TEBU 2X                            &lt;.0001  -0.9014  -0.5337  ***
+## factor(publication)Artigo                    0.2112  -0.3900   1.7643     
+## factor(publication)Resumo                    0.3080  -1.2052   0.3805     
+## factor(publication)Tese                      0.6708  -0.7918   1.2303     
+## AI2PIRA + METC 1X:factor(publication)Artigo  0.4267  -1.1674   0.4937     
+## AI2PIRA + METC 2X:factor(publication)Artigo  0.0119  -1.4184  -0.1763    *
+## AI2TEBU 2X:factor(publication)Artigo         0.7568  -0.8307   0.6040     
+## AI2AZOX + TEBU 2X:factor(publication)Resumo  0.3060  -0.7106   0.2230     
+## AI2PIRA + METC 1X:factor(publication)Resumo  0.3406  -1.0052   0.3475     
+## AI2PIRA + METC 2X:factor(publication)Resumo  &lt;.0001  -1.0480  -0.4078  ***
+## AI2TFLX + PROT 2X:factor(publication)Resumo  0.1749  -0.8661   0.1576     
+## AI2TFLX + TEBU 2X:factor(publication)Resumo  0.0601  -1.0310   0.0214    .
+## AI2PIRA + METC 2X:factor(publication)Tese    0.1951  -0.7409   0.1512     
+## AI2TEBU 2X:factor(publication)Tese           0.6296  -0.9811   0.5936     
+## AI2TFLX + PROT 2X:factor(publication)Tese    0.8857  -0.6494   0.5606     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(mv_sev_publication, btt=11:21)</code></pre>
+<pre><code>## 
+## Test of Moderators (coefficient(s) 11:21): 
+## QM(df = 11) = 83.2646, p-val &lt; .0001</code></pre>
+<div id="mod-effect" class="section level4">
+<h4>Mod effect</h4>
+<pre class="r"><code>reg1 = data.frame(mv_sev_publication$beta, mv_sev_publication$ci.lb, mv_sev_publication$ci.ub) %&gt;%
+  rownames_to_column(&quot;trat&quot;) %&gt;%
+  separate(trat, into = c(&quot;lado1&quot;, &quot;lado2&quot;), sep = &quot;:&quot;) %&gt;%
+  separate(lado2, into = c(&quot;lixo&quot;,&quot;lado3&quot;),sep = &quot;[[)]]&quot; ) %&gt;% 
+  select(-lixo) %&gt;%
+  separate(lado1, into = c(&quot;lixo&quot;,&quot;lado1&quot;),sep = &quot;AI2&quot; ) %&gt;%
+  select(-lixo) %&gt;%
+  filter(lado1 == &quot;PIRA + METC 2X&quot;) %&gt;% 
+  set_names(&quot;fungicide&quot;, &quot;publication&quot;, &quot;estimate&quot;, &quot;ci.lb&quot;, &quot;ci.ub&quot;) %&gt;% 
+  mutate(publication = c(&quot;Coop.Trials&quot;, &quot;Papers&quot;, &quot;Abstracts&quot;, &quot;Thesis&quot;))
+
+reg2 = reg1%&gt;% 
+  group_by(fungicide, publication) %&gt;% 
+  summarise(efficacy = (1-exp(first(estimate)+estimate))*100,
+            ciu = (1-exp(first(ci.ub)+ ci.ub))*100,
+            ci.lb = (1-exp(first(ci.lb)+ci.lb))*100) %&gt;% 
+  filter(publication != &quot;Coop.Trials&quot;)
+
+reg3 = reg1 %&gt;% 
+  filter(publication == &quot;Coop.Trials&quot;) %&gt;% 
+  group_by(fungicide, publication) %&gt;%
+  summarise(efficacy = (1-exp(estimate))*100,
+            ciu = (1-exp(ci.ub))*100,
+            ci.lb = (1-exp(ci.lb))*100)
+
+reg4 = rbind(reg3,reg2)
+reg4</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["fungicide"],"name":[1],"type":["chr"],"align":["left"]},{"label":["publication"],"name":[2],"type":["chr"],"align":["left"]},{"label":["efficacy"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["ciu"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["ci.lb"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"PIRA + METC 2X","2":"Coop.Trials","3":"54.62435","4":"46.41947","5":"61.57280"},{"1":"PIRA + METC 2X","2":"Abstracts","3":"76.67937","4":"55.76337","5":"87.70585"},{"1":"PIRA + METC 2X","2":"Papers","3":"79.70370","4":"29.71935","5":"94.13864"},{"1":"PIRA + METC 2X","2":"Thesis","3":"44.55154","4":"-35.30724","5":"77.27740"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="network-graph" class="section level1">
+<h1>Network Graph</h1>
+<pre class="r"><code>library(janitor)
+library(tidyverse)
+
+fhb_sev &lt;- read_csv(&quot;data/dat-sev.csv&quot;)
+
+# Renaming the treatments
+library(plyr)
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;check-0&quot; = &quot;AACHECK&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Azoxistrobina + Tebuconazole-2&quot; = &quot;AZOX + TEBU 2X&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Piraclostrobina + Metconazole-2&quot; = &quot;PIRA + METC 2X&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Tebuconazole-2&quot; = &quot;TEBU 2X&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Trifloxistrobina + Protioconazole-2&quot; = &quot;TFLX + PROT 2X&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Trifloxistrobina + Tebuconazole-2&quot; = &quot;TFLX + TEBU 2X&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;Piraclostrobina + Metconazole-1&quot; = &quot;PIRA + METC 1X&quot;))
+detach(&quot;package:plyr&quot;, unload = TRUE)
+
+
+fhb_sev %&gt;%
+tabyl(AI2)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["AI2"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["percent"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"AACHECK","2":"61","3":"0.24596774"},{"1":"AZOX + TEBU 2X","2":"25","3":"0.10080645"},{"1":"PIRA + METC 1X","2":"16","3":"0.06451613"},{"1":"PIRA + METC 2X","2":"57","3":"0.22983871"},{"1":"TEBU 2X","2":"14","3":"0.05645161"},{"1":"TFLX + PROT 2X","2":"39","3":"0.15725806"},{"1":"TFLX + TEBU 2X","2":"36","3":"0.14516129"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># Renaming the treatments for the network graph
+library(plyr)
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;AACHECK&quot; = &quot;CHECK (61)&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;AZOX + TEBU 2X&quot; = &quot;AZOX + TEBU 2X (25)&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;PIRA + METC 2X&quot; = &quot;PIRA + METC 2X (57)&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;TEBU 2X&quot; = &quot;TEBU 2X (14)&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;TFLX + PROT 2X&quot; = &quot;TFLX + PROT 2X (39)&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;TFLX + TEBU 2X&quot; = &quot;TFLX + TEBU 2X (36)&quot;))
+fhb_sev$AI2 &lt;- revalue(fhb_sev$AI2, c(&quot;PIRA + METC 1X&quot; = &quot;PIRA + METC 1X (16)&quot;))
+detach(&quot;package:plyr&quot;, unload = TRUE)</code></pre>
+<p>Now We need to prepare the data to get the network graph. Thus, we used the package <code>netmeta</code> with the function <code>pairwise</code> to calculate the contrasts.</p>
+<pre class="r"><code>library(netmeta)
+pair_sev &lt;- pairwise(
+  treat = factor(AI2),
+  n = 4,
+  mean = sev,
+  sd = V_sev,
+  studlab = trial,
+  data = fhb_sev,
+  sm = &quot;ROM&quot;
+)</code></pre>
+<pre class="r"><code>net_sev &lt;- netmeta(TE, seTE, treat1, treat2, studlab, data = pair_sev, sm = &quot;ROM&quot;, backtransf = TRUE)
+summary(net_sev)</code></pre>
+<pre><code>## Number of studies: k = 61
+## Number of treatments: n = 7
+## Number of pairwise comparisons: m = 428
+## Number of designs: d = 11
+## 
+## Fixed effects model
+## 
+## Treatment estimate (sm = &#39;ROM&#39;):
+##                     AZOX + TEBU 2X (25) CHECK (61) PIRA + METC 1X (16)
+## AZOX + TEBU 2X (25)                   .     0.1981              0.6868
+## CHECK (61)                       5.0471          .              3.4664
+## PIRA + METC 1X (16)              1.4560     0.2885                   .
+## PIRA + METC 2X (57)              1.0377     0.2056              0.7127
+## TEBU 2X (14)                     1.0133     0.2008              0.6959
+## TFLX + PROT 2X (39)              0.6308     0.1250              0.4333
+## TFLX + TEBU 2X (36)              0.8248     0.1634              0.5665
+##                     PIRA + METC 2X (57) TEBU 2X (14) TFLX + PROT 2X (39)
+## AZOX + TEBU 2X (25)              0.9636       0.9869              1.5852
+## CHECK (61)                       4.8635       4.9811              8.0006
+## PIRA + METC 1X (16)              1.4031       1.4370              2.3081
+## PIRA + METC 2X (57)                   .       1.0242              1.6450
+## TEBU 2X (14)                     0.9764            .              1.6062
+## TFLX + PROT 2X (39)              0.6079       0.6226                   .
+## TFLX + TEBU 2X (36)              0.7948       0.8140              1.3074
+##                     TFLX + TEBU 2X (36)
+## AZOX + TEBU 2X (25)              1.2125
+## CHECK (61)                       6.1194
+## PIRA + METC 1X (16)              1.7654
+## PIRA + METC 2X (57)              1.2582
+## TEBU 2X (14)                     1.2285
+## TFLX + PROT 2X (39)              0.7649
+## TFLX + TEBU 2X (36)                   .
+## 
+## Lower 95%-confidence limit:
+##                     AZOX + TEBU 2X (25) CHECK (61) PIRA + METC 1X (16)
+## AZOX + TEBU 2X (25)                   .     0.1959              0.6777
+## CHECK (61)                       4.9905          .              3.4415
+## PIRA + METC 1X (16)              1.4367     0.2864                   .
+## PIRA + METC 2X (57)              1.0260     0.2052              0.7075
+## TEBU 2X (14)                     0.9961     0.1981              0.6855
+## TFLX + PROT 2X (39)              0.6235     0.1246              0.4299
+## TFLX + TEBU 2X (36)              0.8153     0.1630              0.5622
+##                     PIRA + METC 2X (57) TEBU 2X (14) TFLX + PROT 2X (39)
+## AZOX + TEBU 2X (25)              0.9527       0.9702              1.5668
+## CHECK (61)                       4.8544       4.9158              7.9758
+## PIRA + METC 1X (16)              1.3927       1.4156              2.2901
+## PIRA + METC 2X (57)                   .       1.0106              1.6391
+## TEBU 2X (14)                     0.9635            .              1.5846
+## TFLX + PROT 2X (39)              0.6057       0.6142                   .
+## TFLX + TEBU 2X (36)              0.7924       0.8032              1.3024
+##                     TFLX + TEBU 2X (36)
+## AZOX + TEBU 2X (25)              1.1986
+## CHECK (61)                       6.1050
+## PIRA + METC 1X (16)              1.7521
+## PIRA + METC 2X (57)              1.2545
+## TEBU 2X (14)                     1.2122
+## TFLX + PROT 2X (39)              0.7619
+## TFLX + TEBU 2X (36)                   .
+## 
+## Upper 95%-confidence limit:
+##                     AZOX + TEBU 2X (25) CHECK (61) PIRA + METC 1X (16)
+## AZOX + TEBU 2X (25)                   .     0.2004              0.6960
+## CHECK (61)                       5.1043          .              3.4913
+## PIRA + METC 1X (16)              1.4756     0.2906                   .
+## PIRA + METC 2X (57)              1.0497     0.2060              0.7180
+## TEBU 2X (14)                     1.0307     0.2034              0.7064
+## TFLX + PROT 2X (39)              0.6382     0.1254              0.4367
+## TFLX + TEBU 2X (36)              0.8343     0.1638              0.5707
+##                     PIRA + METC 2X (57) TEBU 2X (14) TFLX + PROT 2X (39)
+## AZOX + TEBU 2X (25)              0.9747       1.0039              1.6038
+## CHECK (61)                       4.8726       5.0472              8.0255
+## PIRA + METC 1X (16)              1.4135       1.4587              2.3262
+## PIRA + METC 2X (57)                   .       1.0379              1.6509
+## TEBU 2X (14)                     0.9895            .              1.6281
+## TFLX + PROT 2X (39)              0.6101       0.6311                   .
+## TFLX + TEBU 2X (36)              0.7971       0.8249              1.3125
+##                     TFLX + TEBU 2X (36)
+## AZOX + TEBU 2X (25)              1.2265
+## CHECK (61)                       6.1339
+## PIRA + METC 1X (16)              1.7788
+## PIRA + METC 2X (57)              1.2620
+## TEBU 2X (14)                     1.2451
+## TFLX + PROT 2X (39)              0.7678
+## TFLX + TEBU 2X (36)                   .
+## 
+## Random effects model
+## 
+## Treatment estimate (sm = &#39;ROM&#39;):
+##                     AZOX + TEBU 2X (25) CHECK (61) PIRA + METC 1X (16)
+## AZOX + TEBU 2X (25)                   .     0.3942              1.0238
+## CHECK (61)                       2.5370          .              2.5973
+## PIRA + METC 1X (16)              0.9768     0.3850                   .
+## PIRA + METC 2X (57)              0.8009     0.3157              0.8200
+## TEBU 2X (14)                     0.9668     0.3811              0.9898
+## TFLX + PROT 2X (39)              0.9059     0.3571              0.9274
+## TFLX + TEBU 2X (36)              1.0065     0.3967              1.0304
+##                     PIRA + METC 2X (57) TEBU 2X (14) TFLX + PROT 2X (39)
+## AZOX + TEBU 2X (25)              1.2485       1.0343              1.1039
+## CHECK (61)                       3.1675       2.6241              2.8006
+## PIRA + METC 1X (16)              1.2195       1.0103              1.0782
+## PIRA + METC 2X (57)                   .       0.8284              0.8841
+## TEBU 2X (14)                     1.2071            .              1.0673
+## TFLX + PROT 2X (39)              1.1310       0.9370                   .
+## TFLX + TEBU 2X (36)              1.2566       1.0410              1.1111
+##                     TFLX + TEBU 2X (36)
+## AZOX + TEBU 2X (25)              0.9935
+## CHECK (61)                       2.5206
+## PIRA + METC 1X (16)              0.9705
+## PIRA + METC 2X (57)              0.7958
+## TEBU 2X (14)                     0.9606
+## TFLX + PROT 2X (39)              0.9000
+## TFLX + TEBU 2X (36)                   .
+## 
+## Lower 95%-confidence limit:
+##                     AZOX + TEBU 2X (25) CHECK (61) PIRA + METC 1X (16)
+## AZOX + TEBU 2X (25)                   .     0.3436              0.8405
+## CHECK (61)                       2.2114          .              2.2288
+## PIRA + METC 1X (16)              0.8020     0.3304                   .
+## PIRA + METC 2X (57)              0.6934     0.2864              0.7011
+## TEBU 2X (14)                     0.7843     0.3146              0.7794
+## TFLX + PROT 2X (39)              0.7793     0.3174              0.7719
+## TFLX + TEBU 2X (36)              0.8701     0.3541              0.8595
+##                     PIRA + METC 2X (57) TEBU 2X (14) TFLX + PROT 2X (39)
+## AZOX + TEBU 2X (25)              1.0809       0.8391              0.9496
+## CHECK (61)                       2.8731       2.1666              2.4897
+## PIRA + METC 1X (16)              1.0428       0.7955              0.8974
+## PIRA + METC 2X (57)                   .       0.6791              0.7804
+## TEBU 2X (14)                     0.9894            .              0.8698
+## TFLX + PROT 2X (39)              0.9983       0.7636                   .
+## TFLX + TEBU 2X (36)              1.1130       0.8530              0.9771
+##                     TFLX + TEBU 2X (36)
+## AZOX + TEBU 2X (25)              0.8589
+## CHECK (61)                       2.2500
+## PIRA + METC 1X (16)              0.8095
+## PIRA + METC 2X (57)              0.7048
+## TEBU 2X (14)                     0.7870
+## TFLX + PROT 2X (39)              0.7915
+## TFLX + TEBU 2X (36)                   .
+## 
+## Upper 95%-confidence limit:
+##                     AZOX + TEBU 2X (25) CHECK (61) PIRA + METC 1X (16)
+## AZOX + TEBU 2X (25)                   .     0.4522              1.2470
+## CHECK (61)                       2.9105          .              3.0268
+## PIRA + METC 1X (16)              1.1897     0.4487                   .
+## PIRA + METC 2X (57)              0.9252     0.3481              0.9590
+## TEBU 2X (14)                     1.1917     0.4615              1.2570
+## TFLX + PROT 2X (39)              1.0530     0.4017              1.1143
+## TFLX + TEBU 2X (36)              1.1643     0.4445              1.2353
+##                     PIRA + METC 2X (57) TEBU 2X (14) TFLX + PROT 2X (39)
+## AZOX + TEBU 2X (25)              1.4422       1.2750              1.2832
+## CHECK (61)                       3.4921       3.1781              3.1503
+## PIRA + METC 1X (16)              1.4263       1.2831              1.2955
+## PIRA + METC 2X (57)                   .       1.0107              1.0017
+## TEBU 2X (14)                     1.4726            .              1.3096
+## TFLX + PROT 2X (39)              1.2815       1.1497                   .
+## TFLX + TEBU 2X (36)              1.4188       1.2706              1.2634
+##                     TFLX + TEBU 2X (36)
+## AZOX + TEBU 2X (25)              1.1493
+## CHECK (61)                       2.8239
+## PIRA + METC 1X (16)              1.1634
+## PIRA + METC 2X (57)              0.8985
+## TEBU 2X (14)                     1.1724
+## TFLX + PROT 2X (39)              1.0235
+## TFLX + TEBU 2X (36)                   .
+## 
+## Quantifying heterogeneity / inconsistency:
+## tau^2 = 0.0682; I^2 = 98.7%
+## 
+## Tests of heterogeneity (within designs) and inconsistency (between designs):
+##                        Q d.f. p-value
+## Total           13982.53  181       0
+## Within designs   9356.57  159       0
+## Between designs  4625.96   22       0</code></pre>
+<p>A network graph is composed of nodes (fungicide treatments) and edges or links between two treatments directly compared in a same trial. This graph allows to visualize how the treatments relate to each other and the number of direct comparisons can be depicted by the thickness of the edges, but also with numbers presented at the top of the links.</p>
+<pre class="r"><code>#pdf(&quot;Figures/net_sev.pdf&quot;, width=10, height=6)
+netgraph(net_sev,
+  plastic = FALSE,
+  col = &quot;gray&quot;,
+  thickness = &quot;number.of.studies&quot;,
+  points = TRUE,
+  col.points = &quot;black&quot;,
+  cex.points = c(&quot;AZOX + TEBU 2 (25)&quot; = 2.5, &quot;CHECK (61)&quot; = 6, &quot;PIRA + METC 1X (16)&quot; = 1.6, &quot;PIRA + METC 2X (57)&quot; = 5.6, &quot;TEBU 2X (14)&quot; = 1.4, &quot;TFLX + PROT 2X (39)&quot; = 3.8,  &quot;TFLX + TEBU 2X (36)&quot; = 3.5),
+  number.of.studies = TRUE,
+  cex.number.of.studies = 1.25,
+  col.number.of.studies = &quot;black&quot;,
+  bg.number.of.studies = &quot;white&quot;,
+  multiarm = FALSE,
+  col.multiarm = &quot;gray&quot;,
+  pos.number.of.studies = 0.50)</code></pre>
+<p><img src="code-sev_files/figure-html/unnamed-chunk-95-1.png" width="672" /></p>
+<pre class="r"><code>#dev.off()</code></pre>
+<div id="designs" class="section level2">
+<h2>Designs</h2>
+<pre class="r"><code>sev_design &lt;- decomp.design(net_sev)
+sev_design$Q.inc.detach</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["design"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["Q"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["df"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["pval"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"CHECK (61):PIRA + METC 2X (57)","2":"4617.304","3":"21","4":"0","_rn_":"1"},{"1":"CHECK (61):TEBU 2X (14)","2":"4623.978","3":"21","4":"0","_rn_":"2"},{"1":"AZOX + TEBU 2X (25):CHECK (61):PIRA + METC 2X (57):TEBU 2X (14):TFLX + PROT 2X (39):TFLX + TEBU 2X (36)","2":"1991.015","3":"17","4":"0","_rn_":"3"},{"1":"AZOX + TEBU 2X (25):CHECK (61):PIRA + METC 2X (57):TFLX + PROT 2X (39):TFLX + TEBU 2X (36)","2":"3656.295","3":"18","4":"0","_rn_":"8"},{"1":"AZOX + TEBU 2X (25):CHECK (61):TEBU 2X (14):TFLX + TEBU 2X (36)","2":"3646.755","3":"19","4":"0","_rn_":"12"},{"1":"CHECK (61):PIRA + METC 1X (16):PIRA + METC 2X (57)","2":"4595.116","3":"20","4":"0","_rn_":"15"},{"1":"CHECK (61):PIRA + METC 1X (16):PIRA + METC 2X (57):TFLX + PROT 2X (39)","2":"4622.929","3":"19","4":"0","_rn_":"17"},{"1":"CHECK (61):PIRA + METC 2X (57):TEBU 2X (14)","2":"4613.164","3":"20","4":"0","_rn_":"20"},{"1":"CHECK (61):PIRA + METC 2X (57):TFLX + PROT 2X (39)","2":"4623.376","3":"20","4":"0","_rn_":"22"},{"1":"CHECK (61):PIRA + METC 2X (57):TFLX + PROT 2X (39):TFLX + TEBU 2X (36)","2":"2848.909","3":"19","4":"0","_rn_":"24"},{"1":"CHECK (61):TFLX + PROT 2X (39):TFLX + TEBU 2X (36)","2":"4570.671","3":"20","4":"0","_rn_":"27"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+
+
+
+Copyright 2017 Emerson Del Ponte
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

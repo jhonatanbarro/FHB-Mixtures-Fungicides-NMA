@@ -1,0 +1,39 @@
+name: teste
+output_dir: docs
+output:
+  html_document:
+    code_folding: hide
+    css: style.css
+    theme: flatly
+    df_print: paged
+    highlight: default
+    include:
+      after_body: footer.md
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+    lib_dir: site_libs
+    self_contained: no
+bibliography: crossref.bib
+csl: chicago-author-date.csl
+navbar:
+  title: DMI+QoI premix effects on FHB
+  left:
+  - text: About
+    icon: fa fa-home
+    href: index.html
+  - text: Data
+    icon: fa fa-table
+    href: data.html
+  - text: Documented analysis
+    icon: fa fa-file-code-o
+    menu:
+    - text: FHB index 
+      href: code-sev.html
+    - text: Wheat yield 
+      href: code-yld.html
+  - text: Publication-ready plots
+    icon: fa-bar-chart 
+    href: plots.html
+

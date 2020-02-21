@@ -1,0 +1,63 @@
+---
+title: "My catchy title for a manuscript"
+bibliography: crossref.bib
+csl: chicago-author-date.csl
+---
+
+Author1, Author2, Author3 
+
+1 Affiliation 1
+2 Affiliation 2
+
+
+Corresponding author: Author 1
+  
+  
+Article published in ...reference, link, DOI
+
+# Abstract
+
+
+
+Keywords:  
+
+
+# Introduction
+
+
+# Material and Methods
+
+## item1
+
+
+
+## item2
+
+
+## item3
+
+
+# Results 
+
+
+## item1
+ 
+
+
+## item2
+
+## item3
+
+
+
+
+# Discussion
+
+
+
+# Acknowledgements 
+
+
+
+# References
+

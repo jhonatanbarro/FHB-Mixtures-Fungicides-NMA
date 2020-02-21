@@ -1,0 +1,16 @@
+% About
+
+
+## Citation
+
+Please cite this research compendium as:  
+
+
+
+## Licences
+
+Data: [CC-0](https://creativecommons.org/publicdomain/zero/1.0/) attribution requested in reuse
+Manuscript: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)  
+Code: [MIT](https://opensource.org/licenses/MIT) year: 2018, copyright holder: Emerson Del Ponte
+
+
