@@ -1,11 +1,10 @@
-% Code
+
 
 ```{r}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 ```
 
 # Import Data
-
 
 ```{r}
 library(knitr)
@@ -20,11 +19,11 @@ fhb_sev %>%
 library(plyr)
 fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("check-0" = "AACHECK"))
 fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Azoxistrobina + Tebuconazole-2" = "AZOX + TEBU 2X"))
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Piraclostrobina + Metconazole-2" = "PIRA + METC 2X"))
+fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Piraclostrobina + Metconazole-2" = "PYRA + METC 2X"))
 fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Tebuconazole-2" = "TEBU 2X"))
 fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Trifloxistrobina + Protioconazole-2" = "TFLX + PROT 2X"))
 fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Trifloxistrobina + Tebuconazole-2" = "TFLX + TEBU 2X"))
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Piraclostrobina + Metconazole-1" = "PIRA + METC 1X"))
+fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Piraclostrobina + Metconazole-1" = "PYRA + METC 1X"))
 detach("package:plyr", unload = TRUE)
 
 
@@ -34,596 +33,20 @@ fhb_sev <- fhb_sev %>%
 
 # create the sampling variance for the log of FHB index
 fhb_sev$vi <- with(fhb_sev, V_sev / (n * sev^2))
-```
 
-# Cooperative Trials
 
-```{r}
-fhb_sev_coop = fhb_sev %>% 
-  filter(publication == "Boletim")
 ```
 
 
-## covariance structure
+## Covariance structure
 
-Now we will fit models with CS, HCS and UN matrix-covariance structure. We will then compare them with `anova` function to choose among the best model.
+Now we will fit models with HCS and UN matrix-covariance structure. We will then compare them with `anova` function to choose among the best model.
 
 ```{r}
-
+summary(fhb_sev$vi)
 library(metafor)
-
-
-mv_sev_HCS <- rma.mv(log_sev, vi,
-  mods = ~AI2,
-  random = list(~AI2 | factor(trial)),
-  struct = "HCS",
-  method = "ML",
-  data = fhb_sev_coop
-)
-
-mv_sev <- rma.mv(log_sev, vi,
-  mods = ~AI2,
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_coop
-)
-
-mv_sev
-```
-
-
-We can see below that the UN structure is a better model.
-
-```{r}
-
-anova(mv_sev_HCS, mv_sev)
-AIC(mv_sev_HCS)
-```
-
-
-## Percent control
-
-Let's obtain the percent control from the estimated ratios.
-
-```{r}
-
-efficacy_sev <- data.frame(cbind(
-  (1 - exp(mv_sev$b)) * 100,
-  (1 - exp(mv_sev$ci.lb)) * 100,
-  (1 - exp(mv_sev$ci.ub)) * 100
-))
-
-
-
-efficacy_sev
-```
-
-## Contrasts
-
-We can set linear contrasts between treatments of interest and get the P-value using the `anova` function.
-
-
-```{r}
-anova(mv_sev, L = rbind(
-  c(0, 1, -1, 0, 0, 0),
-  c(0, 1, 0, -1, 0, 0),
-  c(0, 1, 0, 0, -1, 0),
-  c(0, 1, 0, 0, 0, -1),
-  c(0, 0, 1, -1, 0, 0),
-  c(0, 0, 1, 0, -1, 0),
-  c(0, 0, 1, 0, 0, -1),
-  c(0, 0, 0, 1, -1, 0),
-  c(0, 0, 0, 1, 0, -1),
-  c(0, 0, 0, 0, 1, -1)
-))
-```
-
-
-## Moderators
-
-### Cultivar 
-
-```{r}
-# creating two groups of cultivars (MR, S)
-table(fhb_sev_coop$cultivar, fhb_sev_coop$reaction)
-nrow(table(fhb_sev_coop$cultivar, fhb_sev_coop$reaction))
-
-# Renaming the reactions 
-library(plyr)
-fhb_sev_coop$reaction <- revalue(fhb_sev_coop$reaction, c("MS" = "S"))
-fhb_sev_coop$reaction <- revalue(fhb_sev_coop$reaction, c("MS/MR" = "MR"))
-fhb_sev_coop$reaction <- revalue(fhb_sev_coop$reaction, c("MR/R" = "MR"))
-fhb_sev_coop$reaction <- revalue(fhb_sev_coop$reaction, c("MS/S" = "S"))
-detach("package:plyr", unload = TRUE)
-
-table(fhb_sev_coop$cultivar, fhb_sev_coop$reaction)
-table(fhb_sev_coop$reaction)
-table(fhb_sev_coop$AI2, fhb_sev_coop$reaction)
-
-
-```
-
-```{r}
-library(metafor)
-
-
-mv_reaction <- rma.mv(log_sev, vi,
-  mods = ~AI2*reaction,
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_coop
-)
-
-mv_reaction
-
-
-anova(mv_reaction, btt=8:10)
-```
-
-### Disease Pressure
-
-```{r}
-median(fhb_sev$sev_check)
-
-library(tidyverse)
-fhb_sev_coop1 <- fhb_sev_coop %>%
-  mutate(sev_check_class = case_when(
-      sev_check < 7 ~ "low",
-      sev_check >= 7 ~ "high"))
-
-mv_sev_check <- rma.mv(log_sev, vi,
-  mods = ~AI2*sev_check_class,
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_coop1
-)
-
-mv_sev_check
-
-
-anova(mv_sev_check, btt= 8:12)
-
-```
-
-### Baseline 10%
-
-```{r}
-library(tidyverse)
-library(metafor)
-
-fhb_sev_coop2 <- fhb_sev_coop %>%
-  mutate(sev_check_class = case_when(
-      sev_check < 10 ~ "low",
-      sev_check >= 10 ~ "high"))
-
-mv_sev_check <- rma.mv(log_sev, vi,
-  mods = ~AI2*sev_check_class,
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_coop2
-)
-
-mv_sev_check
-
-
-anova(mv_sev_check, btt=8:12)
-```
-
-
-### Sev_check as continuous
-
-```{r}
-
-mv_sev_check_cont <- rma.mv(log_sev, vi,
-  mods = ~AI2*as.numeric(sev_check),
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_coop
-)
-
-mv_sev_check_cont
-
-
-anova(mv_sev_check_cont, btt=8:12)
-
-
-```
-
-### yield_class
-
-```{r}
-#Moderator yield_class
-
-summary(fhb_sev_coop$yld_check) # Median = 2993; Mean = 2880.45 
-
-fhb_sev_coop <- fhb_sev_coop %>%
-  mutate(yld_check_class = case_when(
-      yld_check < 3000 ~ "low",
-      yld_check >= 3000 ~ "high"))
-table(fhb_sev_coop$AI2, fhb_sev_coop$yld_check_class)
-
-
-mv_yld_check <- rma.mv(log_sev, vi,
-  mods = ~AI2*factor(yld_check_class),
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_coop
-)
-
-mv_yld_check
-
-
-anova(mv_yld_check, btt=8:12)
-
-
-```
-
-### State
-
-```{r}
-
-
-# Number of entries by fungicide and state
-table(fhb_sev_coop$AI2, fhb_sev_coop$state)
-
-
-mv_sev_state <- rma.mv(log_sev, vi,
-  mods = ~AI2*factor(state),
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_coop
-)
-
-mv_sev_state
-
-# anova(fhb_mv_AI_state,btt=8:15)
-# 
-# anova(fhb_mv_AI_state,btt=8:11)
-# 
-# anova(fhb_mv_AI_state,btt=11:15)
-
-```
-
-
-### Year as continuous
-
-```{r}
-
-# Number of entries by fungicide and year
-table(fhb_sev$AI2, fhb_sev$year)
-
-mv_sev_year <- rma.mv(log_sev, vi,
-  mods = ~AI2*year,
-  random = list(~AI2 | factor(trial)),
-  struct = "HCS",
-  method = "ML",
-  data = fhb_sev_coop %>% mutate(year = year-2000))
-
-
-mv_sev_year
-
-anova(mv_sev_year, btt=8:12)
-
-
-```
-
-# Publications
-
-```{r}
-fhb_sev_publ = fhb_sev %>% 
-  filter(publication != "Boletim")
-
-```
-
-
-```{r}
-fhb_sev_publ %>%
-  tabyl(AI2, publication)
-
-fhb_sev %>%
-  tabyl(AI2, publication)
-```
-
-## covariance structure
-
-Now we will fit models with CS, HCS and UN matrix-covariance structure. We will then compare them with `anova` function to choose among the best model.
-
-```{r}
-
-library(metafor)
-
-
-mv_sev_HCS_publ <- rma.mv(log_sev, vi,
-  mods = ~AI2,
-  random = list(~AI2 | factor(trial)),
-  struct = "HCS",
-  method = "ML",
-  data = fhb_sev_publ
-)
-
-mv_sev_publ <- rma.mv(log_sev, vi,
-  mods = ~AI2,
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_publ
-)
-
-mv_sev_publ
-```
-
-
-We can see below that the UN structure is a better model.
-
-```{r}
-
-anova(mv_sev_HCS_publ, mv_sev_publ)
-AIC(mv_sev_HCS_publ)
-```
-
-
-## Percent control
-
-Let's obtain the percent control from the estimated ratios.
-
-```{r}
-
-efficacy_sev_publ <- data.frame(cbind(
-  (1 - exp(mv_sev_publ$b)) * 100,
-  (1 - exp(mv_sev_publ$ci.lb)) * 100,
-  (1 - exp(mv_sev_publ$ci.ub)) * 100
-))
-
-
-
-efficacy_sev_publ
-```
-
-## Contrasts
-
-We can set linear contrasts between treatments of interest and get the P-value using the `anova` function.
-
-
-```{r}
-anova(mv_sev_publ, L = rbind(
-  c(0, 1, -1, 0, 0, 0, 0),
-  c(0, 1, 0, -1, 0, 0, 0),
-  c(0, 1, 0, 0, -1, 0, 0),
-  c(0, 1, 0, 0, 0, -1, 0),
-  c(0, 1, 0, 0, 0, 0, -1),
-  c(0, 0, 1, -1, 0, 0, 0),
-  c(0, 0, 1, 0, -1, 0, 0),
-  c(0, 0, 1, 0, 0, -1, 0),
-  c(0, 0, 1, 0, 0, 0, -1),
-  c(0, 0, 0, 1, -1, 0, 0),
-  c(0, 0, 0, 1, 0, -1, 0),
-  c(0, 0, 0, 1, 0, 0, -1),
-  c(0, 0, 0, 0, 1, -1, 0),
-  c(0, 0, 0, 0, 1, 0, -1),
-  c(0, 0, 0, 0, 0, 1, -1)
-))
-```
-
-## Moderators
-
-### Cultivar 
-
-```{r}
-# creating two groups of cultivars (MR, S)
-table(fhb_sev_publ$cultivar, fhb_sev_publ$reaction)
-nrow(table(fhb_sev_publ$cultivar, fhb_sev_publ$reaction))
-
-# Renaming the reactions 
-library(plyr)
-fhb_sev_publ$reaction <- revalue(fhb_sev_publ$reaction, c("MS" = "S"))
-fhb_sev_publ$reaction <- revalue(fhb_sev_publ$reaction, c("MS/MR" = "MR"))
-fhb_sev_publ$reaction <- revalue(fhb_sev_publ$reaction, c("MR/R" = "MR"))
-fhb_sev_publ$reaction <- revalue(fhb_sev_publ$reaction, c("MS/S" = "S"))
-detach("package:plyr", unload = TRUE)
-
-table(fhb_sev_publ$cultivar, fhb_sev_publ$reaction)
-table(fhb_sev_publ$reaction)
-table(fhb_sev_publ$AI2, fhb_sev_publ$reaction)
-
-
-```
-
-```{r}
-library(metafor)
-
-
-mv_reaction <- rma.mv(log_sev, vi,
-  mods = ~AI2*reaction,
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_publ
-)
-
-mv_reaction
-
-
-anova(mv_reaction, btt=9:10)
-```
-
-### Disease Pressure
-
-```{r}
-median(fhb_sev_publ$sev_check)
-
-library(tidyverse)
-fhb_sev_publ <- fhb_sev_publ %>%
-  mutate(sev_check_class = case_when(
-      sev_check < 7 ~ "low",
-      sev_check >= 7 ~ "high"))
-
-mv_sev_check <- rma.mv(log_sev, vi,
-  mods = ~AI2*sev_check_class,
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_publ
-)
-
-mv_sev_check
-
-
-anova(mv_sev_check, btt=9:14)
-
-```
-
-### Baseline 10%
-
-```{r}
-library(tidyverse)
-library(metafor)
-
-fhb_sev_publ <- fhb_sev_publ %>%
-  mutate(sev_check_class = case_when(
-      sev_check < 10 ~ "low",
-      sev_check >= 10 ~ "high"))
-
-mv_sev_check <- rma.mv(log_sev, vi,
-  mods = ~AI2*sev_check_class,
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_publ
-)
-
-mv_sev_check
-
-
-anova(mv_sev_check, btt=9:14)
-```
-
-
-### Sev_check as continuous
-
-```{r}
-
-mv_sev_check_cont <- rma.mv(log_sev, vi,
-  mods = ~AI2*as.numeric(sev_check),
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_publ
-)
-
-mv_sev_check_cont
-
-
-anova(mv_sev_check_cont, btt=9:14)
-
-
-```
-
-### yield_class
-
-```{r}
-#Moderator yield_class
-
-summary(fhb_sev_publ$yld_check) # Median = 2993; Mean = 2880.45 
-
-fhb_sev_publ <- fhb_sev_publ %>%
-  mutate(yld_check_class = case_when(
-      yld_check < 3000 ~ "low",
-      yld_check >= 3000 ~ "high"))
-table(fhb_sev_publ$AI2, fhb_sev_publ$yld_check_class)
-
-
-mv_yld_check <- rma.mv(log_sev, vi,
-  mods = ~AI2*factor(yld_check_class),
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_publ
-)
-
-mv_yld_check
-
-
-anova(mv_yld_check, btt=9:14)
-
-
-```
-
-### State
-
-```{r}
-
-
-# Number of entries by fungicide and state
-table(fhb_sev_publ$AI2, fhb_sev_publ$state)
-
-
-mv_sev_state <- rma.mv(log_sev, vi,
-  mods = ~AI2*factor(state),
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_publ
-)
-
-mv_sev_state
-
-# anova(fhb_mv_AI_state,btt=8:15)
-# 
-# anova(fhb_mv_AI_state,btt=8:11)
-# 
-# anova(fhb_mv_AI_state,btt=11:15)
-
-```
-
-### Publication
-
-```{r}
-mv_sev_publication <- rma.mv(log_sev, vi,
-  mods = ~AI2*factor(publication),
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev_publ
-)
-
-mv_sev_publication
-
-anova(mv_sev_publication, btt=10:16)
-```
-
-
-
-# Overall 
-
-## covariance structure
-
-Now we will fit models with CS, HCS and UN matrix-covariance structure. We will then compare them with `anova` function to choose among the best model.
-
-```{r}
-
-library(metafor)
+fhb_sev = fhb_sev %>% #only study 100 has vi>25. So, we excluded that study in order to obtain stable results
+  filter(vi < 25)
 
 
 mv_sev_HCS <- rma.mv(log_sev, vi,
@@ -665,19 +88,14 @@ Let's obtain the percent control from the estimated ratios.
 efficacy_sev <- data.frame(cbind(
   (1 - exp(mv_sev$b)) * 100,
   (1 - exp(mv_sev$ci.lb)) * 100,
-  (1 - exp(mv_sev$ci.ub)) * 100
-))
-
-
+  (1 - exp(mv_sev$ci.ub)) * 100))
 
 efficacy_sev
-```
 
-```{r}
-
+# Let's save the results
 efficacy_res = efficacy_sev %>% 
   set_names("efficacy", "eff_sup", "eff_inf") %>% 
-  mutate(fungicide = c("check", "AZOX + TEBU 2X", "PIRA + METC 1X", "PIRA + METC 2X", "TEBU 2X", "TFLX + PROT 2X", "TFLX + TEBU 2X")) %>% 
+  mutate(fungicide = c("check", "AZOX + TEBU 2X", "PYRA + METC 1X", "PYRA + METC 2X", "TEBU 2X", "TFLX + PROT 2X", "TFLX + TEBU 2X")) %>% 
   filter(fungicide != "check")
 efficacy_res
 
@@ -686,7 +104,6 @@ write_csv(efficacy_res, "data/efficacy.csv")
 ```
 
 
-
 ## Contrasts
 
 We can set linear contrasts between treatments of interest and get the P-value using the `anova` function.
@@ -714,48 +131,11 @@ anova(mv_sev, L = rbind(
 
 ## Moderators
 
-### Cultivar 
-
-```{r}
-# creating two groups of cultivars (MR, S)
-table(fhb_sev$cultivar, fhb_sev$reaction)
-nrow(table(fhb_sev$cultivar, fhb_sev$reaction))
-
-# Renaming the reactions 
-library(plyr)
-fhb_sev$reaction <- revalue(fhb_sev$reaction, c("MS" = "S"))
-fhb_sev$reaction <- revalue(fhb_sev$reaction, c("MS/MR" = "MR"))
-fhb_sev$reaction <- revalue(fhb_sev$reaction, c("MR/R" = "MR"))
-fhb_sev$reaction <- revalue(fhb_sev$reaction, c("MS/S" = "S"))
-detach("package:plyr", unload = TRUE)
-
-table(fhb_sev$cultivar, fhb_sev$reaction)
-table(fhb_sev$reaction)
-table(fhb_sev$AI2, fhb_sev$reaction)
-
-
-```
-
-```{r}
-library(metafor)
-
-
-mv_reaction <- rma.mv(log_sev, vi,
-  mods = ~AI2*reaction,
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev
-)
-
-mv_reaction
-
-
-anova(mv_reaction, btt=9:12)
-```
+The model was expanded to include categorical or continuous moderator variables that could explain, at least portion of, the heterogeneity of the effects across trials.
 
 ### Year as continuous
+
+We tested Year as continuous to check whether there was any trend of decline in fungicide efficacy over time.
 
 ```{r}
 
@@ -780,6 +160,8 @@ anova(mv_sev_year, btt=9:14)
 
 ### Disease Pressure
 
+We created this baseline for FHB disease index based on the median of the mean values in the nontreated check.
+
 ```{r}
 median(fhb_sev$sev_check)
 
@@ -790,7 +172,7 @@ fhb_sev <- fhb_sev %>%
       sev_check >= 7 ~ "high"))
 
 mv_sev_check <- rma.mv(log_sev, vi,
-  mods = ~AI2*sev_check_class,
+  mods = ~AI2* factor(sev_check_class),
   random = list(~AI2 | factor(trial)),
   struct = "UN",
   method = "ML",
@@ -807,6 +189,8 @@ anova(mv_sev_check, btt=9:14)
 
 ### Baseline 10%
 
+We also tested if the baseline of 10%, which is used in the United States to define an FHB epidemic case (De Wolf et al. 2003), could explain, at least portion of, the heterogeneity of the effects across trials.
+
 ```{r}
 library(tidyverse)
 library(metafor)
@@ -817,7 +201,7 @@ fhb_sev <- fhb_sev %>%
       sev_check >= 10 ~ "high"))
 
 mv_sev_check <- rma.mv(log_sev, vi,
-  mods = ~AI2*sev_check_class,
+  mods = ~AI2*factor(sev_check_class),
   random = list(~AI2 | factor(trial)),
   struct = "UN",
   method = "ML",
@@ -855,10 +239,11 @@ anova(mv_sev_check_cont, btt=9:14)
 
 ### yield_class
 
-```{r}
-#Moderator yield_class
+We created this baseline for wheat grain yield based on the median of the mean values in the nontreated check.
 
-summary(fhb_sev$yld_check) # Median = 2993; Mean = 2880.45 
+```{r}
+
+summary(fhb_sev$yld_check)  
 
 fhb_sev <- fhb_sev %>%
   mutate(yld_check_class = case_when(
@@ -885,182 +270,179 @@ anova(mv_yld_check, btt=9:14)
 ```
 
 
-### State
-
-```{r}
+## Inconsistency
 
 
-# Number of entries by fungicide and state
-table(fhb_sev_coop$AI2, fhb_sev_coop$state)
+In a network meta-analysis, it is important to check whether the results are consistent across the different designs. We included this variable and tested the interaction effect of treatments and design group.
 
+```{r, warning=FALSE}
+library(knitr)
+library(tidyverse)
+library(janitor)
+fhb_sev <- read_csv("data/dat-sev.csv")
 
-mv_sev_state <- rma.mv(log_sev, vi,
-  mods = ~AI2*factor(state),
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev
-)
-
-mv_sev_state
-
-# anova(fhb_mv_AI_state,btt=8:15)
-# 
-# anova(fhb_mv_AI_state,btt=8:11)
-# 
-# anova(fhb_mv_AI_state,btt=11:15)
-
-```
-
-### Publication
-
-```{r}
+fhb_sev %>%
+  tabyl(AI2, n_spray)
 
 # Renaming the treatments 
 library(plyr)
-fhb_sev$publication <- revalue(fhb_sev$publication, c("Boletim" = "AABoletim"))
-detach("package:plyr", unload = TRUE)
-
-
-mv_sev_publication <- rma.mv(log_sev, vi,
-  mods = ~AI2*factor(publication),
-  random = list(~AI2 | factor(trial)),
-  struct = "UN",
-  method = "ML",
-  control = list(optimizer = "nlm"),
-  data = fhb_sev
-)
-
-mv_sev_publication
-
-anova(mv_sev_publication, btt=11:21)
-```
-
-#### Mod effect
-
-```{r}
-reg1 = data.frame(mv_sev_publication$beta, mv_sev_publication$ci.lb, mv_sev_publication$ci.ub) %>%
-  rownames_to_column("trat") %>%
-  separate(trat, into = c("lado1", "lado2"), sep = ":") %>%
-  separate(lado2, into = c("lixo","lado3"),sep = "[[)]]" ) %>% 
-  select(-lixo) %>%
-  separate(lado1, into = c("lixo","lado1"),sep = "AI2" ) %>%
-  select(-lixo) %>%
-  filter(lado1 == "PIRA + METC 2X") %>% 
-  set_names("fungicide", "publication", "estimate", "ci.lb", "ci.ub") %>% 
-  mutate(publication = c("Coop.Trials", "Papers", "Abstracts", "Thesis"))
-
-reg2 = reg1%>% 
-  group_by(fungicide, publication) %>% 
-  summarise(efficacy = (1-exp(first(estimate)+estimate))*100,
-            ciu = (1-exp(first(ci.ub)+ ci.ub))*100,
-            ci.lb = (1-exp(first(ci.lb)+ci.lb))*100) %>% 
-  filter(publication != "Coop.Trials")
-
-reg3 = reg1 %>% 
-  filter(publication == "Coop.Trials") %>% 
-  group_by(fungicide, publication) %>%
-  summarise(efficacy = (1-exp(estimate))*100,
-            ciu = (1-exp(ci.ub))*100,
-            ci.lb = (1-exp(ci.lb))*100)
-
-reg4 = rbind(reg3,reg2)
-reg4
-```
-
-# Network Graph
-
-
-
-```{r message=FALSE, warning=FALSE}
-library(janitor)
-library(tidyverse)
-
-fhb_sev <- read_csv("data/dat-sev.csv")
-
-# Renaming the treatments
-library(plyr)
 fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("check-0" = "AACHECK"))
 fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Azoxistrobina + Tebuconazole-2" = "AZOX + TEBU 2X"))
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Piraclostrobina + Metconazole-2" = "PIRA + METC 2X"))
+fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Piraclostrobina + Metconazole-2" = "PYRA + METC 2X"))
 fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Tebuconazole-2" = "TEBU 2X"))
 fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Trifloxistrobina + Protioconazole-2" = "TFLX + PROT 2X"))
 fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Trifloxistrobina + Tebuconazole-2" = "TFLX + TEBU 2X"))
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Piraclostrobina + Metconazole-1" = "PIRA + METC 1X"))
+fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("Piraclostrobina + Metconazole-1" = "PYRA + METC 1X"))
 detach("package:plyr", unload = TRUE)
 
 
-fhb_sev %>%
-tabyl(AI2)
+# create the log of the FHB index variable
+fhb_sev <- fhb_sev %>%
+  mutate(log_sev = log(sev))
 
-# Renaming the treatments for the network graph
-library(plyr)
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("AACHECK" = "CHECK (61)"))
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("AZOX + TEBU 2X" = "AZOX + TEBU 2X (25)"))
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("PIRA + METC 2X" = "PIRA + METC 2X (57)"))
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("TEBU 2X" = "TEBU 2X (14)"))
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("TFLX + PROT 2X" = "TFLX + PROT 2X (39)"))
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("TFLX + TEBU 2X" = "TFLX + TEBU 2X (36)"))
-fhb_sev$AI2 <- revalue(fhb_sev$AI2, c("PIRA + METC 1X" = "PIRA + METC 1X (16)"))
-detach("package:plyr", unload = TRUE)
-
-
+# create the sampling variance for the log of FHB index
+fhb_sev$vi <- with(fhb_sev, V_sev / (n * sev^2))
 ```
 
+### Design groups
 
-Now We need to prepare the data to get the network graph. Thus, we used the package `netmeta` with the function `pairwise` to calculate the contrasts.
-
-
-```{r message=FALSE, warning=FALSE}
-library(netmeta)
-pair_sev <- pairwise(
-  treat = factor(AI2),
-  n = 4,
-  mean = sev,
-  sd = V_sev,
-  studlab = trial,
-  data = fhb_sev,
-  sm = "ROM"
-)
-```
+Eleven different designs (here design refers to the set of treatments in the trial) were found in the trials reporting FHB index.
 
 ```{r}
-net_sev <- netmeta(TE, seTE, treat1, treat2, studlab, data = pair_sev, sm = "ROM", backtransf = TRUE)
-summary(net_sev)
+design1 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "PYRA + METC 2X", "TFLX + PROT 2X", "TFLX + TEBU 2X", "AZOX + TEBU 2X", "TEBU 2X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(1, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>% 
+  filter(n2 == 6) %>% 
+  filter(n3 == 6)
+design1
+
+design2 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "PYRA + METC 2X", "TFLX + PROT 2X", "TFLX + TEBU 2X", "AZOX + TEBU 2X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(2, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>%   
+  filter(n2 == 5) %>% 
+  filter(n3 == 5)
+design2
+
+design3 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "TFLX + TEBU 2X", "AZOX + TEBU 2X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(3, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>%  
+  filter(n2 == 3) %>% 
+  filter(n3 == 3)
+design3
+
+design4 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "PYRA + METC 2X", "PYRA + METC 1X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(4, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>% 
+  filter(n2 == 3) %>% 
+  filter(n3 == 3)
+design4
+
+design5 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "PYRA + METC 2X", "TFLX + PROT 2X", "TFLX + TEBU 2X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(5, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>% 
+  filter(n2 == 4) %>% 
+  filter(n3 == 4)
+design5
+
+design6 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "TFLX + PROT 2X", "TFLX + TEBU 2X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(6, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>%  
+  filter(n2 == 3) %>% 
+  filter(n3 == 3)
+design6
+
+design7 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "TEBU 2X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(7, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>%  
+  filter(n2 == 2) %>% 
+  filter(n3 == 2)
+design7
+
+design8 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "PYRA + METC 2X", "TFLX + PROT 2X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(8, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>%  
+  filter(n2 == 3) %>% 
+  filter(n3 == 3)
+design8
+
+design9 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "PYRA + METC 2X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(9, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>%  
+  filter(n2 == 2) %>% 
+  filter(n3 == 2)
+design9
+
+design10 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "PYRA + METC 2X", "PYRA + METC 1X", "TFLX + PROT 2X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(10, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>%  
+  filter(n2 == 4) %>% 
+  filter(n3 == 4)
+design10
+
+design11 = fhb_sev %>% 
+  group_by(trial) %>% 
+  filter(AI2  %in% c("AACHECK", "PYRA + METC 2X", "TEBU 2X")) %>% 
+  mutate(n3 = n()) %>% 
+  mutate(design = rep(11, length(AI2))) %>% 
+  select(1:5,8:15,17:24) %>%  
+  filter(n2 == 3) %>% 
+  filter(n3 == 3)
+design11
+
+fhb_sev_design = rbind(design1, design2, design3, design4, design5, design6, design7, design8, design9, design10, design11) %>% 
+  group_by(trial)
+fhb_sev_design
 ```
 
+### Test 
 
-A network graph is composed of nodes (fungicide treatments) and edges or links between two treatments directly compared in a same trial. This graph allows to visualize how the treatments relate to each other and the number of direct comparisons can be depicted by the thickness of the edges, but also with numbers presented at the top of the links. 
+We used a factorial-type ANOVA model to determine the significance of the *treatment x design* interaction, evaluated based on the Wald test statistic.
 
 ```{r}
+library(metafor)
+summary(fhb_sev_design$vi)
 
-#pdf("Figures/net_sev.pdf", width=10, height=6)
-netgraph(net_sev,
-  plastic = FALSE,
-  col = "gray",
-  thickness = "number.of.studies",
-  points = TRUE,
-  col.points = "black",
-  cex.points = c("AZOX + TEBU 2 (25)" = 2.5, "CHECK (61)" = 6, "PIRA + METC 1X (16)" = 1.6, "PIRA + METC 2X (57)" = 5.6, "TEBU 2X (14)" = 1.4, "TFLX + PROT 2X (39)" = 3.8,  "TFLX + TEBU 2X (36)" = 3.5),
-  number.of.studies = TRUE,
-  cex.number.of.studies = 1.25,
-  col.number.of.studies = "black",
-  bg.number.of.studies = "white",
-  multiarm = FALSE,
-  col.multiarm = "gray",
-  pos.number.of.studies = 0.50)
-#dev.off()
+fhb_sev_design = fhb_sev_design %>% 
+  filter(vi < 25)
+
+mv_incon <- rma.mv(log_sev, vi,
+  mods = ~AI2 * design,
+  random = list(~factor(trial) | design / AI2),
+  struct = "UN",
+  method = "ML",
+  control = list(optimizer = "nlm"),
+  data = fhb_sev_design)
+mv_incon
+anova(mv_incon, btt = 9:14)
+
 ```
-
-## Designs 
-
-```{r}
-sev_design <- decomp.design(net_sev)
-sev_design$Q.inc.detach
-```
-
-
-
-
-

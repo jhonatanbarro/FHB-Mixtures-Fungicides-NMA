@@ -460,13 +460,16 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Plots</h1>
 
 </div>
 
 
+<pre class="r"><code>knitr::opts_chunk$set(echo = TRUE, warning = FALSE)</code></pre>
+<div id="import-data" class="section level1">
+<h1>Import Data</h1>
 <div id="histogramas" class="section level2">
 <h2>Histogramas</h2>
+<p>Histograms to check data distribution of FHB index and wheat grain yield. Log-transformed FHB index data was use in the meta-analysis.</p>
 <pre class="r"><code>## Log of the Effect-sizes
 fhb2 &lt;- fhb2 %&gt;%
   mutate(
@@ -474,272 +477,223 @@ fhb2 &lt;- fhb2 %&gt;%
     log_yld = log(yld))
 
 
-hist_log_sev &lt;- ggplot(fhb2, aes(log_sev)) + geom_histogram(bins = 15, color = &quot;black&quot;) + xlab(&quot;log(FHB Index)&quot;)
+hist_log_sev &lt;- ggplot(fhb2, aes(log_sev)) + 
+  geom_histogram(bins=20, fill = &quot;steelblue&quot;, color = &quot;white&quot;) + 
+  theme_minimal_hgrid() + 
+  xlab(&quot;log(FHB Index)&quot;)
 
 
-hist_sev &lt;- ggplot(fhb2, aes(sev)) + geom_histogram(bins = 15,  color = &quot;black&quot;) + xlab(&quot;FHB Index (%)&quot;)
+hist_sev &lt;- ggplot(fhb2, aes(sev)) + 
+  geom_histogram(bins=20, fill = &quot;steelblue&quot;, color = &quot;white&quot;) + 
+  theme_minimal_hgrid() + 
+  xlab(&quot;FHB Index (%)&quot;)
 
 
 
-hist_yld &lt;- ggplot(fhb2, aes(yld)) + geom_histogram(bins = 15,  color = &quot;black&quot;) + xlab(&quot;Yield (Kg/ha)&quot;)
+hist_yld &lt;- ggplot(fhb2, aes(yld)) + 
+  geom_histogram(bins=20, fill = &quot;steelblue&quot;, color = &quot;white&quot;) + 
+  theme_minimal_hgrid() +
+  xlab(&quot;Yield (Kg/ha)&quot;)
 
 
 library(cowplot)
 hist_plot &lt;- plot_grid(hist_sev, hist_log_sev, hist_yld, labels = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;), nrow = 3, align = &quot;V&quot;)
 hist_plot</code></pre>
-<p><img src="plots_files/figure-html/unnamed-chunk-1-1.png" width="480" /></p>
+<p><img src="plots_files/figure-html/unnamed-chunk-2-1.png" width="480" /></p>
 <pre class="r"><code>ggsave(&quot;Figures/histograms.png&quot;, width = 5, height = 8, dpi = 300)</code></pre>
 </div>
 <div id="boxplots" class="section level2">
 <h2>Boxplots</h2>
 <div id="severity" class="section level3">
 <h3>Severity</h3>
-<pre class="r"><code>fhb &lt;- fhb2  
-fhb$AI2 &lt;- factor(fhb$AI2, levels = c(&quot;CHECK&quot;, &quot;PYRA + METC 1X&quot;, &quot;AZOX + TEBU 2X&quot;, &quot;TFLX + TEBU 2X&quot;, &quot;TEBU 2X&quot;, &quot;TFLX + PROT 2X&quot;, &quot;PYRA + METC 2X&quot;))
+<pre class="r"><code>fhb2 &lt;- fhb2  
+fhb2$AI2 &lt;- factor(fhb2$AI2, levels = c(&quot;CHECK&quot;, &quot;AZOX + TEBU&quot;, &quot;TFLX + TEBU&quot;, &quot;TEBU&quot;, &quot;TFLX + PROT&quot;, &quot;PYRA + METC&quot;, &quot;PYRA + METC 1X&quot;))
 
-box_sev &lt;- ggplot(fhb, aes(AI2, sev)) +
-  geom_boxplot(size = 0.5, outlier.shape = NA, position=position_dodge(1))+
-  geom_jitter(width = 0.1, shape = 1, size = 2, color = &quot;darkgoldenrod1&quot;, alpha = 0.9)+
-  labs(x = &quot;Fungicide&quot;, y = &quot;FHB Index (%)&quot;) +
-  scale_y_continuous(breaks = c(0, 20, 40, 60, 80, 100), limits = c(0, 100)) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size=12),
+box_sev &lt;- ggplot(fhb2, aes(AI2, sev)) +
+  geom_boxplot(size = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, size = 2, color = &quot;#83CAFF&quot;, alpha = 0.5) +
+  theme_minimal_hgrid()+
+  labs(x = &quot;Fungicides&quot;, y = &quot;FHB Index (%)&quot;) +
+  scale_y_continuous(breaks = c(0,20,40,60,80,100), limits = c(0,100))+
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
         axis.text.y = element_text(size=12),
-        axis.title=element_text(size=14), 
-        legend.position = &quot;none&quot;)
+        axis.title.y = element_text(size=14, face = &quot;bold&quot;))
 box_sev</code></pre>
-<p><img src="plots_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="plots_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>sev_year &lt;- fhb2 %&gt;%
   filter(AI2 == &quot;CHECK&quot;) %&gt;%
   ggplot(aes(factor(year), sev_check)) +
-  geom_boxplot(size = 0.5, outlier.shape = NA, position=position_dodge(1)) +
-  geom_jitter(width = 0.1, shape = 1, size = 2, color = &quot;darkgoldenrod1&quot;, alpha = 0.9) +
-  labs(x = &quot;Crop Seasons&quot;, y = &quot;FHB Index (%)&quot;) +
-  scale_y_continuous(breaks = c(0, 20, 40, 60, 80, 100), limits = c(0, 100))+
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size=12),
+  geom_boxplot(size = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, size = 2, color = &quot;#83CAFF&quot;, alpha = 0.5) +
+  theme_minimal_hgrid()+
+  labs(x = &quot;Crop Seasons&quot;, y = &quot;FHB Index (%) in the CHECK&quot;) +
+  scale_y_continuous(breaks = c(0,20,40,60,80,100), limits = c(0,100))+
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
         axis.text.y = element_text(size=12),
-        axis.title=element_text(size=14), 
-        legend.position = &quot;none&quot;)
+        axis.title.y = element_text(size=14, face = &quot;bold&quot;))
 sev_year</code></pre>
-<p><img src="plots_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
-<pre class="r"><code>library(cowplot)
-box_year &lt;- plot_grid(sev_year, box_sev, labels = c(&quot;A&quot;, &quot;B&quot;), ncol = 2, align = &quot;h&quot;, rel_widths = c(1, 1))
-
-
-ggsave(&quot;Figures/Box_sev.png&quot;, width = 8, height = 5, dpi = 300)</code></pre>
-<div id="state" class="section level4">
-<h4>State</h4>
-<pre class="r"><code>sev_year &lt;- fhb2 %&gt;%
-  filter(AI2 == &quot;CHECK&quot;) %&gt;%
-  #filter(state!=&quot;SC&quot;) %&gt;% 
-  ggplot(aes(factor(year), sev_check)) +
-  geom_boxplot(size = 0.5, outlier.shape = NA, position=position_dodge(1)) +
-  geom_jitter(width = 0.1, shape = 1, size = 2, color = &quot;darkgoldenrod&quot;, alpha = 0.9) +
-  labs(x = &quot;Crop Seasons&quot;, y = &quot;FHB Index (%)&quot;) +
-  scale_y_continuous(breaks = c(0, 20, 40, 60, 80, 100), limits = c(0, 100))+
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size=14),
-        axis.text.y = element_text(size=14),
-        axis.title=element_text(size=16), 
-        legend.position = &quot;none&quot;, 
-        strip.text = element_text(size = 16, face = &quot;bold&quot;))+
-  facet_wrap(~state)
-sev_year</code></pre>
-<p><img src="plots_files/figure-html/unnamed-chunk-3-1.png" width="1152" /></p>
-<pre class="r"><code>ggsave(&quot;Figures/Box_state.png&quot;, width = 12, height = 4, dpi = 300)</code></pre>
-</div>
+<p><img src="plots_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
 </div>
 <div id="yield" class="section level3">
 <h3>Yield</h3>
-<pre class="r"><code>fhb &lt;- fhb2  
-fhb$AI2 &lt;- factor(fhb$AI2, levels = c(&quot;CHECK&quot;, &quot;PYRA + METC 1X&quot;, &quot;AZOX + TEBU 2X&quot;, &quot;TFLX + TEBU 2X&quot;,&quot;TEBU 2X&quot;, &quot;TFLX + PROT 2X&quot;, &quot;PYRA + METC 2X&quot;))
+<pre class="r"><code>fhb2 &lt;- fhb2  
+fhb2$AI2 &lt;- factor(fhb2$AI2, levels = c(&quot;CHECK&quot;, &quot;AZOX + TEBU&quot;, &quot;TFLX + TEBU&quot;, &quot;TEBU&quot;, &quot;TFLX + PROT&quot;, &quot;PYRA + METC&quot;, &quot;PYRA + METC 1X&quot;))
 
-box_yld &lt;- ggplot(fhb, aes(AI2, yld)) +
-  geom_boxplot(size = 0.5, outlier.shape = NA) +
-  geom_jitter(width = 0.1, shape = 1, size = 2,color = &quot;darkgoldenrod1&quot;, alpha = 0.9) +
-  labs(x = &quot;Fungicide&quot;, y = &quot;Yield (kg/ha)&quot;) +
-  scale_y_continuous(breaks = c(0,1000,2000,3000,4000,5000, 6000), limits = c(0, 6000))+
-  theme_bw() +
+box_yld &lt;- ggplot(fhb2, aes(AI2, yld)) +
+  geom_boxplot(size = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, size = 2, color = &quot;#FF950E&quot;, alpha = 0.5) +
+  theme_minimal_hgrid()+
+  labs(x = &quot;Fungicides&quot;, y = &quot;Yield (kg/ha)&quot;) +
+  scale_y_continuous(breaks = c(0,1000,2000,3000,4000,5000,6000), limits = c(0, 6000))+
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size=12),
         axis.text.y = element_text(size=12),
-        axis.title=element_text(size=14), 
-        legend.position = &quot;none&quot;)
+        axis.title = element_text(size=14, face = &quot;bold&quot;))
 box_yld</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre class="r"><code>yld_year &lt;- fhb2 %&gt;%
   filter(AI2 == &quot;CHECK&quot;) %&gt;%
-  #filter(state!=&quot;SC&quot;) %&gt;% 
-  ggplot(aes(factor(year), yld_check),  outlier.shape = NA,) +
-  geom_boxplot(size = 0.5) +
-  geom_jitter(width = 0.1, shape = 1, size = 2, color = &quot;darkgoldenrod1&quot;, alpha = 0.9) +
-  labs(x = &quot;Crop Seasons&quot;, y = &quot;Yield (kg/ha)&quot;) +
-  scale_y_continuous(breaks = c(0,1000,2000,3000,4000,5000, 6000), limits = c(0, 6000))+
-  theme_bw() +
+  ggplot(aes(factor(year), yld_check)) +
+  geom_boxplot(size = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, size = 2, color = &quot;#FF950E&quot;, alpha = 0.5) +
+  theme_minimal_hgrid()+
+  labs(x = &quot;Crop Seasons&quot;, y = &quot;Yield (kg/ha) in the CHECK&quot;) +
+  scale_y_continuous(breaks = c(0,1000,2000,3000,4000,5000,6000), limits = c(0, 6000))+
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size=12),
         axis.text.y = element_text(size=12),
-        axis.title=element_text(size=14), 
-        legend.position = &quot;none&quot;)
+         axis.title = element_text(size=14, face = &quot;bold&quot;))
 yld_year</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
-<pre class="r"><code>library(cowplot)
-box_year &lt;- plot_grid(yld_year, box_yld, labels = c(&quot;A&quot;, &quot;B&quot;), ncol = 2, align = &quot;h&quot;, rel_widths = c(1, 1))
+<pre class="r"><code>library(patchwork)
 
-
-ggsave(&quot;Figures/Box_yld.png&quot;, width = 8, height = 5, dpi = 300)</code></pre>
-<div id="state-1" class="section level4">
-<h4>State</h4>
-<pre class="r"><code>yld_year &lt;- fhb2 %&gt;%
+((sev_year + labs(tag = &#39;A&#39;)) / yld_year) | ((box_sev + labs(tag = &#39;B&#39;)) / box_yld)</code></pre>
+<p><img src="plots_files/figure-html/unnamed-chunk-5-1.png" width="1152" /></p>
+<pre class="r"><code>ggsave(&quot;Figures/Combo.png&quot;, width = 12, height = 10, dpi = 300)</code></pre>
+</div>
+</div>
+<div id="state" class="section level2">
+<h2>State</h2>
+<pre class="r"><code>state_sev &lt;- fhb2 %&gt;%
   filter(AI2 == &quot;CHECK&quot;) %&gt;%
-  #filter(state!=&quot;SC&quot;) %&gt;% 
+  ggplot(aes(factor(year), sev_check)) +
+  geom_boxplot(size = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, size = 2, color = &quot;#83CAFF&quot;, alpha = 0.5) +
+  theme_minimal_hgrid()+
+  scale_y_continuous(breaks = c(0,25,50,75,100), limits = c(0,100))+
+  theme(legend.position = &quot;none&quot;,
+        strip.text.x = element_text(color = &quot;white&quot;,size = 14, face = &quot;bold&quot;),
+        strip.background = element_rect(fill = &quot;black&quot;), 
+        axis.text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.title = element_text(size=14, face = &quot;bold&quot;))+
+  labs(x = &quot;Crop Seasons&quot;, y = &quot;FHB Index in the CHECK (%)&quot;)+
+  facet_wrap(~state1, ncol = 1)
+state_sev</code></pre>
+<p><img src="plots_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
+<pre class="r"><code>state_yld &lt;- fhb2 %&gt;%
+  filter(AI2 == &quot;CHECK&quot;) %&gt;%
   ggplot(aes(factor(year), yld_check)) +
-  geom_boxplot(size = 0.5, outlier.shape = NA, position=position_dodge(1)) +
-  geom_jitter(width = 0.1, shape = 1, size = 2, color = &quot;darkgoldenrod1&quot;, alpha = 0.9) +
-  labs(x = &quot;Crop Seasons&quot;, y = &quot;Yield (kg/ha)&quot;) +
-  scale_y_continuous(breaks = c(0,1000,2000,3000,4000,5000), limits = c(0, 5000))+
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size=14),
-        axis.text.y = element_text(size=14),
-        axis.title=element_text(size=16), 
-        legend.position = &quot;none&quot;, 
-        strip.text = element_text(size = 16, face = &quot;bold&quot;))+
-  facet_wrap(~state)
-yld_year</code></pre>
-<pre><code>## Warning: Removed 3 rows containing non-finite values (stat_boxplot).</code></pre>
-<pre><code>## Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
-<p><img src="plots_files/figure-html/unnamed-chunk-5-1.png" width="960" /></p>
-<pre class="r"><code>ggsave(&quot;Figures/Box_yld_state.png&quot;, width = 10, height = 4, dpi = 300)</code></pre>
-<pre><code>## Warning: Removed 3 rows containing non-finite values (stat_boxplot).
+  geom_boxplot(size = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, size = 2, color = &quot;#FF950E&quot;, alpha = 0.5) +
+  theme_minimal_hgrid()+
+  labs(x = &quot;Crop Seasons&quot;, y = &quot;Yield in the CHECK (kg/ha)&quot;) +
+  scale_y_continuous(breaks = c(0,2000,4000,6000), limits = c(0, 6000))+
+  theme(strip.text.x = element_text(color = &quot;white&quot;,size = 14, face = &quot;bold&quot;),
+        strip.background = element_rect(fill = &quot;black&quot;), 
+        axis.text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.title = element_text(size=14, face = &quot;bold&quot;))+
+  facet_wrap(~state1, ncol = 1)
+state_yld</code></pre>
+<p><img src="plots_files/figure-html/unnamed-chunk-6-2.png" width="960" /></p>
+<pre class="r"><code>library(patchwork)
 
-## Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
-</div>
-</div>
+state_sev + labs(tag = &#39;A&#39;) + state_yld + labs(tag = &#39;B&#39;)</code></pre>
+<p><img src="plots_files/figure-html/unnamed-chunk-6-3.png" width="960" /></p>
+<pre class="r"><code>ggsave(&quot;Figures/Box_state.png&quot;, width = 12, height = 8, dpi = 300)</code></pre>
 </div>
 <div id="severity-x-yield" class="section level2">
 <h2>Severity x Yield</h2>
-<pre class="r"><code>library(cowplot)
-library(ggrepel)
-library(tidyverse)
-
-efficacy &lt;- read_csv(&quot;data/efficacy.csv&quot;)</code></pre>
+<p>Here we ploted the relationship between control efficacy and yield differences.</p>
+<pre class="r"><code>library(palettetown)
+sev_yld &lt;- read_csv(&quot;data/sev_yld.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   efficacy = col_double(),
 ##   eff_sup = col_double(),
 ##   eff_inf = col_double(),
-##   fungicide = col_character()
-## )</code></pre>
-<pre class="r"><code>efficacy</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["efficacy"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["eff_sup"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["eff_inf"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["fungicide"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"59.19924","2":"65.05083","3":"52.36791","4":"AZOX + TEBU 2X"},{"1":"45.04562","2":"54.69057","3":"33.34755","4":"PIRA + METC 1X"},{"1":"64.87290","2":"69.98004","3":"58.89692","4":"PIRA + METC 2X"},{"1":"60.29241","2":"65.76925","3":"53.93927","4":"TEBU 2X"},{"1":"63.19299","2":"68.78191","3":"56.60350","4":"TFLX + PROT 2X"},{"1":"58.93782","2":"65.12127","3":"51.65816","4":"TFLX + TEBU 2X"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-<pre class="r"><code>yld &lt;- read_csv(&quot;data/yld-response.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
 ##   fungicide = col_character(),
 ##   yld = col_double(),
 ##   yld_inf = col_double(),
 ##   yld_sup = col_double()
 ## )</code></pre>
-<pre class="r"><code>yld</code></pre>
+<pre class="r"><code>sev_yld</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["fungicide"],"name":[1],"type":["chr"],"align":["left"]},{"label":["yld"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["yld_inf"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["yld_sup"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"AZOX + TEBU 2X","2":"465.3908","3":"365.5227","4":"565.2590"},{"1":"PIRA + METC 1X","2":"415.2368","3":"308.0896","4":"522.3841"},{"1":"PIRA + METC 2X","2":"534.4291","3":"437.6987","4":"631.1595"},{"1":"TEBU 2X","2":"449.7739","3":"339.9472","4":"559.6006"},{"1":"TFLX + PROT 2X","2":"498.6729","3":"403.5982","4":"593.7475"},{"1":"TFLX + TEBU 2X","2":"481.3724","3":"391.4105","4":"571.3344"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["efficacy"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["eff_sup"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["eff_inf"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["fungicide"],"name":[4],"type":["chr"],"align":["left"]},{"label":["yld"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["yld_inf"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["yld_sup"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"58.70525","2":"64.52216","3":"51.93461","4":"AZOX + TEBU 2X","5":"473.4078","6":"376.2692","7":"570.5464"},{"1":"44.09744","2":"53.74373","3":"32.43951","4":"PYRA + METC 1X","5":"425.0396","6":"320.1539","7":"529.9252"},{"1":"64.29460","2":"69.31765","3":"58.44922","4":"PYRA + METC 2X","5":"546.1680","6":"453.1002","7":"639.2358"},{"1":"59.89676","2":"65.32598","3":"53.61743","4":"TEBU 2X","5":"459.6533","6":"353.4864","7":"565.8201"},{"1":"62.63590","2":"68.19080","3":"56.11094","4":"TFLX + PROT 2X","5":"505.1909","6":"415.6877","7":"594.6942"},{"1":"58.38925","2":"64.42050","3":"51.33562","4":"TFLX + TEBU 2X","5":"479.4437","6":"394.6934","7":"564.1939"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<pre class="r"><code>eff_yld = left_join(efficacy, yld)</code></pre>
-<pre><code>## Joining, by = &quot;fungicide&quot;</code></pre>
-<pre class="r"><code>eff_yld</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["efficacy"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["eff_sup"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["eff_inf"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["fungicide"],"name":[4],"type":["chr"],"align":["left"]},{"label":["yld"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["yld_inf"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["yld_sup"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"59.19924","2":"65.05083","3":"52.36791","4":"AZOX + TEBU 2X","5":"465.3908","6":"365.5227","7":"565.2590"},{"1":"45.04562","2":"54.69057","3":"33.34755","4":"PIRA + METC 1X","5":"415.2368","6":"308.0896","7":"522.3841"},{"1":"64.87290","2":"69.98004","3":"58.89692","4":"PIRA + METC 2X","5":"534.4291","6":"437.6987","7":"631.1595"},{"1":"60.29241","2":"65.76925","3":"53.93927","4":"TEBU 2X","5":"449.7739","6":"339.9472","7":"559.6006"},{"1":"63.19299","2":"68.78191","3":"56.60350","4":"TFLX + PROT 2X","5":"498.6729","6":"403.5982","7":"593.7475"},{"1":"58.93782","2":"65.12127","3":"51.65816","4":"TFLX + TEBU 2X","5":"481.3724","6":"391.4105","7":"571.3344"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-<pre class="r"><code>set.seed(42)
-gr1 &lt;- ggplot(eff_yld,aes(efficacy, yld)) +
-  geom_errorbar(aes(ymin = yld_inf, ymax = yld_sup, color = fungicide), width = 0.4, size = 0.8) +
-  geom_errorbarh(aes(xmin = eff_inf,xmax = eff_sup, color = fungicide),  height = 5, size = 0.8)+
-  scale_y_continuous(breaks=c(300, 350, 400, 450, 500, 550, 600, 650), limits=c(300,650))+
-  scale_x_continuous(breaks=c(30, 35, 40, 45, 50, 55, 60, 65, 70, 75), limits=c(30,75))+
+<pre class="r"><code># Renaming the treatments 
+library(plyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     compact</code></pre>
+<pre class="r"><code>sev_yld$fungicide &lt;- revalue(sev_yld$fungicide, c(&quot;AZOX + TEBU 2X&quot; = &quot;AZOX + TEBU&quot;))
+sev_yld$fungicide &lt;- revalue(sev_yld$fungicide, c(&quot;PYRA + METC 2X&quot; = &quot;PYRA + METC&quot;))
+sev_yld$fungicide &lt;- revalue(sev_yld$fungicide, c(&quot;TEBU 2X&quot; = &quot;TEBU&quot;))
+sev_yld$fungicide &lt;- revalue(sev_yld$fungicide, c(&quot;TFLX + PROT 2X&quot; = &quot;TFLX + PROT&quot;))
+sev_yld$fungicide &lt;- revalue(sev_yld$fungicide, c(&quot;TFLX + TEBU 2X&quot; = &quot;TFLX + TEBU&quot;))
+sev_yld$fungicide &lt;- revalue(sev_yld$fungicide, c(&quot;PYRA + METC 1X&quot; = &quot;PYRA + METC 1X&quot;))
+detach(&quot;package:plyr&quot;, unload = TRUE)
+
+sev_yld %&gt;% 
+  mutate(fungicide = factor(fungicide, levels = c(&quot;PYRA + METC&quot;, &quot;TFLX + PROT&quot;, &quot;TEBU&quot;, &quot;AZOX + TEBU&quot;, &quot;TFLX + TEBU&quot;,  &quot;PYRA + METC 1X&quot;))) %&gt;% 
+  ggplot(aes(efficacy, yld)) +
+  geom_errorbar(aes(ymin = yld_inf, ymax = yld_sup), width = 0, size = 0.8, color = &quot;black&quot;, alpha = 0.35) +
+  geom_errorbarh(aes(xmin = eff_inf,xmax = eff_sup),  height = 0, size = 0.8, color = &quot;black&quot;, alpha = 0.35)+
   labs(x = &quot;FHB control (%)&quot;, y = &quot;Yield difference (kg/ha)&quot;, color = &quot;Fungicide&quot;)+
-  # geom_label_repel(aes(efficacy, yld, label = eff_yld$fungicide, fill = fungicide), 
-  #    size=4, color = &#39;black&#39;,label.size=0.15, fontface = &#39;bold&#39;,
-  #   box.padding = unit(3.5, &quot;lines&quot;)) +
-  geom_point(aes(efficacy, yld, color = fungicide), size= 2.5) +
-  theme_bw()+
+  geom_point(aes(efficacy, yld, color = fungicide), size= 3) +
+  scale_color_calc()+
+  theme_minimal_grid()+
   theme(axis.text=element_text(size=12), 
-        axis.title=element_text(size=14), 
-        legend.position = &quot;top&quot;,
+        axis.title=element_text(size=12, face = &quot;bold&quot;), 
+        legend.position = &quot;right&quot;,
         legend.title.align = 0.5,
-        legend.title = element_text(size=12, face = &quot;bold&quot;))
-
-gr1</code></pre>
-<p><img src="plots_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
-<pre class="r"><code>ggsave(&quot;Figures/sev_yld.png&quot;, width = 6, height = 5, dpi = 300)</code></pre>
+        legend.title = element_text(size=12, face = &quot;bold&quot;))</code></pre>
+<p><img src="plots_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
+<pre class="r"><code>ggsave(&quot;Figures/sev_yld.png&quot;, width = 8, height = 5, dpi = 300)</code></pre>
 </div>
-<div id="ecomomic-plot" class="section level2">
-<h2>Ecomomic plot</h2>
-<pre class="r"><code>fhb_economic &lt;- gsheet2tbl(&quot;https://docs.google.com/spreadsheets/d/1Kh0474vS9xCxwud6RSZgr7VeWEF7FAnYDSi3EMb_bYs/edit#gid=877523999&quot;, sheetid = &quot;economic_analysis&quot;)
-fhb_economic &lt;- fhb_economic %&gt;%
-  mutate(tau = as.numeric(tau),
-         D = as.numeric(D))
+<div id="wheat-price" class="section level2">
+<h2>Wheat price</h2>
+<p>We gathered the wheat price for three wheat-producing states (Rio Grande do Sul, Paraná, and Santa Catarina).</p>
+<pre class="r"><code>library(gsheet)
 
-prob &lt;- function(C, P, tau, D) {
-  profit &lt;- (D - (C / (P / 1000))) / sqrt(tau) # loss
-  prob_gain &lt;- pnorm(profit)
-  prob_gain
-}
-
-for (i in 1:length(fhb_economic$C)) {
-  fhb_economic$p_gain[i] &lt;- prob(C = fhb_economic$C[i], D = fhb_economic$D[i], tau = fhb_economic$tau[i], P = fhb_economic$P[i]) * 1
-}
-
-library(viridis)
-library(tidyverse)
-library(ggthemes)
-dat &lt;- fhb_economic %&gt;%
-  mutate(p_gain = as.numeric(p_gain), p_gain = round(p_gain, 2))
- 
-
-dat$p_loss &lt;- with(dat, (1 - p_gain))
-  
-dat &lt;- dat %&gt;% 
-  select(1,6,8)
+wheat_price &lt;- gsheet2tbl(&quot;https://docs.google.com/spreadsheets/d/1Kh0474vS9xCxwud6RSZgr7VeWEF7FAnYDSi3EMb_bYs/edit#gid=1133011953&quot;) 
 
 
-# Graph the results by fungicides
-# Probability of not-offsetting costs
- 
-Fungicide &lt;-c(&quot;AZOX + TEBU 2X&quot;, &quot;PIRA + METC 2X&quot;, &quot; TFLX + TEBU 2X&quot;, &quot;TFLX + PROT 2X&quot;, &quot;TEBU 2X&quot;, &quot;PIRA + METC 1X&quot;)
-
-library(tidyr)
-dat &lt;- dat %&gt;% 
-  gather(p, value, 2:3) 
-
-dat$value &lt;- with(dat, (value*100))
-g1 &lt;- ggplot()+
-  geom_col(aes(x = Fungicide, y = value, fill = p), data = dat)+
-  geom_text(data = dat, aes(x = Fungicide, y = value, label = value, color = p), size = 3, fontface = &quot;bold&quot;, hjust = 1.2, show.legend = FALSE) +
-  scale_color_manual(values = c(&quot;steelblue&quot;, &quot;white&quot;))+
-  scale_fill_manual(values = c(&quot;steelblue&quot;, &quot;darkred&quot;))+
-  theme_minimal()+
-  geom_hline(yintercept = 50, color = &quot;grey&quot;, linetype = 3) + 
-  theme(legend.position = &quot;bottom&quot;, legend.title = element_blank(), legend.justification = &quot;center&quot;)+
-  ylim(0,100)+
-  coord_flip()+
-  labs(y =&quot;Probability of not-offsetting costs (%)&quot;, x = &quot;&quot;)+
-  ggsave(&quot;Figures/probability_plot.png&quot;, width = 4.5, height=3)
-g1</code></pre>
-<p><img src="plots_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+wheat_price = wheat_price %&gt;% 
+  mutate(price_ton = ((price/60)*1000)/5.2)
+mean(wheat_price$price_ton)</code></pre>
+<pre><code>## [1] 160.6517</code></pre>
 </div>
 <div id="tetris-plot" class="section level2">
 <h2>Tetris plot</h2>
+<p>Tile plots of the probability classes of breaking even on fungicide costs were produced for each fungicide.</p>
 <pre class="r"><code>fhb_tetris &lt;- gsheet2tbl(
   &quot;https://docs.google.com/spreadsheets/d/1Kh0474vS9xCxwud6RSZgr7VeWEF7FAnYDSi3EMb_bYs/edit#gid=1373111570&quot;,
-  sheetid = &quot;tetris&quot;
-)
+  sheetid = &quot;tetris&quot;)
 fhb_tetris &lt;- fhb_tetris %&gt;%
   mutate(
     tau = as.numeric(tau),
@@ -750,7 +704,8 @@ fhb_tetris &lt;- fhb_tetris %&gt;%
 prob &lt;- function(C, P, tau, D) {
   profit &lt;- (D - (C / (P / 1000))) / sqrt(tau) # loss
   prob_gain &lt;- pnorm(profit)
-  prob_gain
+  ploss &lt;- 1 - prob_gain
+  ploss
 }
 
 
@@ -758,7 +713,6 @@ prob &lt;- function(C, P, tau, D) {
 for (i in 1:length(fhb_tetris$C)) {
   fhb_tetris$breacking_even[i] &lt;- prob(C = fhb_tetris$C[i], D = fhb_tetris$D[i], tau = fhb_tetris$tau[i], P = fhb_tetris$P[i]) * 100
 }
-
 
 
 library(viridis)
@@ -769,9 +723,34 @@ dat &lt;- fhb_tetris %&gt;%
     breacking_even = as.numeric(breacking_even),
     breacking_even = round(breacking_even, 1)
   )
-
+summary(dat$breacking_even)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   38.80   41.40   42.95   43.56   45.30   52.80</code></pre>
+<pre class="r"><code>library(plyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)</code></pre>
+<pre><code>## -------------------------------------------------------------------------</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     compact</code></pre>
+<pre class="r"><code>dat$fungicide &lt;- revalue(dat$fungicide, c(&quot;AZOX + TEBU 2X&quot; = &quot;AZOX + TEBU&quot;))
+dat$fungicide &lt;- revalue(dat$fungicide, c(&quot;PYRA + METC 2X&quot; = &quot;PYRA + METC&quot;))
+dat$fungicide &lt;- revalue(dat$fungicide, c(&quot;TEBU 2X&quot; = &quot;TEBU&quot;))
+dat$fungicide &lt;- revalue(dat$fungicide, c(&quot;PYRA + METC 1X&quot; = &quot;PYRA + METC 1X&quot;))
+detach(&quot;package:plyr&quot;, unload = TRUE)
 
 dat %&gt;%
+  filter(fungicide %in% c(&quot;PYRA + METC&quot;, &quot;PYRA + METC 1X&quot;, &quot;TEBU&quot;)) %&gt;% 
+  #mutate(fungicide = factor(fungicide, levels = c(&quot;PYRA + METC 2X&quot;, &quot;AZOX + TEBU 2X&quot;,&quot;TEBU 2X&quot;))) %&gt;%
+  mutate(fungicide = factor(fungicide, levels = c(&quot;PYRA + METC&quot;, &quot;TEBU&quot;, &quot;PYRA + METC 1X&quot;))) %&gt;%
   mutate(breacking_even1 = case_when(
     breacking_even &gt;= 75 ~ &quot;p \u2265 75  &quot;,
     breacking_even &lt; 75 &amp; breacking_even &gt;= 65 ~ &quot;65 \u2264 p &lt; 75  &quot;,
@@ -781,28 +760,28 @@ dat %&gt;%
   )) %&gt;%
   ggplot(aes(factor(C), factor(P), z = breacking_even1, fill = breacking_even1, label = breacking_even1)) +
   geom_tile(color = &quot;white&quot;, size = 0.5) +
-  scale_fill_viridis(discrete = T, option = &quot;E&quot;, begin = 0, end = 1, name = &quot;Probability (%)&quot;) +
+  scale_fill_viridis(discrete = T, option = &quot;E&quot;, begin = 0, end = 1, name = &quot;Probability of not-offsetting costs (%)&quot;) +
   scale_color_gradient(high = &quot;white&quot;, low = &quot;white&quot;) +
   labs(x = &quot;Fungicide + application cost (US$/ha)&quot;, y = &quot;Wheat price (US$/ton) &quot;, fill = &quot;&quot;) +
-  # facet_wrap(~fungicide, ncol = 2, scales = &quot;free&quot;, dir = &quot;h&quot;)+
   theme_minimal() +
-  facet_wrap(~ fungicide, scales = &quot;free&quot;, nrow=3) +
-  theme(text = element_text(size = 14), 
+  facet_wrap(~ fungicide, scales = &quot;free&quot;, nrow=1) +
+  theme(axis.title = element_text(size = 12, face = &quot;bold&quot;), 
         legend.justification = &quot;center&quot;, 
-        axis.text.x = element_text(size=14),
-        axis.text.y = element_text(size=14),
+        axis.text.x = element_text(size=12),
+        axis.text.y = element_text(size=12),
         strip.text.x = element_text(size = 14, face = &quot;bold&quot;), 
         strip.text.y = element_text(size = 14, face = &quot;bold&quot;), 
         panel.grid.minor = element_line(colour = &quot;white&quot;), 
         panel.grid.major = element_line(colour = &quot;white&quot;), 
         legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="plots_files/figure-html/unnamed-chunk-8-1.png" width="960" /></p>
-<pre class="r"><code>ggsave(&quot;Figures/tetris.png&quot;, width = 10, height = 10, dpi = 300)</code></pre>
+<p><img src="plots_files/figure-html/unnamed-chunk-9-1.png" width="864" /></p>
+<pre class="r"><code>ggsave(&quot;Figures/tetris.png&quot;, width = 9, height = 4, dpi = 300)</code></pre>
+</div>
 </div>
 
 
 
-Copyright 2017 Emerson Del Ponte
+Copyright 2020 Jhonatan Paulo Barro
 
 
 </div>

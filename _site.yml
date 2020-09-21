@@ -15,8 +15,6 @@ output:
       smooth_scroll: no
     lib_dir: site_libs
     self_contained: no
-bibliography: crossref.bib
-csl: chicago-author-date.csl
 navbar:
   title: DMI+QoI premix effects on FHB
   left:
